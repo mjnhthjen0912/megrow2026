@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 7 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Building Team Capability &amp; Growth</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Xây dựng năng lực và sự phát triển của đội ngũ</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 7: Xây dựng năng lực và sự phát triển của đội ngũ</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Topic 7: Building Team Capability &amp; Growth — bản đối chiếu Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">TS. Thao Luong · 43 slide</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide là một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ. Chữ nằm trong hình đồ hoạ của slide cũng được dịch. Khẩu hiệu “Ready for what’s next” của RMIT xuất hiện ở hầu hết các slide nên không nhắc lại.</p>
+<p style="margin:0 0 8px">Đây là một buổi workshop thực hành với LEGO® Serious Play®. Các slide hoạt động thường đi kèm đồng hồ đếm ngược và mã QR dẫn tới Padlet; những phần này được ghi bằng chữ nghiêng màu xám. Phần mô tả đó là ghi chú của bản dịch, không phải nội dung gốc trên slide.</p>
+<p style="margin:0">Tên riêng, tên tổ chức, tên thương hiệu LEGO® Serious Play® và địa chỉ liên hệ giữ nguyên. <i>Identity</i> được dịch là “bản sắc”: <i>Core Identity (CI)</i> là “bản sắc cốt lõi”, <i>External Identity (EI)</i> là “bản sắc bên ngoài”, <i>Possible Identity (PI)</i> là “bản sắc tiềm năng”, <i>Real Time Identity (RTI)</i> là “bản sắc thời gian thực”. <i>Team Life</i> là “đời sống đội ngũ”, <i>Team Landscape</i> là “bức tranh toàn cảnh đội ngũ”. Các chữ viết tắt CI, EI, PI, RTI được giữ nguyên như trên slide.</p>
+</div>
+
+<section id="s01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Topic 7: Building Team Capability &amp; Growth</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chủ đề 7: Xây dựng năng lực và sự phát triển của đội ngũ</h3>
+<div style="color:var(--en,#56665a)">Dr Thao Luong</div>
+<div>TS. Thao Luong</div>
+</div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t7/p01a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Slide tiêu đề của chương trình me.grow.</figcaption>
+</figure>
+</section>
+<section id="s02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">About this session</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">About this session</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Về buổi học này</h3>
+<div style="color:var(--en,#56665a)">Strong teams start with understanding ourselves and grow through understanding how we connect.<br /><br />Today is an opportunity to step away from doing the work and explore how we show up, work together, and contribute to the team as a whole.<br /><br />Using LEGO® Serious Play®, we will make our thinking visible, hear every voice, and build a shared picture of the team.<br /><br />By the end of this session, you will:<ul style="margin:0;padding-left:18px"><li>Explore your strengths, values, working style and unique contribution;</li><li>Appreciate what others bring and the spirit that makes the team unique;</li><li>Recognize how individual roles, relationships, and influences shape the way we work;</li><li>Reflect on your Real-Time Identity – who you need to be to contribute at your best.</li></ul></div>
+<div><span>Đội ngũ mạnh bắt đầu từ việc hiểu chính mình và lớn lên nhờ hiểu cách chúng ta kết nối với nhau.</span><br /><br /><span>Hôm nay là dịp để tạm rời công việc thường ngày và khám phá cách chúng ta thể hiện bản thân, làm việc cùng nhau và đóng góp cho đội ngũ như một tổng thể.</span><br /><br /><span>Với LEGO® Serious Play®, chúng ta sẽ làm cho suy nghĩ của mình hiện ra trước mắt, lắng nghe tiếng nói của mọi người và cùng dựng nên một bức tranh chung về đội ngũ.</span><br /><br /><span>Kết thúc buổi học, bạn sẽ:</span><ul style="margin:0;padding-left:18px"><li>Khám phá điểm mạnh, giá trị, phong cách làm việc và đóng góp riêng của mình;</li><li>Trân trọng những gì người khác mang lại và tinh thần làm nên nét riêng của đội ngũ;</li><li>Nhận ra vai trò cá nhân, các mối quan hệ và những ảnh hưởng định hình cách chúng ta làm việc;</li><li>Suy ngẫm về Bản sắc thời gian thực (Real-Time Identity) của bạn – con người bạn cần trở thành để đóng góp ở mức tốt nhất.</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bên cạnh là ảnh những tháp gạch LEGO nhiều màu và huy hiệu chứng nhận điều phối viên LEGO® Serious Play®.</i></p>
+</section>
+<section id="s03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">Agenda</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Agenda</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chương trình</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li>Your Identity on the Team</li><li>Team Life (or the Spirit of the Team)</li><li>The Team Landscape (or “How is the Team connected?”)</li><li>(Homework) Real Time Identity for YOU</li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li>Bản sắc của bạn trong đội ngũ</li><li>Đời sống đội ngũ (hay Tinh thần đội ngũ)</li><li>Bức tranh toàn cảnh đội ngũ (hay “Đội ngũ kết nối với nhau như thế nào?”)</li><li>(Bài tập về nhà) Bản sắc thời gian thực của BẠN</li></ol></div>
+</div>
+</section>
+<section id="s04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">About me</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">About me</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Về tôi</h3>
+<div style="color:var(--en,#56665a)"><b>Dr. Thao Luong</b><br />Senior Program Manager – Lecturer (Human Resource Management)<br />E-mail: thao.luong3@rmit.edu.vn<br /><br />Education:<ul style="margin:0;padding-left:18px"><li>Ph.D. in Knowledge Science, Japan Advanced Institute of Science and Technology (Japan)</li><li>Master in HRM, Griffith University (Australia)</li><li>Bachelor in Business, University of Economics HCMC (Vietnam)</li><li>CHT &amp; CHE (American Hotel and Lodging Educational Institute)</li><li>Trained Facilitator in the LEGO® Serious Play® Methodology</li></ul><br />Work Experience (15 years): Sales (PepsiCo International), HR (FrieslandCampina), Corporate Training (Saigontourist Group), VP (Saigontourist Hospitality College)</div>
+<div><b>TS. Thao Luong</b><br /><span>Quản lý Chương trình cấp cao – Giảng viên (Quản trị Nguồn nhân lực)</span><br /><span>E-mail: thao.luong3@rmit.edu.vn</span><br /><br /><span>Học vấn:</span><ul style="margin:0;padding-left:18px"><li>Tiến sĩ Khoa học Tri thức, Viện Khoa học và Công nghệ Tiên tiến Nhật Bản (Nhật Bản)</li><li>Thạc sĩ Quản trị Nguồn nhân lực, Đại học Griffith (Úc)</li><li>Cử nhân Kinh doanh, Đại học Kinh tế TP.HCM (Việt Nam)</li><li>CHT &amp; CHE (Viện Giáo dục Khách sạn và Lưu trú Hoa Kỳ – American Hotel and Lodging Educational Institute)</li><li>Điều phối viên được đào tạo về phương pháp LEGO® Serious Play®</li></ul><br /><span>Kinh nghiệm làm việc (15 năm): Bán hàng (PepsiCo International), Nhân sự (FrieslandCampina), Đào tạo doanh nghiệp (Saigontourist Group), Phó Hiệu trưởng (Saigontourist Hospitality College)</span></div>
+</div>
+</section>
+<section id="s05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 05</span>
+<span style="color:#86958a">Our playbook</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Our Playbook</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Luật chơi của chúng ta</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Be fully present</li><li>Try to earn the playground money for your team</li><li>Honor others’ opinions</li><li>Put cellphones away and on vibrate (if possible)</li><li>Please don’t hurt anyone</li><li>Use burning thoughts for questions</li><li>Relax and have fun</li><li>“Through discipline comes freedom” – Aristotle</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Hiện diện trọn vẹn</li><li>Cố gắng kiếm “tiền sân chơi” về cho đội của bạn</li><li>Tôn trọng ý kiến của người khác</li><li>Cất điện thoại và để chế độ rung (nếu có thể)</li><li>Xin đừng làm ai bị tổn thương</li><li>Dùng những suy nghĩ còn trăn trở để đặt câu hỏi</li><li>Thư giãn và vui vẻ</li><li>“Tự do đến từ kỷ luật” – Aristotle</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide minh hoạ bằng hình Aristotle, một xấp tiền đồ chơi (mệnh giá 1, 5, 10, 20, 50, 100) và chiếc ô RMIT.</i></p>
+</section>
+<section id="s06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06</span>
+<span style="color:#86958a">LSP origins (1)</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">LEGO® Serious Play® (LSP®) Methodology Origins</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nguồn gốc phương pháp LEGO® Serious Play® (LSP®)</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Born in the late 1990s in the context of strategy work and executive education</li><li>Originators: Bart Victor and Johan Roos + Kjeld Kirk Kristiansen</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Ra đời vào cuối thập niên 1990, trong bối cảnh công tác chiến lược và đào tạo lãnh đạo cấp cao</li><li>Những người khởi xướng: Bart Victor và Johan Roos + Kjeld Kirk Kristiansen</li></ul></div>
+</div>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a">Roos, J, Victor, B &amp; Statler, M 2004, ‘Playing seriously with strategy’, <i>Long Range Planning</i>, vol. 37, no. 6, pp. 549–568.<br />Roos, J &amp; Victor, B 2018, ‘How It All Began: The Origins Of LEGO® Serious Play®’, <i>International Journal of Management and Applied Research</i>, vol. 5, no. 4, pp. 326–343.</p>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide kèm một đồ hoạ dòng thời gian: “The History of LEGO® Serious Play® — From a toy to a powerful tool for people, teams and organisations” (Lịch sử của LEGO® Serious Play® — Từ một món đồ chơi thành công cụ mạnh mẽ cho con người, đội ngũ và tổ chức). Mẩu giấy ghi chú ở góc: “Same bricks. A bigger purpose.” (Vẫn những viên gạch ấy. Một mục đích lớn hơn.) Nội dung dòng thời gian được dịch theo cấu trúc hình ở khung dưới.</i></p>
+<div style="margin-top:10px"></div><div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="text-align:center;line-height:1.35;margin-bottom:12px"><div style="font-weight:700;color:#1b2a20;letter-spacing:.02em">The History of LEGO® Serious Play®</div><div style="font-weight:700">Lịch sử của LEGO® Serious Play®</div><div style="line-height:1.4;font-size:12.5px;margin-top:2px"><div style="color:var(--en,#56665a)">From a toy to a powerful tool for people, teams and organisations</div><div>Từ một món đồ chơi thành công cụ mạnh mẽ cho con người, đội ngũ và tổ chức</div></div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,120px),1fr));gap:6px"><div style="border:1px solid #dae4d6;display:flex;flex-direction:column;min-width:0"><div style="background:#d62b2b;color:#fff;font-weight:700;padding:5px 8px;text-align:center">1932–1950s</div><div style="padding:8px;font-size:12px;line-height:1.45;display:flex;flex-direction:column;gap:6px"><div style="color:var(--en,#56665a)"><b>The LEGO® Foundation</b><b>Ole Kirk Kristiansen founds LEGO in 1932 in Denmark, with a vision to inspire children’s creativity through play. “Only the best is good enough.” – Ole Kirk Kristiansen</div><div style="border-top:1px solid #dae4d6;padding-top:6px"><b>Khởi nguồn LEGO®</b><b>Ole Kirk Kristiansen thành lập LEGO năm 1932 tại Đan Mạch, với tầm nhìn khơi gợi sự sáng tạo của trẻ em qua vui chơi. “Chỉ điều tốt nhất mới đủ tốt.” – Ole Kirk Kristiansen</div></div></div><div style="border:1px solid #dae4d6;display:flex;flex-direction:column;min-width:0"><div style="background:#e8661c;color:#fff;font-weight:700;padding:5px 8px;text-align:center">1958</div><div style="padding:8px;font-size:12px;line-height:1.45;display:flex;flex-direction:column;gap:6px"><div style="color:var(--en,#56665a)"><b>The LEGO® Brick as a System</b><b>The modern LEGO® brick with a stud-and-tube coupling system is launched, enabling endless possibilities to build, take apart and rebuild. A simple system with limitless possibilities.</div><div style="border-top:1px solid #dae4d6;padding-top:6px"><b>Viên gạch LEGO® như một hệ thống</b><b>Viên gạch LEGO® hiện đại với cơ chế khớp núm và ống ra đời, mở ra vô số khả năng lắp, tháo và lắp lại. Một hệ thống đơn giản với khả năng vô hạn.</div></div></div><div style="border:1px solid #dae4d6;display:flex;flex-direction:column;min-width:0"><div style="background:#c99300;color:#fff;font-weight:700;padding:5px 8px;text-align:center">1990s</div><div style="padding:8px;font-size:12px;line-height:1.45;display:flex;flex-direction:column;gap:6px"><div style="color:var(--en,#56665a)"><b>From Product to Process</b><b>The LEGO Group begins exploring how LEGO bricks can be used beyond play — as a tool for serious thinking, innovation and organisational development. Realising the potential of LEGO beyond the toy box.</div><div style="border-top:1px solid #dae4d6;padding-top:6px"><b>Từ sản phẩm đến quy trình</b><b>Tập đoàn LEGO bắt đầu tìm hiểu cách dùng gạch LEGO vượt ra ngoài vui chơi, như một công cụ cho tư duy nghiêm túc, đổi mới và phát triển tổ chức. Nhận ra tiềm năng của LEGO bên ngoài hộp đồ chơi.</div></div></div><div style="border:1px solid #dae4d6;display:flex;flex-direction:column;min-width:0"><div style="background:#2f8a3a;color:#fff;font-weight:700;padding:5px 8px;text-align:center">1999–2001</div><div style="padding:8px;font-size:12px;line-height:1.45;display:flex;flex-direction:column;gap:6px"><div style="color:var(--en,#56665a)"><b>The Birth of LEGO® Serious Play®</b><b>The LEGO Group, in partnership with professors Johan Roos and Bart Victor (IMD, Switzerland), develops the LEGO® Serious Play® (LSP) method to help organisations address complex challenges through hands-on, reflective dialogue. A new way to think, together.</div><div style="border-top:1px solid #dae4d6;padding-top:6px"><b>Sự ra đời của LEGO® Serious Play®</b><b>Tập đoàn LEGO hợp tác với hai giáo sư Johan Roos và Bart Victor (IMD, Thuỵ Sĩ) phát triển phương pháp LEGO® Serious Play® (LSP), giúp các tổ chức giải quyết những thách thức phức tạp qua đối thoại có suy ngẫm bằng chính đôi tay. Một cách mới để cùng nhau suy nghĩ.</div></div></div><div style="border:1px solid #dae4d6;display:flex;flex-direction:column;min-width:0"><div style="background:#2a76c9;color:#fff;font-weight:700;padding:5px 8px;text-align:center">2000s–2010s</div><div style="padding:8px;font-size:12px;line-height:1.45;display:flex;flex-direction:column;gap:6px"><div style="color:var(--en,#56665a)"><b>Growing Adoption</b><b>LSP is adopted globally by organisations, facilitators and educators across sectors — from business and government to non-profits and education — to unlock insights, build shared understanding and drive positive change. From boardrooms to classrooms, around the world.</div><div style="border-top:1px solid #dae4d6;padding-top:6px"><b>Ngày càng lan rộng</b><b>LSP được các tổ chức, điều phối viên và nhà giáo dục khắp thế giới áp dụng ở nhiều lĩnh vực, từ doanh nghiệp, chính phủ đến tổ chức phi lợi nhuận và giáo dục, để khơi mở góc nhìn mới, xây dựng hiểu biết chung và thúc đẩy thay đổi tích cực. Từ phòng họp hội đồng quản trị đến lớp học, trên khắp thế giới.</div></div></div><div style="border:1px solid #dae4d6;display:flex;flex-direction:column;min-width:0"><div style="background:#6a3fb0;color:#fff;font-weight:700;padding:5px 8px;text-align:center">Today<span> · Ngày nay</span></div><div style="padding:8px;font-size:12px;line-height:1.45;display:flex;flex-direction:column;gap:6px"><div style="color:var(--en,#56665a)"><b>Continuing the Journey</b><b>LEGO® Serious Play® continues to evolve, helping people and organisations navigate complexity, imagine new possibilities and build a better future — one brick at a time. Different questions. Brighter futures.</div><div style="border-top:1px solid #dae4d6;padding-top:6px"><b>Tiếp tục hành trình</b><b>LEGO® Serious Play® tiếp tục phát triển, giúp con người và tổ chức vượt qua sự phức tạp, hình dung những khả năng mới và xây dựng tương lai tốt đẹp hơn, từng viên gạch một. Những câu hỏi khác. Những tương lai tươi sáng hơn.</div></div></div></div></div>
+<figure style="margin:10px 0 0;max-width:640px;break-inside:avoid">
+<img src="assets/t7/p06a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+<section id="s07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 07</span>
+<span style="color:#86958a">LSP origins (2)</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">LEGO® Serious Play® (LSP®) Methodology Origins</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nguồn gốc phương pháp LEGO® Serious Play® (LSP®)</h3>
+<div style="color:var(--en,#56665a)">Typical strategy discussions are cognitive-based<ul style="margin:0;padding-left:18px"><li>However, humans have emotion and are social creatures – important in strategy making;</li><li>Their strategy is to acknowledge all of these elements (cognitive, emotional and social aspects) that make us humans done through “Serious Play”</li></ul><br />Work Mode — Typical Strategy Process: Cognitive · Deliberate · Verbal · Written · 2D Graphic (Graphs, .ppt, .xls)<br />Play Mode — Experimental Strategy Process: 3D Tactile Media</div>
+<div>Các cuộc thảo luận chiến lược thông thường thiên về lý trí<ul style="margin:0;padding-left:18px"><li>Tuy nhiên, con người có cảm xúc và là sinh vật xã hội – điều quan trọng trong hoạch định chiến lược;</li><li>Cách tiếp cận của họ là ghi nhận toàn bộ các yếu tố làm nên con người (nhận thức, cảm xúc và xã hội), thông qua “Chơi nghiêm túc” (Serious Play)</li></ul><br /><span>Chế độ làm việc — Quy trình chiến lược thông thường: Lý trí · Có chủ đích · Lời nói · Văn bản · Đồ hoạ 2D (biểu đồ, .ppt, .xls)</span><br /><span>Chế độ chơi — Quy trình chiến lược thử nghiệm: Phương tiện xúc giác 3D</span></div>
+</div>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a">Roos, J, Victor, B &amp; Statler, M 2004, ‘Playing seriously with strategy’, <i>Long Range Planning</i>, vol. 37, no. 6, pp. 549–568.</p>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px;max-width:460px;break-inside:avoid">
+<img src="assets/t7/p07a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t7/p07b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+<section id="s08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 08</span>
+<span style="color:#86958a">Theories</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">LSP® is indeed grounded in a variety of theories</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">LSP® thực chất dựa trên nhiều lý thuyết</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Organizational Identity (Albert &amp; Whetten; Clegg)</li><li>Heedful Interaction (Weick)</li><li>Imagination (Kearney)</li><li>Constructivism (Piaget)</li><li>Complex Adaptive Systems theory (Kaufmann)</li><li>Fitness Landscape (Kaufmann)</li><li>Organizational Epistemology (von Krogh &amp; Roos)</li><li>Constructionism (Papert)</li><li>Coherance (Lissack &amp; Roos)</li><li>The Hand (Wilson)</li><li>Bricolage (Levi-Strauss)</li><li>Active Imagination (Jung)</li><li>Autopoiesis in social systems (Luhmann)</li><li>Autopoiesis in natural systems (Maturana &amp; Varela)</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Bản sắc tổ chức (Albert &amp; Whetten; Clegg)</li><li>Tương tác có chủ tâm (Weick)</li><li>Trí tưởng tượng (Kearney)</li><li>Thuyết kiến tạo (Piaget)</li><li>Lý thuyết hệ thích nghi phức hợp (Kaufmann)</li><li>Địa hình thích nghi (Kaufmann)</li><li>Nhận thức luận tổ chức (von Krogh &amp; Roos)</li><li>Thuyết kiến tạo qua thực hành – constructionism (Papert)</li><li>Tính mạch lạc (Lissack &amp; Roos)</li><li>Bàn tay (Wilson)</li><li>Bricolage – chắp ghép từ những gì sẵn có (Levi-Strauss)</li><li>Tưởng tượng chủ động (Jung)</li><li>Tự tạo sinh trong hệ thống xã hội (Luhmann)</li><li>Tự tạo sinh trong hệ thống tự nhiên (Maturana &amp; Varela)</li></ul></div>
+</div>
+</section>
+<section id="s09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 09</span>
+<span style="color:#86958a">Facilitators</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Meet Our RMIT University LSP® Facilitators</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Gặp gỡ các điều phối viên LSP® của Đại học RMIT</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>A/Prof. Elaine Chew — Associate Head of Department (Management Dept.) — elaine.chew@rmit.edu.vn</li><li>Dr. Trang Le — Lecturer (Entrepreneurship) — trang.le43@rmit.edu.vn</li><li>Dr. Thao Luong — Senior Program Manager, Lecturer (HRM) — thao.luong3@rmit.edu.vn</li><li>Mr. Vincent Quach — Lecturer, Tourism and Hospitality Management — ha.quachvan@rmit.edu.vn</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>PGS. Elaine Chew — Phó Trưởng khoa (Khoa Quản trị) — elaine.chew@rmit.edu.vn</li><li>TS. Trang Le — Giảng viên (Khởi nghiệp) — trang.le43@rmit.edu.vn</li><li>TS. Thao Luong — Quản lý Chương trình cấp cao, Giảng viên (Quản trị Nguồn nhân lực) — thao.luong3@rmit.edu.vn</li><li>Ông Vincent Quach — Giảng viên, Quản trị Du lịch và Khách sạn — ha.quachvan@rmit.edu.vn</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide kèm ảnh chân dung của bốn điều phối viên và huy hiệu chứng nhận LEGO® Serious Play®.</i></p>
+</section>
+<section id="s10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">Ground rules</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Ground Rules</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nguyên tắc chung</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li>Build as you want – there is no right and wrong!</li><li>Only you decide the meaning of your model!</li><li>You own your model and the story about it!</li><li>If you get stuck, just build (hands on)!</li><li>You are all committed to building and have the right to explain!</li><li>Be curious – listen with your eyes &amp; ask questions about other participants’ models!</li><li>Give you mobile and computer a break!</li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li>Lắp theo ý bạn – không có đúng hay sai!</li><li>Chỉ bạn mới quyết định ý nghĩa của mô hình mình!</li><li>Mô hình và câu chuyện về nó thuộc về bạn!</li><li>Nếu bí, cứ lắp (bắt tay vào làm)!</li><li>Tất cả đều cam kết lắp ghép và đều có quyền giải thích!</li><li>Hãy tò mò – lắng nghe bằng mắt và đặt câu hỏi về mô hình của những người khác!</li><li>Cho điện thoại và máy tính của bạn nghỉ ngơi!</li></ol></div>
+</div>
+</section>
+<section id="s11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">4 No go’s</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">4 NO GO’s</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">4 ĐIỀU KHÔNG ĐƯỢC LÀM</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li>Do not evaluate (I like – dislike…)</li><li>Do not assess (I find, I think…)</li><li>Do not interpret (To me,…)</li><li>Do not go beyond the model (How did you feel when…)</li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li>Không đánh giá (tôi thích – không thích…)</li><li>Không nhận định (tôi thấy, tôi nghĩ…)</li><li>Không diễn giải (Với tôi thì…)</li><li>Không đi ra ngoài mô hình (Bạn cảm thấy thế nào khi…)</li></ol></div>
+</div>
+</section>
+<section id="s12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 12</span>
+<span style="color:#86958a">Metaphors</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">LSP® Skill Building – Metaphors</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Rèn kỹ năng LSP® – Ẩn dụ</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Metaphor is an expression that describes a person or object by referring to something that is considered to have similar characteristics to that person or object (e.g., “the mind is an ocean”)</li><li>Metaphors help us to:<ul style="margin:0;padding-left:18px"><li>communicate complex ideas</li><li>make sense of something that is otherwise hard to put in words</li><li>think about reality in different ways</li><li>explore possibilities we may be afraid to explore in real life</li></ul></li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Ẩn dụ là cách diễn đạt mô tả một người hay một vật bằng cách nhắc tới một thứ khác được xem là có đặc điểm tương đồng với người hay vật đó (ví dụ: “tâm trí là một đại dương”)</li><li>Ẩn dụ giúp chúng ta:<ul style="margin:0;padding-left:18px"><li>truyền đạt những ý tưởng phức tạp</li><li>hiểu được những điều vốn khó diễn đạt thành lời</li><li>nhìn thực tại theo những cách khác nhau</li><li>khám phá những khả năng mà ngoài đời thực ta có thể e ngại</li></ul></li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Hình minh hoạ: một nhân vật LEGO cưỡi trên lưng con cá mập bằng gạch.</i></p>
+</section>
+<section id="s13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 13</span>
+<span style="color:#86958a">Let us pass this point</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Let us pass this point!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hãy vượt qua điểm này!</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Even when you can not plan it, you can build it.</li><li>When you do something with your hands, a complex process takes over that expands the experience.</li><li>Trust your hands, let them choose the bricks they want.</li><li>Do not get stuck in the design.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Ngay cả khi không lên kế hoạch được, bạn vẫn lắp được.</li><li>Khi bạn làm gì đó bằng tay, một quá trình phức tạp sẽ tiếp quản và mở rộng trải nghiệm.</li><li>Hãy tin đôi tay, để chúng tự chọn những viên gạch chúng muốn.</li><li>Đừng sa lầy vào khâu thiết kế.</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Hình minh hoạ: một nhân vật LEGO bực bội đập đầu vào tường trong văn phòng.</i></p>
+</section>
+<section id="s14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 14</span>
+<span style="color:#86958a">Agenda (repeat)</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide nhắc lại chương trình bốn phần như slide 03, trước khi vào phần chính.</i></p>
+</section>
+<section id="s15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 15</span>
+<span style="color:#86958a">Real Time Identity</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">LEGO® Serious Play® (LSP®) – Real Time Identity</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">LEGO® Serious Play® (LSP®) – Bản sắc thời gian thực</h3>
+<div style="color:var(--en,#56665a)">LSP® Real Time Identity (RTI) for the Team is a process that helps moving a group of individuals to become what we call a <b>Real Team</b>.<br /><br /><b>Real Team:</b> Realize the team’s full potential – quickly and effectively.</div>
+<div>Bản sắc thời gian thực (Real Time Identity – RTI) của LSP® dành cho Đội ngũ là một quy trình giúp đưa một nhóm cá nhân trở thành cái mà chúng tôi gọi là một <b>Đội ngũ Thực thụ</b> (Real Team).<br /><br /><b>Đội ngũ Thực thụ:</b> phát huy trọn vẹn tiềm năng của đội ngũ – nhanh chóng và hiệu quả.</div>
+</div>
+</section>
+<section id="s16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 16</span>
+<span style="color:#86958a">From → to</span>
+</div>
+<table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:50%"><span>From</span><br /><span>Từ</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:50%"><span>To</span><br /><span>Đến</span></td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">From acting randomly</span><br /><b style="font-weight:500">Từ hành động ngẫu nhiên</b></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">To acting deliberately</span><br /><b style="font-weight:500">Đến hành động có chủ đích</b></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">From being distinct job functions</span><br /><b style="font-weight:500">Từ những chức năng công việc tách biệt</b></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">To being effectively integrated</span><br /><b style="font-weight:500">Đến sự gắn kết hiệu quả</b></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">From having to live with frustrations</span><br /><b style="font-weight:500">Từ việc phải chịu đựng những bức bối</b></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">To changing things for the better</span><br /><b style="font-weight:500">Đến việc thay đổi mọi thứ tốt hơn</b></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">From individual identities</span><br /><b style="font-weight:500">Từ những bản sắc cá nhân</b></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">To having a shared identity</span><br /><b style="font-weight:500">Đến một bản sắc chung</b></td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">From just looking at individual abilities</span><br /><b style="font-weight:500">Từ chỉ nhìn vào năng lực cá nhân</b></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">To recognizing the mutual benefits</span><br /><b style="font-weight:500">Đến việc nhận ra lợi ích chung</b></td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">LSP® RTI for the Team is not about what the team does, but rather on how the team does it. It is thus about how the teams behaves towards one another, and the tasks the team is facing in everyday life. It is about strategy for the team!</div>
+<div>RTI của LSP® dành cho Đội ngũ không bàn về việc đội ngũ làm gì, mà về cách đội ngũ làm việc đó. Tức là về cách các thành viên cư xử với nhau và với những nhiệm vụ đội ngũ đối mặt hằng ngày. Đó là chiến lược dành cho đội ngũ!</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm ảnh bộ gạch LEGO® Serious Play® dùng trong buổi học.</i></p>
+</section>
+<section id="s17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 17</span>
+<span style="color:#86958a">Group or team?</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">GROUP OR TEAM?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">NHÓM HAY ĐỘI NGŨ?</h3>
+</div>
+<div style="margin-top:10px"></div><div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin:14px 0 4px;break-inside:avoid;border:1.5px solid #9fb8a2;border-radius:10px;background:#fbfdf9;padding:14px 16px 12px 10px"><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Độ phức tạp và mức độ chung của mục tiêu</span> · Complexity and Commonality of Goal →</span></div><div style="display:flex;gap:8px;align-items:flex-end;border-left:1.5px solid #86958a;padding-left:8px"><div style="flex:1 1 0;min-width:0;margin-bottom:0px;display:flex;flex-direction:column;gap:6px"><div style="border:1.5px solid #5b6b8a;border-radius:999px;padding:5px 8px;text-align:center;line-height:1.3;font-size:12px;background:#fff"><div style="color:var(--en,#56665a)">Individual<b><b>Cá nhân</b></div><div style="font-weight:700;color:#5b6b8a"></div></div></div><div style="flex:1 1 0;min-width:0;margin-bottom:34px;display:flex;flex-direction:column;gap:6px"><div style="border:1.5px solid #3d6fa8;border-radius:999px;padding:5px 8px;text-align:center;line-height:1.3;font-size:12px;background:#fff"><div style="color:var(--en,#56665a)">Workgroup<b><b>Nhóm làm việc</b></div><div style="font-weight:700;color:#3d6fa8"></div></div><div style="border:1px solid #dae4d6;background:#fff;padding:7px 8px;font-size:11.5px;line-height:1.4"><div style="color:var(--en,#56665a)">A gathering of people who each have their share of responsibility for the joint objectives and mutually coordinate individual efforts.<b>Một tập hợp người, mỗi người chịu một phần trách nhiệm cho mục tiêu chung và cùng phối hợp nỗ lực của từng cá nhân.</div><div style="margin-top:4px"></div></div></div><div style="flex:1 1 0;min-width:0;margin-bottom:68px;display:flex;flex-direction:column;gap:6px"><div style="border:1.5px solid #2f8a7a;border-radius:999px;padding:5px 8px;text-align:center;line-height:1.3;font-size:12px;background:#fff"><div style="color:var(--en,#56665a)">Collaborative Workgroup<b><b>Nhóm làm việc cộng tác</b></div><div style="font-weight:700;color:#2f8a7a"></div></div></div><div style="flex:1 1 0;min-width:0;margin-bottom:102px;display:flex;flex-direction:column;gap:6px"><div style="border:1.5px solid #3c8a3f;border-radius:999px;padding:5px 8px;text-align:center;line-height:1.3;font-size:12px;background:#fff"><div style="color:var(--en,#56665a)">Team<b><b>Đội ngũ</b></div><div style="font-weight:700;color:#3c8a3f"></div></div><div style="border:1px solid #dae4d6;background:#fff;padding:7px 8px;font-size:11.5px;line-height:1.4"><div style="color:var(--en,#56665a)">A smaller number of people with complementary skills, who are committed to a common goal which they have joint responsibility for the fulfillment of.<b>Một số ít người có kỹ năng bổ trợ cho nhau, cùng cam kết với một mục tiêu chung và cùng chịu trách nhiệm hoàn thành mục tiêu ấy.</div><div style="margin-top:4px"></div></div></div><div style="flex:1 1 0;min-width:0;margin-bottom:136px;display:flex;flex-direction:column;gap:6px"><div style="border:1.5px solid #2a6b45;border-radius:999px;padding:5px 8px;text-align:center;line-height:1.3;font-size:12px;background:#fff"><div style="color:var(--en,#56665a)">High Performing Team<b><b>Đội ngũ hiệu suất cao</b></div><div style="font-weight:700;color:#2a6b45"></div></div><div style="border:1px solid #dae4d6;background:#fff;padding:7px 8px;font-size:11.5px;line-height:1.4"><div style="color:var(--en,#56665a)">In addition to the characteristics of a Team, High Performing Teams show strong personal commitments to one another’s growth and success.<b>Ngoài những đặc điểm của một Đội ngũ, Đội ngũ hiệu suất cao còn thể hiện cam kết cá nhân mạnh mẽ với sự phát triển và thành công của nhau.</div><div style="margin-top:4px"></div></div></div></div><div></div><div style="border-top:1.5px solid #86958a;padding-top:6px;text-align:center;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700"><span>Mức độ phụ thuộc lẫn nhau và cộng tác</span> · Degree of Interdependence and Collaboration →</div></div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Năm cấp độ xếp tăng dần trên biểu đồ: trục đứng là “Complexity and Commonality of Goal” (Độ phức tạp và mức độ chung của mục tiêu), trục ngang là “Degree of Interdependence and Collaboration” (Mức độ phụ thuộc lẫn nhau và cộng tác).</i></p>
+<p style="margin:6px 0 0;font-size:11px;line-height:1.5;color:#86958a">Source / Nguồn: Kanaga, K., &amp; Kossler, M. E. (2001). <i>How to form a team: five keys to high performance</i>. Centre for Creative Leadership.</p>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t7/p17a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+<section id="s18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">Johari window</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The Johari Window: A help to introduce the first section</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Cửa sổ Johari: công cụ dẫn nhập cho phần thứ nhất</h3>
+</div>
+<div style="margin-top:10px"></div><div style="text-align:center;margin-top:12px;font-weight:700;font-size:12.5px">ME<span> · TÔI</span></div><div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin:14px 0 4px;break-inside:avoid;border:1.5px solid #9fb8a2;border-radius:10px;background:#fbfdf9;padding:14px 16px 12px 10px"><div style="display:grid;grid-template-rows:1fr 1fr;gap:8px"><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Người khác biết</span> · Known to others</span></div><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Người khác không biết</span> · Unknown to others</span></div></div><div style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:1fr;gap:8px"><div style="background:#dcebd3;border:1px solid #9fc49a;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">MỞ</b></div><div style="font-size:13px;line-height:1.55">Thông tin về tôi mà tôi và người khác đều biết</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #9fc49a;padding-top:6px"><b>Open</b> Information about me that I and others know</div></div><div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">GÓC NHÌN BÊN NGOÀI</b></div><div style="font-size:13px;line-height:1.55">Thông tin về tôi mà người khác biết nhưng tôi không biết</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>External Perspective</b> Information about me that others know but I don’t</div></div><div style="background:#f9eee3;border:1px solid #e6cdb3;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">CON NGƯỜI TIỀM NĂNG CỦA BẠN</b></div><div style="font-size:13px;line-height:1.55">Thông tin về tôi mà tôi biết nhưng người khác không biết</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #e6cdb3;padding-top:6px"><b>Possible you</b> Information about me that I know but others don’t</div></div><div style="background:#f2f2ee;border:1px solid #dcdcd4;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">CHƯA AI BIẾT</b></div><div style="font-size:13px;line-height:1.55">Thông tin về tôi mà cả tôi lẫn người khác đều không biết</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #dcdcd4;padding-top:6px"><b>Unknown</b> Information about me that neither I nor others know</div></div></div><div></div><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;border-top:1.5px solid #86958a;padding-top:6px"><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>TÔI biết</span> · Known to ME</span><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>TÔI không biết</span> · Unknown to ME</span></div></div><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;font-size:12px;margin-top:4px"><span><b>Feedback<span> · Phản hồi →</span></b> mở rộng ô Mở theo chiều ngang</span><span><b>Self-disclosure<span> · Tự bộc lộ ↓</span></b> mở rộng ô Mở theo chiều dọc</span></div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Hai mũi tên trên sơ đồ: “Self-disclosure” (Tự bộc lộ) mở rộng ô Mở theo chiều dọc, “Feedback” (Phản hồi) mở rộng theo chiều ngang. Bên cạnh là một nhân vật LEGO đeo ba lô cầm tấm bản đồ.</i></p>
+<figure style="margin:10px 0 0;max-width:520px;break-inside:avoid">
+<img src="assets/t7/p18a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+<section id="s19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 19</span>
+<span style="color:#86958a">Section 1 · Your identity on the team</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">1. Your Identity on the Team</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">1. Bản sắc của bạn trong đội ngũ</h3>
+<div style="color:var(--en,#56665a)"><b>Who are you today on this team?</b><br /><br />This section invites participants to reflect on how they show up in their current team, what they currently contribute, and what more they could bring to strengthen collaboration. Through LEGO® Serious Play®, participants explore their current and possible role in supporting stronger alignment, teamwork, and performance at Zalo.</div>
+<div><b>Hôm nay bạn là ai trong đội ngũ này?</b><br /><br /><span>Phần này mời người tham gia suy ngẫm về cách họ thể hiện mình trong đội ngũ hiện tại, những gì họ đang đóng góp và những gì họ có thể mang lại thêm để tăng cường sự cộng tác. Thông qua LEGO® Serious Play®, người tham gia khám phá vai trò hiện tại và vai trò tiềm năng của mình trong việc hỗ trợ sự thống nhất, tinh thần làm việc nhóm và hiệu suất tốt hơn tại Zalo.</span></div>
+</div>
+</section>
+<section id="s20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 20</span>
+<span style="color:#86958a">The idea</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">1. Your Identity on the Team — THE IDEA</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">1. Bản sắc của bạn trong đội ngũ — Ý TƯỞNG</h3>
+<div style="color:var(--en,#56665a)">Any individual identity consists of:<ul style="margin:0;padding-left:18px"><li><b>A Core Identity (CI):</b> The qualities, values, and strengths that define how you naturally contribute when working in your team</li><li><b>An External Identity (EI):</b> How others see and experience you in your team</li><li><b>A Possible Identity (PI):</b> The additional value, behaviors, or strengths you could bring to support stronger collaboration and alignment, but have not yet fully shown</li></ul></div>
+<div>Bản sắc của mỗi cá nhân gồm:<ul style="margin:0;padding-left:18px"><li><b>Bản sắc cốt lõi (Core Identity – CI):</b> những phẩm chất, giá trị và điểm mạnh quyết định cách bạn đóng góp một cách tự nhiên khi làm việc trong đội ngũ</li><li><b>Bản sắc bên ngoài (External Identity – EI):</b> cách người khác nhìn nhận và trải nghiệm việc làm cùng bạn trong đội ngũ</li><li><b>Bản sắc tiềm năng (Possible Identity – PI):</b> những giá trị, hành vi hay điểm mạnh bổ sung mà bạn có thể mang lại để tăng cường sự cộng tác và thống nhất, nhưng chưa thể hiện trọn vẹn</li></ul></div>
+</div>
+</section>
+<section id="s21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 21–23</span>
+<span style="color:#86958a">Activity 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">1. You as a Team Member</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">1. Bạn với tư cách thành viên đội ngũ</h3>
+<div style="color:var(--en,#56665a)">Activity 1 (Individual – 10 mins)<ul style="margin:0;padding-left:18px"><li>Individually, use a plate to build two models:<ul style="margin:0;padding-left:18px"><li>On 2/3 of the plate, build a model of your Core Identity (CI) on the team: who are you in this team and what could you bring to the team?</li><li>On the remaining third, build a model of your Possible Identity (PI) on the team: what could you bring to the team?</li></ul></li></ul><br />CI – Who am I in this team?<br />PI – What could I bring to the team?<br /><br />We are working with your professional identity: your competencies, experience, personality</div>
+<div>Hoạt động 1 (Cá nhân – 10 phút)<ul style="margin:0;padding-left:18px"><li>Mỗi người dùng một tấm đế để lắp hai mô hình:<ul style="margin:0;padding-left:18px"><li>Trên 2/3 tấm đế, lắp mô hình Bản sắc cốt lõi (CI) của bạn trong đội ngũ: bạn là ai trong đội ngũ này và bạn có thể mang lại gì cho đội ngũ?</li><li>Trên 1/3 còn lại, lắp mô hình Bản sắc tiềm năng (PI) của bạn trong đội ngũ: bạn có thể mang lại gì cho đội ngũ?</li></ul></li></ul><br /><span>CI – Tôi là ai trong đội ngũ này?</span><br /><span>PI – Tôi có thể mang lại gì cho đội ngũ?</span><br /><br /><span>Chúng ta đang làm việc với bản sắc nghề nghiệp của bạn: năng lực, kinh nghiệm, tính cách</span></div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Take a photo of your model, upload to the Padlet</li><li>Share with your group (2 mins/person for sharing)</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Chụp ảnh mô hình của bạn và tải lên Padlet</li><li>Chia sẻ với nhóm (mỗi người 2 phút)</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide 22 là đồng hồ đếm ngược 10:00. Slide 23 nhắc lại nội dung hoạt động, thêm hai dòng về chụp ảnh và chia sẻ (hàng cuối ở trên), kèm mã QR dẫn tới Padlet.</i></p>
+</section>
+<section id="s22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 24</span>
+<span style="color:#86958a">External I</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">“Who is your external I, on the team?”</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">“Cái tôi bên ngoài của bạn trong đội ngũ là ai?”</h3>
+<div style="color:var(--en,#56665a)">As a team member certain sides of you are put forward in public. However, you will not always be able to see what others see. Thus, you will have to rely on the fact that others can build your external identity, as experienced by the team. After this, add the model of your external I to your core identity model.<br /><br />You are of course the only one, who can alter your core identity and desired identity.<br /><br /><b>Challenge A: How do you see others?</b><br />The facilitator will give you the name of another team member. Then build a small model on behalf of that member. The model must represent a side of the person’s external identity of which you see.<br /><br /><b>Challenge B: Story about what others see.</b><br />Tell the story and then give the model to the other team member – do not tell who the model represents, before the story is told. Collect all the identities subsequently.<br /><br />Examples: Complicated and mysterious · Available but not to get hold on · Knows exactly what is happening around you · The influence is extensive · Always ready to rescue others · Keen and transparent</div>
+<div><span>Là thành viên đội ngũ, một số khía cạnh của bạn được bộc lộ ra trước mọi người. Tuy nhiên, không phải lúc nào bạn cũng thấy được những gì người khác thấy. Vì vậy, bạn cần dựa vào việc người khác có thể lắp nên bản sắc bên ngoài của bạn, theo cách đội ngũ trải nghiệm về bạn. Sau đó, hãy gắn mô hình cái tôi bên ngoài này vào mô hình bản sắc cốt lõi của bạn.</span><br /><br /><span>Dĩ nhiên, chỉ mình bạn mới có thể thay đổi bản sắc cốt lõi và bản sắc mong muốn của mình.</span><br /><br /><b>Thử thách A: Bạn nhìn người khác thế nào?</b><br /><span>Điều phối viên sẽ cho bạn tên của một thành viên khác. Hãy lắp một mô hình nhỏ thay cho người đó. Mô hình phải thể hiện một khía cạnh trong bản sắc bên ngoài của người ấy mà bạn nhìn thấy.</span><br /><br /><b>Thử thách B: Câu chuyện về những gì người khác thấy.</b><br /><span>Hãy kể câu chuyện rồi trao mô hình cho thành viên đó – đừng nói mô hình đại diện cho ai trước khi kể xong. Sau đó tập hợp tất cả các bản sắc lại.</span><br /><br /><span>Ví dụ: Phức tạp và bí ẩn · Luôn có mặt nhưng khó nắm bắt · Biết rõ mọi chuyện đang diễn ra quanh bạn · Tầm ảnh hưởng rộng · Luôn sẵn sàng cứu người khác · Nhiệt tình và minh bạch</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:600px;break-inside:avoid">
+<img src="assets/t7/p24a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Sáu mô hình ví dụ ở cột phải minh hoạ các cách đồng nghiệp có thể “nhìn thấy” một người.</figcaption>
+</figure>
+</section>
+<section id="s23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 25–28</span>
+<span style="color:#86958a">Activity 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">“Who is your external I, on the team?”</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">“Cái tôi bên ngoài của bạn trong đội ngũ là ai?”</h3>
+<div style="color:var(--en,#56665a)">Activity 2 (Individual – 10 mins)<ul style="margin:0;padding-left:18px"><li>The facilitator will assign you another participant (please do not reveal the name at first).</li><li>Use a plate to build a model that represents how this person is experienced on the team.</li><li>On ¾ of the plate, build 2 prominent features of how this person works (e.g. communication style, responsiveness, openness, reliability, coordination, problem-solving)</li><li>On ¼ of the plate, build 1 recommendation that could help this person strengthen collaboration across departments</li><li>Share the story of your model and let others guess who it represents</li><li>Then give the model to that person as feedback for reflection.</li></ul><br />EI – How do colleagues experience working with me?</div>
+<div>Hoạt động 2 (Cá nhân – 10 phút)<ul style="margin:0;padding-left:18px"><li>Điều phối viên sẽ phân cho bạn một người tham gia khác (xin đừng tiết lộ tên lúc đầu).</li><li>Dùng một tấm đế để lắp mô hình thể hiện cách đội ngũ trải nghiệm việc làm cùng người này.</li><li>Trên ¾ tấm đế, lắp 2 đặc điểm nổi bật trong cách người này làm việc (ví dụ: phong cách giao tiếp, mức độ phản hồi, sự cởi mở, độ tin cậy, khả năng phối hợp, cách giải quyết vấn đề)</li><li>Trên ¼ tấm đế, lắp 1 đề xuất có thể giúp người này tăng cường cộng tác giữa các phòng ban</li><li>Kể câu chuyện về mô hình của bạn và để mọi người đoán đó là ai</li><li>Sau đó trao mô hình cho người ấy như một lời phản hồi để họ suy ngẫm.</li></ul><br /><span>EI – Đồng nghiệp trải nghiệm việc làm cùng tôi như thế nào?</span></div>
+<div style="color:var(--en,#56665a)"><b>Remember:</b><ul style="margin:0;padding-left:18px"><li>We are focusing on the person’s professional role and team behavior</li><li>Focus on observable behaviors, not assumptions or personal judgments</li><li>When giving a recommendation, focus on what could strengthen collaboration, coordination, and trust</li><li>Build from a current, real-work perspective</li><li>Be honest, respectful, and constructive</li><li>The purpose is to support reflection and stronger cross-functional leadership, not criticism.</li></ul></div>
+<div><b>Hãy nhớ:</b><ul style="margin:0;padding-left:18px"><li>Chúng ta tập trung vào vai trò nghề nghiệp và hành vi trong đội ngũ của người đó</li><li>Tập trung vào hành vi quan sát được, không phải giả định hay phán xét cá nhân</li><li>Khi đưa ra đề xuất, hãy tập trung vào điều có thể tăng cường cộng tác, phối hợp và niềm tin</li><li>Lắp từ góc nhìn công việc thực tế hiện tại</li><li>Trung thực, tôn trọng và mang tính xây dựng</li><li>Mục đích là hỗ trợ sự suy ngẫm và năng lực lãnh đạo liên chức năng vững hơn, không phải để phê bình.</li></ul></div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Take a photo of your model, upload to the Padlet</li><li>Share with your group (2 mins/person for sharing)</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Chụp ảnh mô hình của bạn và tải lên Padlet</li><li>Chia sẻ với nhóm (mỗi người 2 phút)</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide 25 hướng dẫn hoạt động (kèm hình một nhân vật LEGO và tấm đế), slide 26 là phần “Hãy nhớ”, slide 27 là đồng hồ đếm ngược 10:00, slide 28 nhắc lại hướng dẫn cùng hai dòng về chụp ảnh và chia sẻ, kèm mã QR dẫn tới Padlet.</i></p>
+</section>
+<section id="s24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 29</span>
+<span style="color:#86958a">Section 2 · Team life</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">2. Team Life (or Spirit of the Team)</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">2. Đời sống đội ngũ (hay Tinh thần đội ngũ)</h3>
+<div style="color:var(--en,#56665a)"><b>The Feeling of what we do, and how we do it: “The Spirit of the Team”</b><br /><br />“Team Life” seems to have its own life. All team members are affected by it, and they themselves affect it in different dimensions. Team Life is larger and more persistent than any single individual – regardless of the particular case being good or bad.<br /><br />Everyone experiences the impact of Team Life in their own way, but there can be no doubt, that your Team Life has an impact on each of the identities included in the team, and thereby make it up.<br /><br /><b>The challenge: What and how is the team actually?</b><br />Build the 2 aspects of your Team Life as you think best characterizes the team’s practice and has the strongest impact on the way the team works and operates.<br /><br /><i>Positive or negative – if it characterizes your Team Life, then build it!</i><br /><br />Examples: Independent contributions and initiatives are encouraged · Introverted and self-sufficient – but it goes fast.</div>
+<div><b>Cảm nhận về việc chúng ta làm và cách chúng ta làm: “Tinh thần đội ngũ”</b><br /><br /><span>“Đời sống đội ngũ” dường như có sự sống riêng. Mọi thành viên đều chịu ảnh hưởng của nó, và chính họ cũng tác động lên nó ở nhiều khía cạnh khác nhau. Đời sống đội ngũ lớn hơn và bền lâu hơn bất kỳ cá nhân nào – dù trong từng trường hợp cụ thể nó tốt hay xấu.</span><br /><br /><span>Mỗi người cảm nhận tác động của Đời sống đội ngũ theo cách riêng, nhưng chắc chắn rằng Đời sống đội ngũ tác động lên từng bản sắc trong đội ngũ, và qua đó tạo nên chính đội ngũ.</span><br /><br /><b>Thử thách: Thực chất đội ngũ là gì và như thế nào?</b><br /><span>Hãy lắp 2 khía cạnh của Đời sống đội ngũ mà bạn cho là tiêu biểu nhất cho cách đội ngũ vận hành và tác động mạnh nhất đến cách đội ngũ làm việc.</span><br /><br /><i>Tích cực hay tiêu cực – nếu nó đặc trưng cho Đời sống đội ngũ của bạn, hãy lắp nó!</i><br /><br /><span>Ví dụ: Đóng góp và sáng kiến độc lập được khuyến khích · Hướng nội và tự lực – nhưng làm rất nhanh.</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:600px;break-inside:avoid">
+<img src="assets/t7/p29a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+<section id="s25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 30–32</span>
+<span style="color:#86958a">Activity 3</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">2. Team Life (or Spirit of the Team)</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">2. Đời sống đội ngũ (hay Tinh thần đội ngũ)</h3>
+<div style="color:var(--en,#56665a)">Activity 3 (Individual – 10 mins)<ul style="margin:0;padding-left:18px"><li>Build the two aspects of your Team Life as you think best characterize the team’s practice.</li><li>These can be positive or negative: if they strongly shape team’s collaboration, build them!</li><li>Place all individual Team Life models in the middle of the table, so their positions also tell a story.</li><li>Be ready to explain:<ul style="margin:0;padding-left:18px"><li>what each aspect represents</li><li>how it affects collaboration in the team</li><li>whether it helps or hurts alignment and performance</li></ul></li></ul></div>
+<div>Hoạt động 3 (Cá nhân – 10 phút)<ul style="margin:0;padding-left:18px"><li>Lắp hai khía cạnh của Đời sống đội ngũ mà bạn cho là tiêu biểu nhất cho cách đội ngũ vận hành.</li><li>Chúng có thể tích cực hoặc tiêu cực: nếu chúng định hình mạnh mẽ sự cộng tác của đội ngũ, hãy lắp chúng!</li><li>Đặt tất cả mô hình Đời sống đội ngũ của từng người vào giữa bàn, để chính vị trí của chúng cũng kể một câu chuyện.</li><li>Sẵn sàng giải thích:<ul style="margin:0;padding-left:18px"><li>mỗi khía cạnh thể hiện điều gì</li><li>nó ảnh hưởng thế nào đến sự cộng tác trong đội ngũ</li><li>nó giúp ích hay gây hại cho sự thống nhất và hiệu suất</li></ul></li></ul></div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Take a photo of your model, upload to the Padlet</li><li>Share with your group (2 mins/person for sharing)</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Chụp ảnh mô hình của bạn và tải lên Padlet</li><li>Chia sẻ với nhóm (mỗi người 2 phút)</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide 30 kèm hình các nhân vật LEGO cùng lắp ghép. Slide 31 là đồng hồ đếm ngược 10:00. Slide 32 nhắc lại hướng dẫn cùng hai dòng về chụp ảnh và chia sẻ, kèm mã QR dẫn tới Padlet.</i></p>
+</section>
+<section id="s26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 33</span>
+<span style="color:#86958a">Enablers and barriers</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Enablers and Barriers to Team Life</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Yếu tố thúc đẩy và rào cản đối với Đời sống đội ngũ</h3>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:50%"><span>Enablers</span><br /><span>Yếu tố thúc đẩy</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:50%"><span>Barriers</span><br /><span>Rào cản</span></td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">Shared goals and priorities</span><br /><span>Mục tiêu và ưu tiên chung</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Silo thinking and functional turf</span><br /><span>Tư duy cục bộ và tranh giành địa hạt giữa các bộ phận</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">Open communication across functions</span><br /><span>Giao tiếp cởi mở giữa các bộ phận</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Conflicting KPI or priorities</span><br /><span>KPI hoặc ưu tiên mâu thuẫn nhau</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">Trust and mutual respect</span><br /><span>Niềm tin và sự tôn trọng lẫn nhau</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Unclear ownership</span><br /><span>Không rõ ai làm chủ</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">Clear roles and decision rights</span><br /><span>Vai trò và quyền ra quyết định rõ ràng</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Delayed communication or information gaps</span><br /><span>Giao tiếp chậm trễ hoặc thiếu hụt thông tin</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">Timely coordination and follow-through</span><br /><span>Phối hợp kịp thời và theo việc đến cùng</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Lack of trust or psychological safety</span><br /><span>Thiếu niềm tin hoặc an toàn tâm lý</span></td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">Leadership support and a collaboration mindset</span><br /><span>Sự hỗ trợ của lãnh đạo và tư duy cộng tác</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Weak follow-through or inconsistent leadership signals</span><br /><span>Theo việc lỏng lẻo hoặc tín hiệu từ lãnh đạo thiếu nhất quán</span></td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Recognizing these enablers and barriers help us move to the final question:<br /><b>How can we strengthen cross-functional collaboration in practice</b></div>
+<div><span>Nhận diện các yếu tố thúc đẩy và rào cản này giúp chúng ta đi tới câu hỏi cuối cùng:</span><br /><b>Làm thế nào để tăng cường cộng tác liên chức năng trong thực tế?</b></div>
+</div>
+</section>
+<section id="s27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 34</span>
+<span style="color:#86958a">Section 3 · The team landscape</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">3. The Team Landscape — “How is the Team connected?”</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">3. Bức tranh toàn cảnh đội ngũ — “Đội ngũ kết nối với nhau như thế nào?”</h3>
+<div style="color:var(--en,#56665a)">Whether we realize it or not, any team is functioning as a complex organism with many complicated internal connections. For example, management and support are among the more obvious connections. Affiliation and feelings are less obvious, but equally important.<br /><br />Naturally, each connection is experienced very differently by the parties involved. Thus, there may be very different images and ideas of how the connections operate in practice. Therefore, be prepared to negotiate on the interpretation of a connection – or at least agree that variations do occur.<br /><br /><b>The Challenge – What is your part in all of this?</b><ol style="margin:0;padding-left:20px"><li>Build, at the most, two important connections between yourself and a part of the Team Life model you feel most connected to.</li><li>Build, at the most, two important connections between yourself and two other identity models on the table.</li><li>Now tell the story of your Team Life and its connections!</li></ol><br />You can make connections to your core identity or external identity!</div>
+<div><span>Dù ta có nhận ra hay không, mọi đội ngũ đều vận hành như một cơ thể phức tạp với nhiều kết nối nội tại chằng chịt. Chẳng hạn, quan hệ quản lý và hỗ trợ là những kết nối dễ thấy hơn. Sự gắn bó và cảm xúc thì khó thấy hơn, nhưng cũng quan trọng không kém.</span><br /><br /><span>Lẽ tự nhiên, mỗi kết nối được các bên liên quan trải nghiệm rất khác nhau. Vì thế, có thể tồn tại những hình dung và quan niệm rất khác nhau về cách các kết nối vận hành trong thực tế. Do đó, hãy sẵn sàng thương lượng về cách hiểu một kết nối – hoặc ít nhất đồng ý rằng sự khác biệt là có thật.</span><br /><br /><b>Thử thách – Phần của bạn trong tất cả những điều này là gì?</b><ol style="margin:0;padding-left:20px"><li>Lắp tối đa hai kết nối quan trọng giữa bạn và một phần của mô hình Đời sống đội ngũ mà bạn thấy gắn bó nhất.</li><li>Lắp tối đa hai kết nối quan trọng giữa bạn và hai mô hình bản sắc khác trên bàn.</li><li>Giờ hãy kể câu chuyện về Đời sống đội ngũ của bạn và các kết nối của nó!</li></ol><br /><span>Bạn có thể tạo kết nối với bản sắc cốt lõi hoặc bản sắc bên ngoài của mình!</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:600px;break-inside:avoid">
+<img src="assets/t7/p34a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+<section id="s28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 35</span>
+<span style="color:#86958a">Connections as metaphor</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">3. The Team Landscape — “How is the Team connected?”</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">3. Bức tranh toàn cảnh đội ngũ — “Đội ngũ kết nối với nhau như thế nào?”</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>A connection is also a metaphor, representing the relationship between people.</li><li>The purpose is to visualize the nature of collaboration by building connections between individual contribution and shared ways of working</li><li>The exercise helps make visible:<ul style="margin:0;padding-left:18px"><li>where collaboration is strong</li><li>where dependencies are critical</li><li>where disconnects, bottlenecks, or weak links may exist</li></ul></li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Một kết nối cũng là một ẩn dụ, thể hiện mối quan hệ giữa người với người.</li><li>Mục đích là hình dung bản chất của sự cộng tác bằng cách lắp các kết nối giữa đóng góp của từng cá nhân và cách làm việc chung</li><li>Bài tập giúp làm lộ ra:<ul style="margin:0;padding-left:18px"><li>chỗ nào sự cộng tác mạnh</li><li>chỗ nào sự phụ thuộc mang tính then chốt</li><li>chỗ nào có thể đang đứt gãy, tắc nghẽn hoặc có mắt xích yếu</li></ul></li></ul></div>
+</div>
+<figure style="margin:10px 0 0;max-width:440px;break-inside:avoid">
+<img src="assets/t7/p35a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Ảnh một bức tranh toàn cảnh đội ngũ đã lắp xong trên bàn, các mô hình được nối với nhau bằng dây và ống.</figcaption>
+</figure>
+</section>
+<section id="s29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 36</span>
+<span style="color:#86958a">Activity 4</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">3. The Team Landscape — “How is the Team connected?”</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">3. Bức tranh toàn cảnh đội ngũ — “Đội ngũ kết nối với nhau như thế nào?”</h3>
+<div style="color:var(--en,#56665a)">Activity 4 (Individual – 10 mins)<ul style="margin:0;padding-left:18px"><li>Build up to two key connections between yourself and the collaboration dynamic you feel closest to</li><li>Build up to two important connections between yourself and two other people or functions on the table that are most important to your work.</li><li>Use the connections to show the nature of the relationship, for example:<ul style="margin:0;padding-left:18px"><li>strong or weak</li><li>direct or indirect</li><li>supportive or difficult</li><li>frequent or limited</li></ul></li><li>Share the story of your landscape and what it reveals about your team.</li></ul></div>
+<div>Hoạt động 4 (Cá nhân – 10 phút)<ul style="margin:0;padding-left:18px"><li>Lắp tối đa hai kết nối then chốt giữa bạn và động lực cộng tác mà bạn thấy gần gũi nhất</li><li>Lắp tối đa hai kết nối quan trọng giữa bạn và hai người hoặc bộ phận khác trên bàn có vai trò quan trọng nhất với công việc của bạn.</li><li>Dùng các kết nối để thể hiện bản chất của mối quan hệ, ví dụ:<ul style="margin:0;padding-left:18px"><li>mạnh hay yếu</li><li>trực tiếp hay gián tiếp</li><li>hỗ trợ hay khó khăn</li><li>thường xuyên hay hạn chế</li></ul></li><li>Kể câu chuyện về bức tranh toàn cảnh của bạn và điều nó cho thấy về đội ngũ.</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm ảnh một bức tranh toàn cảnh đội ngũ và mã QR dẫn tới Padlet.</i></p>
+</section>
+<section id="s30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 37</span>
+<span style="color:#86958a">How does it all tie together?</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">How does it all tie together?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tất cả gắn kết với nhau như thế nào?</h3>
+<div style="color:var(--en,#56665a)">What conclusions can you draw about your team from the models and discussions?</div>
+<div>Từ các mô hình và cuộc thảo luận, bạn rút ra kết luận gì về đội ngũ của mình?</div>
+</div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t7/p37b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm mã QR dẫn tới Padlet.</i></p>
+</section>
+<section id="s31" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 38</span>
+<span style="color:#86958a">Section 4 · Real Time Identity for you</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">4. (Homework) Real Time Identity for YOU</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">4. (Bài tập về nhà) Bản sắc thời gian thực của BẠN</h3>
+<div style="color:var(--en,#56665a)">Who you are, deep down.<br /><br />REAL TIME IDENTITY For YOU<br />Be part of a team, while you stick to who you are.<br />Even with the worst frustrations and chaos, there are opportunities.</div>
+<div><span>Con người thật sâu bên trong bạn.</span><br /><br /><span>BẢN SẮC THỜI GIAN THỰC dành cho BẠN</span><br /><span>Là một phần của đội ngũ, mà vẫn giữ đúng con người mình.</span><br /><span>Ngay cả giữa những bức bối và hỗn loạn tồi tệ nhất, vẫn có cơ hội.</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t7/p38a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Trái: một tay đua LEGO áo đen giữa hàng xe đạp đỏ. Phải: một bông hoa LEGO mọc lên giữa đống gạch xám.</figcaption>
+</figure>
+</section>
+<section id="s32" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 39</span>
+<span style="color:#86958a">Objectives</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">OBJECTIVES OF THE RTI FOR YOU PROCESS</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">MỤC TIÊU CỦA QUY TRÌNH RTI DÀNH CHO BẠN</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li><b>Discover who you really are</b> deep inside and get a clear picture on how you operate in work/life.</li><li><b>Learn a better way</b> of communicating.</li><li><b>Pick up skills</b> that make you an even more effective partner in your business while being in accordance with who you are deep inside.</li><li><b>Become better at adapting</b> and responding to changes.</li></ul><br /><i>RTI can be used as a flexible consultant tool for individual and team processes in relation to changes, learning, communication, optimization, transformation and cohesion.</i><br /><br />GROW · LEARN · ADAPT · BE YOU</div>
+<div><ul style="margin:0;padding-left:18px"><li><b>Khám phá con người thật</b> sâu bên trong bạn và có bức tranh rõ ràng về cách bạn vận hành trong công việc/cuộc sống.</li><li><b>Học một cách</b> giao tiếp tốt hơn.</li><li><b>Trang bị những kỹ năng</b> giúp bạn trở thành đối tác hiệu quả hơn nữa trong công việc, mà vẫn hài hoà với con người thật bên trong.</li><li><b>Thích ứng tốt hơn</b> và phản ứng tốt hơn với thay đổi.</li></ul><br /><i>RTI có thể được dùng như một công cụ tư vấn linh hoạt cho các quá trình của cá nhân và đội ngũ liên quan đến thay đổi, học hỏi, giao tiếp, tối ưu hoá, chuyển đổi và gắn kết.</i><br /><br /><span>PHÁT TRIỂN · HỌC HỎI · THÍCH ỨNG · LÀ CHÍNH MÌNH</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:520px;break-inside:avoid">
+<img src="assets/t7/p39a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+<section id="s33" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 40</span>
+<span style="color:#86958a">Facilitator guidance</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">FACILITATOR GUIDANCE — Real Time Identity for You</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">HƯỚNG DẪN CỦA ĐIỀU PHỐI VIÊN — Bản sắc thời gian thực của bạn</h3>
+
+</div><div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px;max-width:520px;margin:0 auto;border-radius:24px;overflow:hidden;border:2px solid #2b2f36;padding:4px;background:#2b2f36"><div style="background:#fff;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px;grid-row:1/3;border-radius:20px 0 0 20px"><div style="font-weight:700;font-size:20px;color:#d62b2b">CI</div><div style="line-height:1.4;font-size:12.5px"><div style="color:var(--en,#56665a)">1 · Who am I at my core?</div><div>Cốt lõi của tôi là gì?</div></div></div><div style="background:#fff;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px;border-radius:0 20px 0 0"><div style="font-weight:700;font-size:20px;color:#d62b2b">EI</div><div style="line-height:1.4;font-size:12.5px"><div style="color:var(--en,#56665a)">2 · How do others see me?</div><div>Người khác nhìn tôi thế nào?</div></div></div><div style="background:#fff;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px;border-radius:0 0 20px 0"><div style="font-weight:700;font-size:20px;color:#d62b2b">AI</div><div style="line-height:1.4;font-size:12.5px"><div style="color:var(--en,#56665a)">3 · How/what would I like to change / develop?</div><div>Tôi muốn thay đổi / phát triển điều gì, và bằng cách nào?</div></div></div></div><div style="line-height:1.4;margin-top:10px;font-size:12.5px;text-align:center"><div style="color:var(--en,#56665a)">The appropriate level of how much you provide about yourself is up to you! We keep this confidential!</div><div>Chia sẻ về bản thân đến mức nào là do bạn quyết định! Chúng tôi giữ kín những điều này!</div></div></div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ba phần được vẽ trên một hình tròn: CI chiếm nửa trái, EI và AI chia đôi nửa phải. Ở slide này, AI là phần bản sắc bạn muốn hướng tới (xem slide 41), không phải trí tuệ nhân tạo.</i></p>
+<figure style="margin:10px 0 0;max-width:520px;break-inside:avoid">
+<img src="assets/t7/p40a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+<section id="s34" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 41</span>
+<span style="color:#86958a">Final discussion</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">4. (Homework) Real Time Identity for YOU — Final Discussion</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">4. (Bài tập về nhà) Bản sắc thời gian thực của BẠN — Thảo luận cuối</h3>
+<div style="color:var(--en,#56665a)">At this workshop, you have given a chance to others, in your team or in your workplace, to get to know more about you.<br /><br />You have created:<ul style="margin:0;padding-left:18px"><li>An important statement and an overview of yourself, that you have shared with others.</li><li>An expression of how you think others see you.</li><li>Your desired identity and you have explored it.</li></ul></div>
+<div><span>Tại buổi workshop này, bạn đã cho những người khác, trong đội ngũ hay nơi làm việc, cơ hội hiểu thêm về bạn.</span><br /><br /><span>Bạn đã tạo ra:</span><ul style="margin:0;padding-left:18px"><li>Một tuyên bố quan trọng và một bức tranh tổng quan về bản thân mà bạn đã chia sẻ với người khác.</li><li>Một cách thể hiện việc bạn nghĩ người khác nhìn mình ra sao.</li><li>Bản sắc mong muốn của bạn, và bạn đã khám phá nó.</li></ul></div>
+</div>
+</section>
+<section id="s35" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 42</span>
+<span style="color:#86958a">Action items</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">4. (Homework) Real Time Identity for YOU — Action Items?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">4. (Bài tập về nhà) Bản sắc thời gian thực của BẠN — Hành động tiếp theo?</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>It is now time to leave the world of play and move back to work.</li><li>We hope you will return with new knowledge about yourself as well as better understanding of the people around you.</li></ul><br /><b>Exercises:</b><ul style="margin:0;padding-left:18px"><li>Write down 3-4 areas that you want to work with when you return to work.</li></ul><br />For example, you can think of new ways to interact with others or consider how you can begin to develop the conditions making your potential or desired identity realized.</div>
+<div><ul style="margin:0;padding-left:18px"><li>Giờ là lúc rời thế giới của trò chơi để quay về với công việc.</li><li>Chúng tôi hy vọng bạn trở lại với những hiểu biết mới về bản thân, cũng như thấu hiểu hơn những người xung quanh.</li></ul><br /><b>Bài tập:</b><ul style="margin:0;padding-left:18px"><li>Viết ra 3–4 lĩnh vực bạn muốn tập trung khi trở lại công việc.</li></ul><br /><span>Ví dụ, bạn có thể nghĩ về những cách mới để tương tác với người khác, hoặc cân nhắc cách bắt đầu tạo điều kiện để bản sắc tiềm năng hay bản sắc mong muốn của mình thành hiện thực.</span></div>
+</div>
+</section>
+<section id="s36" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 43</span>
+<span style="color:#86958a">Closing</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Thank you!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Cảm ơn!</h3>
+<div style="color:var(--en,#56665a)">Position title: Senior Program Manager, Lecturer (HRM)<br />Name: Dr. Thao Luong<br />Email address: thao.luong3@rmit.edu.vn</div>
+<div><span>Chức danh: Quản lý Chương trình cấp cao, Giảng viên (Quản trị Nguồn nhân lực)</span><br />Họ tên: TS. Thao Luong<br />Email: thao.luong3@rmit.edu.vn</div>
+</div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t7/p43a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Ảnh toà nhà RMIT Việt Nam.</figcaption>
+</figure>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 7 · Building Team Capability &amp; Growth</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t7.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Chủ đề 7: Xây dựng năng lực và sự phát triển của đội ngũ","lv":0,"en":"Topic 7: Building Team Capability & Growth","vi":"Chủ đề 7: Xây dựng năng lực và sự phát triển của đội ngũ"},
+  {"id":"s02","num":"02","label":"Về buổi học này","lv":0,"en":"About this session","vi":"Về buổi học này"},
+  {"id":"s03","num":"03","label":"Chương trình","lv":0,"en":"Agenda","vi":"Chương trình"},
+  {"id":"s04","num":"04","label":"Về tôi","lv":0,"en":"About me","vi":"Về tôi"},
+  {"id":"s05","num":"05","label":"Luật chơi của chúng ta","lv":0,"en":"Our Playbook","vi":"Luật chơi của chúng ta"},
+  {"id":"s06","num":"06","label":"Nguồn gốc phương pháp LEGO® Serious Play® (LSP®)","lv":0,"en":"LEGO® Serious Play® (LSP®) Methodology Origins","vi":"Nguồn gốc phương pháp LEGO® Serious Play® (LSP®)"},
+  {"id":"s07","num":"07","label":"Nguồn gốc phương pháp LEGO® Serious Play® (LSP®)","lv":0,"en":"LEGO® Serious Play® (LSP®) Methodology Origins","vi":"Nguồn gốc phương pháp LEGO® Serious Play® (LSP®)"},
+  {"id":"s08","num":"08","label":"LSP® thực chất dựa trên nhiều lý thuyết","lv":0,"en":"LSP® is indeed grounded in a variety of theories","vi":"LSP® thực chất dựa trên nhiều lý thuyết"},
+  {"id":"s09","num":"09","label":"Gặp gỡ các điều phối viên LSP® của Đại học RMIT","lv":0,"en":"Meet Our RMIT University LSP® Facilitators","vi":"Gặp gỡ các điều phối viên LSP® của Đại học RMIT"},
+  {"id":"s10","num":"10","label":"Nguyên tắc chung","lv":0,"en":"Ground Rules","vi":"Nguyên tắc chung"},
+  {"id":"s11","num":"11","label":"4 ĐIỀU KHÔNG ĐƯỢC LÀM","lv":0,"en":"4 NO GO’s","vi":"4 ĐIỀU KHÔNG ĐƯỢC LÀM"},
+  {"id":"s12","num":"12","label":"Rèn kỹ năng LSP® – Ẩn dụ","lv":0,"en":"LSP® Skill Building – Metaphors","vi":"Rèn kỹ năng LSP® – Ẩn dụ"},
+  {"id":"s13","num":"13","label":"Hãy vượt qua điểm này!","lv":0,"en":"Let us pass this point!","vi":"Hãy vượt qua điểm này!"},
+  {"id":"s14","num":"14","label":"Agenda (repeat)","lv":0,"en":"Agenda (repeat)","vi":""},
+  {"id":"s15","num":"15","label":"LEGO® Serious Play® (LSP®) – Bản sắc thời gian thực","lv":0,"en":"LEGO® Serious Play® (LSP®) – Real Time Identity","vi":"LEGO® Serious Play® (LSP®) – Bản sắc thời gian thực"},
+  {"id":"s16","num":"16","label":"From → to","lv":0,"en":"From → to","vi":""},
+  {"id":"s17","num":"17","label":"NHÓM HAY ĐỘI NGŨ?","lv":0,"en":"GROUP OR TEAM?","vi":"NHÓM HAY ĐỘI NGŨ?"},
+  {"id":"s18","num":"18","label":"Cửa sổ Johari: công cụ dẫn nhập cho phần thứ nhất","lv":0,"en":"The Johari Window: A help to introduce the first section","vi":"Cửa sổ Johari: công cụ dẫn nhập cho phần thứ nhất"},
+  {"id":"s19","num":"19","label":"1. Bản sắc của bạn trong đội ngũ","lv":0,"en":"1. Your Identity on the Team","vi":"1. Bản sắc của bạn trong đội ngũ"},
+  {"id":"s20","num":"20","label":"1. Bản sắc của bạn trong đội ngũ — Ý TƯỞNG","lv":0,"en":"1. Your Identity on the Team — THE IDEA","vi":"1. Bản sắc của bạn trong đội ngũ — Ý TƯỞNG"},
+  {"id":"s21","num":"","label":"1. Bạn với tư cách thành viên đội ngũ","lv":0,"en":"1. You as a Team Member","vi":"1. Bạn với tư cách thành viên đội ngũ"},
+  {"id":"s22","num":"24","label":"“Cái tôi bên ngoài của bạn trong đội ngũ là ai?”","lv":0,"en":"“Who is your external I, on the team?”","vi":"“Cái tôi bên ngoài của bạn trong đội ngũ là ai?”"},
+  {"id":"s23","num":"","label":"“Cái tôi bên ngoài của bạn trong đội ngũ là ai?”","lv":0,"en":"“Who is your external I, on the team?”","vi":"“Cái tôi bên ngoài của bạn trong đội ngũ là ai?”"},
+  {"id":"s24","num":"29","label":"2. Đời sống đội ngũ (hay Tinh thần đội ngũ)","lv":0,"en":"2. Team Life (or Spirit of the Team)","vi":"2. Đời sống đội ngũ (hay Tinh thần đội ngũ)"},
+  {"id":"s25","num":"","label":"2. Đời sống đội ngũ (hay Tinh thần đội ngũ)","lv":0,"en":"2. Team Life (or Spirit of the Team)","vi":"2. Đời sống đội ngũ (hay Tinh thần đội ngũ)"},
+  {"id":"s26","num":"33","label":"Yếu tố thúc đẩy và rào cản đối với Đời sống đội ngũ","lv":0,"en":"Enablers and Barriers to Team Life","vi":"Yếu tố thúc đẩy và rào cản đối với Đời sống đội ngũ"},
+  {"id":"s27","num":"34","label":"3. Bức tranh toàn cảnh đội ngũ — “Đội ngũ kết nối với nhau như thế nào?”","lv":0,"en":"3. The Team Landscape — “How is the Team connected?”","vi":"3. Bức tranh toàn cảnh đội ngũ — “Đội ngũ kết nối với nhau như thế nào?”"},
+  {"id":"s28","num":"35","label":"3. Bức tranh toàn cảnh đội ngũ — “Đội ngũ kết nối với nhau như thế nào?”","lv":0,"en":"3. The Team Landscape — “How is the Team connected?”","vi":"3. Bức tranh toàn cảnh đội ngũ — “Đội ngũ kết nối với nhau như thế nào?”"},
+  {"id":"s29","num":"36","label":"3. Bức tranh toàn cảnh đội ngũ — “Đội ngũ kết nối với nhau như thế nào?”","lv":0,"en":"3. The Team Landscape — “How is the Team connected?”","vi":"3. Bức tranh toàn cảnh đội ngũ — “Đội ngũ kết nối với nhau như thế nào?”"},
+  {"id":"s30","num":"37","label":"Tất cả gắn kết với nhau như thế nào?","lv":0,"en":"How does it all tie together?","vi":"Tất cả gắn kết với nhau như thế nào?"},
+  {"id":"s31","num":"38","label":"4. (Bài tập về nhà) Bản sắc thời gian thực của BẠN","lv":0,"en":"4. (Homework) Real Time Identity for YOU","vi":"4. (Bài tập về nhà) Bản sắc thời gian thực của BẠN"},
+  {"id":"s32","num":"39","label":"MỤC TIÊU CỦA QUY TRÌNH RTI DÀNH CHO BẠN","lv":0,"en":"OBJECTIVES OF THE RTI FOR YOU PROCESS","vi":"MỤC TIÊU CỦA QUY TRÌNH RTI DÀNH CHO BẠN"},
+  {"id":"s33","num":"40","label":"HƯỚNG DẪN CỦA ĐIỀU PHỐI VIÊN — Bản sắc thời gian thực của bạn","lv":0,"en":"FACILITATOR GUIDANCE — Real Time Identity for You","vi":"HƯỚNG DẪN CỦA ĐIỀU PHỐI VIÊN — Bản sắc thời gian thực của bạn"},
+  {"id":"s34","num":"41","label":"4. (Bài tập về nhà) Bản sắc thời gian thực của BẠN — Thảo luận cuối","lv":0,"en":"4. (Homework) Real Time Identity for YOU — Final Discussion","vi":"4. (Bài tập về nhà) Bản sắc thời gian thực của BẠN — Thảo luận cuối"},
+  {"id":"s35","num":"42","label":"4. (Bài tập về nhà) Bản sắc thời gian thực của BẠN — Hành động tiếp theo?","lv":0,"en":"4. (Homework) Real Time Identity for YOU — Action Items?","vi":"4. (Bài tập về nhà) Bản sắc thời gian thực của BẠN — Hành động tiếp theo?"},
+  {"id":"s36","num":"43","label":"Cảm ơn!","lv":0,"en":"Thank you!","vi":"Cảm ơn!"}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t7.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t7.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t7.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t7.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

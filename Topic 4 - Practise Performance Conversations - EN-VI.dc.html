@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 4 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Practise Performance Conversations</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Thực hành trao đổi hiệu suất với khung AMO</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 4: Thực hành trao đổi hiệu suất với khung AMO</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Topic 4: Practise Performance Conversation with AMO Framework — bản đối chiếu Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">PGS. Elaine Chew (Yin Teng Chew) · 46 slide</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide là một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ.</p>
+<p style="margin:0">Thuật ngữ chuyên môn được dịch sang tiếng Việt kèm nguyên bản tiếng Anh trong ngoặc ở lần xuất hiện đầu tiên. Tên riêng, tên tổ chức, tên khung phương pháp (AMO, SAIL, LEGO Serious Play®) và địa chỉ liên hệ giữ nguyên. Các đường dẫn video trong slide gốc được giữ nguyên.</p>
+</div>
+
+<section id="s01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Topic 5: Practise Performance Conversation with AMO Framework</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chủ đề 5: Thực hành trao đổi hiệu suất với khung AMO</h3>
+<div style="color:var(--en,#56665a)">Assoc. Professor Yin Teng (Elaine) Chew</div>
+<div>Phó Giáo sư Yin Teng (Elaine) Chew</div>
+</div>
+<p style="margin:8px 0 0;font-size:11px;color:#86958a">Bản gốc đánh số slide là “Topic 5”; giữ nguyên theo nguyên bản. Trong bộ tài liệu này vẫn xếp là Chủ đề 4.</p>
+</section>
+
+<section id="s02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">About Elaine Chew</span>
+</div>
+<div style="display:grid;grid-template-columns:1fr 118px;gap:20px;align-items:start">
+<div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">About Elaine Chew</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Giới thiệu Elaine Chew</h3>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:22%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Qualifications</span><br /><span>Bằng cấp</span></td><td style="padding:7px 8px;vertical-align:top;width:39%;color:var(--en,#56665a)">Ph.D. in International Development (Nagoya University, Japan); scholarship. Master’s degree in Commerce (Otaru Shoodai, Japan); scholarship. Bachelor of Business (Management) (Monash University, Australia). Golden Key award recipient. HRM Scholar Award.</td><td style="padding:7px 0 7px 8px;vertical-align:top">Tiến sĩ Phát triển Quốc tế (Đại học Nagoya, Nhật Bản); học bổng. Thạc sĩ Thương mại (Otaru Shoodai, Nhật Bản); học bổng. Cử nhân Kinh doanh (Quản trị) (Đại học Monash, Úc). Nhận giải Golden Key. Giải HRM Scholar Award.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Current portfolio at RMIT Vietnam</span><br /><span>Công việc hiện tại tại RMIT Việt Nam</span></td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Interim Head of Department of Management. Management, Tourism, Organizational Change research cluster leader. Teaches MBA &amp; undergraduate.</td><td style="padding:7px 0 7px 8px;vertical-align:top">Quyền Trưởng Bộ môn Quản trị. Trưởng nhóm nghiên cứu Quản trị, Du lịch và Thay đổi tổ chức. Giảng dạy chương trình MBA và cử nhân.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Work experience</span><br /><span>Kinh nghiệm làm việc</span></td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">16 years Associate Professor at Monash University (Ranked 37th), Malaysia. 4 years in other universities in Malaysia. 1 year in an Australian marketing research consulting firm. Designed &amp; launched mystery shopping program for customer service assurance for a bank. Developed a consultancy report for SMECorp, Malaysia for G-to-G lean production skill transfer in the automotive industry (2010). Developed a consultancy report for JETRO, Japan for semiconductor sector in Malaysia for bilateral FDI with Japan (2022). Co-developed a consultancy report for KPMG Hong Kong &amp; PBEC on global sourcing, movement and challenges (2023).</td><td style="padding:7px 0 7px 8px;vertical-align:top">16 năm làm Phó Giáo sư tại Đại học Monash (xếp hạng 37) ở Malaysia. 4 năm tại các đại học khác ở Malaysia. 1 năm tại một công ty tư vấn nghiên cứu marketing của Úc. Thiết kế và triển khai chương trình khách hàng bí mật (mystery shopping) nhằm đảm bảo chất lượng dịch vụ khách hàng cho một ngân hàng. Thực hiện báo cáo tư vấn cho SMECorp Malaysia về chuyển giao kỹ năng sản xuất tinh gọn cấp chính phủ trong ngành ô tô (2010). Thực hiện báo cáo tư vấn cho JETRO Nhật Bản về ngành bán dẫn tại Malaysia phục vụ dòng FDI song phương với Nhật (2022). Đồng thực hiện báo cáo tư vấn cho KPMG Hong Kong &amp; PBEC về nguồn cung ứng toàn cầu, sự dịch chuyển và các thách thức (2023).</td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Skills &amp; competencies</span><br /><span>Kỹ năng &amp; năng lực</span></td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Publications in the field of HRM, organizational psychology, business strategy. Certified LSP facilitator. Trained in lean production system. 13 PhD supervision completions. Won 5 Teaching Excellence awards at Monash Malaysia. Won 2 Research Excellence awards at Monash Malaysia.</td><td style="padding:7px 0 7px 8px;vertical-align:top">Công bố khoa học trong lĩnh vực quản trị nhân sự, tâm lý học tổ chức, chiến lược kinh doanh. Facilitator được chứng nhận của LEGO Serious Play (LSP). Được đào tạo về hệ thống sản xuất tinh gọn. Hướng dẫn thành công 13 nghiên cứu sinh tiến sĩ. Nhận 5 giải Xuất sắc trong Giảng dạy tại Monash Malaysia. Nhận 2 giải Xuất sắc trong Nghiên cứu tại Monash Malaysia.</td></tr>
+</tbody>
+</table>
+</div>
+<figure style="margin:0">
+<img src="assets/t4/photo-facilitator.png" alt="Assoc. Professor Elaine Chew" style="display:block;width:100%;height:auto" />
+<figcaption style="margin-top:5px;font-size:10px;line-height:1.4;color:#86958a">PGS. Elaine Chew</figcaption>
+</figure>
+</div>
+</section>
+
+<section id="s03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">Session outline</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Session outline</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nội dung buổi học</h3>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:5%;color:var(--ac,#2f6b45);font-weight:700">1</td><td style="padding:7px 8px;vertical-align:top;width:44%;color:var(--en,#56665a)">Explain the principles of sustainable performance management and the role of continuous performance conversations.</td><td style="padding:7px 0 7px 8px;vertical-align:top">Giải thích các nguyên tắc của quản trị hiệu suất bền vững (sustainable performance management) và vai trò của những cuộc trao đổi hiệu suất liên tục.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">2</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Conduct performance conversations – clarify expectations, strengthen accountability &amp; support staff development.</td><td style="padding:7px 0 7px 8px;vertical-align:top">Thực hiện các cuộc trao đổi hiệu suất – làm rõ kỳ vọng, củng cố tinh thần chịu trách nhiệm và hỗ trợ nhân viên phát triển.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">3</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Apply coaching and feedback techniques to address performance challenges and promote individual growth.</td><td style="padding:7px 0 7px 8px;vertical-align:top">Áp dụng các kỹ thuật khai vấn (coaching) và phản hồi để xử lý các vấn đề hiệu suất và thúc đẩy sự phát triển của từng cá nhân.</td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">4</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Reframe Performance Discussions from Operational Problems to Strategic Decisions</td><td style="padding:7px 0 7px 8px;vertical-align:top">Định hình lại các cuộc thảo luận về hiệu suất: từ vấn đề vận hành thành quyết định mang tính chiến lược.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">Section divider</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Sustainable performance management &amp; role of performance conversation</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Quản trị hiệu suất bền vững &amp; vai trò của cuộc trao đổi hiệu suất</h3>
+</div>
+<p style="margin:8px 0 0;font-size:11px;color:#86958a">Slide phân mục, chỉ có tiêu đề và hình minh hoạ (Image by Freepik on Magnific).</p>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s04.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình minh hoạ của slide phân mục (Image by Freepik on Magnific).</figcaption>
+</figure>
+</section>
+
+<section id="s05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 05</span>
+<span style="color:#86958a">1 · Traditional performance management</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">1. Traditional performance management</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">1. Quản trị hiệu suất truyền thống</h3>
+<div style="color:var(--en,#56665a)">Often focuses on evaluating past performance:<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Did targets get achieved?</li><li style="margin:0 0 3px">Was the project delivered?</li><li style="margin:0 0 3px">Did the employee meet expectations?</li><li style="margin:0">What rating should be assigned?</li></ul></div>
+<div>Thường tập trung vào đánh giá hiệu suất trong quá khứ:<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Các mục tiêu có đạt được hay không?</li><li style="margin:0 0 3px">Dự án có được hoàn thành hay không?</li><li style="margin:0 0 3px">Nhân viên có đáp ứng kỳ vọng hay không?</li><li style="margin:0">Nên xếp mức đánh giá nào?</li></ul></div>
+<div style="color:var(--en,#56665a)">Important questions but they are insufficient in today's technology environment.</div>
+<div>Đây là những câu hỏi quan trọng, nhưng chưa đủ trong môi trường công nghệ hiện nay.</div>
+<div style="color:var(--en,#56665a)">High performance is not simply about achieving short-term results.</div>
+<div>Hiệu suất cao không đơn thuần là đạt được kết quả ngắn hạn.</div>
+<div style="color:var(--en,#56665a)">Sustainable performance management focuses on ensuring employees can continue performing effectively over time without burnout, disengagement, capability gaps, or organisational barriers.</div>
+<div>Quản trị hiệu suất bền vững tập trung vào việc bảo đảm nhân viên có thể tiếp tục làm việc hiệu quả theo thời gian mà không bị kiệt sức, mất gắn kết, thiếu hụt năng lực hay bị các rào cản của tổ chức cản trở.</div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s05.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình minh hoạ trong slide (Image by Upklyak on Magnific).</figcaption>
+</figure>
+</section>
+
+<section id="s06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06</span>
+<span style="color:#86958a">2 · Sustainable performance conversations</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">2. Sustainable performance conversations</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">2. Trao đổi hiệu suất bền vững</h3>
+<div style="color:var(--en,#56665a)">Sustainable performance conversations are not mainly about giving feedback.</div>
+<div>Trao đổi hiệu suất bền vững không chủ yếu là để đưa ra phản hồi.</div>
+<div style="color:var(--en,#56665a)">They are about helping managers think like executives.</div>
+<div>Chúng nhằm giúp người quản lý tư duy như một nhà điều hành.</div>
+<div style="color:var(--en,#56665a)">Rushing to the causes → bias in judging performance too quickly.</div>
+<div>Vội vàng kết luận về nguyên nhân → thiên kiến do phán xét hiệu suất quá nhanh.</div>
+</div>
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/slide06-illustration.png" alt="Symptom and immediate assumption" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình trong slide — <b>Triệu chứng → Giả định tức thời</b> (Symptom → Immediate Assumption). Diễn giải theo cấu trúc hình ở bên dưới.</figcaption>
+</figure><div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="display:grid;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);gap:8px;align-items:stretch"><div style="background:#2f3a44;color:#fff;padding:7px 12px;line-height:1.3"><div style="font-weight:700">Symptom</div><div>Triệu chứng</div></div><div></div><div style="background:#2f3a44;color:#fff;padding:7px 12px;line-height:1.3"><div style="font-weight:700">Immediate Assumption</div><div>Giả định tức thời</div></div><div style="background:#eef0f2;border:1px solid #dae4d6;padding:7px 12px;line-height:1.35"><div style="color:var(--en,#56665a)">Missed deadline</div><div style="font-weight:600">Trễ hạn</div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">→</div><div style="background:#fbf7ec;border:1px solid #dae4d6;padding:7px 12px;line-height:1.35"><div style="color:var(--en,#56665a)">Poor Performer</div><div style="font-weight:600">“Làm việc kém”</div></div><div style="background:#eef0f2;border:1px solid #dae4d6;padding:7px 12px;line-height:1.35"><div style="color:var(--en,#56665a)">Low participation</div><div style="font-weight:600">Ít tham gia</div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">→</div><div style="background:#fbf7ec;border:1px solid #dae4d6;padding:7px 12px;line-height:1.35"><div style="color:var(--en,#56665a)">Lack of confidence</div><div style="font-weight:600">“Thiếu tự tin”</div></div><div style="background:#eef0f2;border:1px solid #dae4d6;padding:7px 12px;line-height:1.35"><div style="color:var(--en,#56665a)">Reduced productivity</div><div style="font-weight:600">Năng suất giảm</div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">→</div><div style="background:#fbf7ec;border:1px solid #dae4d6;padding:7px 12px;line-height:1.35"><div style="color:var(--en,#56665a)">Low motivation</div><div style="font-weight:600">“Thiếu động lực”</div></div><div style="background:#eef0f2;border:1px solid #dae4d6;padding:7px 12px;line-height:1.35"><div style="color:var(--en,#56665a)">Customer complaints</div><div style="font-weight:600">Khách hàng phàn nàn</div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">→</div><div style="background:#fbf7ec;border:1px solid #dae4d6;padding:7px 12px;line-height:1.35"><div style="color:var(--en,#56665a)">Capability issue</div><div style="font-weight:600">“Vấn đề năng lực”</div></div></div></div>
+</section>
+
+<section id="s07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 07</span>
+<span style="color:#86958a">Video · Communication</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Communication… — Text · Non Face-to-Face conversation</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Giao tiếp… — Tin nhắn · Trao đổi không gặp mặt trực tiếp</h3>
+</div>
+<p style="margin:8px 0 0;font-size:11px;line-height:1.5;color:#86958a">Slide chiếu hai video ngắn: <span style="word-break:break-all">youtube.com/shorts/Tonq7qO_4xw</span> · <span style="word-break:break-all">youtube.com/shorts/hYIb_uex0U4</span></p>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start"><img src="assets/t4/s07a.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s07b.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /></div>
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hai ảnh chụp từ hai video ngắn được chiếu trong slide.</figcaption>
+</figure>
+</section>
+
+<section id="s08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 08</span>
+<span style="color:#86958a">Discussion prompt</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Do you want such a manager for performance management?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bạn có muốn một người quản lý như vậy phụ trách quản trị hiệu suất không?</h3>
+<div style="color:var(--en,#56665a)">GOALS: SURPRISE!!</div>
+<div>MỤC TIÊU: BẤT NGỜ!!</div>
+<div style="color:var(--en,#56665a)">REVIEW RATINGS: MEANINGLESS</div>
+<div>ĐIỂM ĐÁNH GIÁ: VÔ NGHĨA</div>
+<div style="color:var(--en,#56665a)">REWARDS → COST-SAVING</div>
+<div>KHEN THƯỞNG → TIẾT GIẢM CHI PHÍ</div>
+<div style="color:var(--en,#56665a)">‘FEEDBACK’ &amp; ‘MOTIVATION’</div>
+<div>‘PHẢN HỒI’ &amp; ‘ĐỘNG LỰC’</div>
+</div>
+<p style="margin:8px 0 0;font-size:11px;line-height:1.5;color:#86958a">Slide gốc minh hoạ mỗi ý bằng một mẩu truyện tranh <i>Dilbert</i> (Scott Adams) về các buổi đánh giá hiệu suất: mục tiêu chưa từng được nói ra, xếp hạng theo đường phân phối chuẩn, khen ngợi kèm hồ sơ lưu để phòng khi sa thải. Không sao chép lại tranh trong bản đối chiếu này vì lý do bản quyền.</p>
+</section>
+
+<section id="s09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 09</span>
+<span style="color:#86958a">Video · Discussion</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Why is this performance review not a good part of performance conversation?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Vì sao buổi đánh giá hiệu suất này không phải là một phần tốt của cuộc trao đổi hiệu suất?</h3>
+</div>
+<p style="margin:8px 0 0;font-size:11px;line-height:1.5;color:#86958a">Video: <span style="word-break:break-all">youtube.com/watch?v=hI1Xejz5YnU</span></p>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s09.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Ảnh chụp từ video buổi đánh giá hiệu suất được chiếu trong slide.</figcaption>
+</figure>
+</section>
+
+<section id="s10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">2 · Sustainable performance conversations</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Leaders resist the temptation to judge performance too quickly → audited mindset to reduce bias.</div>
+<div>Người lãnh đạo cưỡng lại thôi thúc phán xét hiệu suất quá nhanh → tư duy được rà soát để giảm thiên kiến.</div>
+<div style="color:var(--en,#56665a)">They diagnose whether the underlying issue is Ability, Motivation, Opportunity, or a combination of all three.</div>
+<div>Họ chẩn đoán xem vấn đề gốc là Năng lực (Ability), Động lực (Motivation), Điều kiện – cơ hội (Opportunity), hay kết hợp cả ba.</div>
+<div style="color:var(--en,#56665a)">Ongoing conversation: Not until performance review.</div>
+<div>Trao đổi liên tục: không chờ đến kỳ đánh giá hiệu suất mới nói.</div>
+</div>
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/strategic-shift.png" alt="Five-step shift" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<img src="assets/t4/s10b.png" alt="" style="display:block;width:38%;height:auto;margin-top:8px;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Dải hình trong slide — năm bước. Diễn giải theo cấu trúc hình ở bên dưới.</figcaption>
+</figure><div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:stretch"><div style="flex:1 1 120px;min-width:0;display:flex"><div style="flex:1;border:1px solid #dae4d6;background:#f3f6f8;padding:8px 10px;display:flex;gap:8px;align-items:flex-start"><div style="font-weight:700;font-size:22px;line-height:1;color:#2f5f8a">1</div><div style="line-height:1.35;font-size:12.5px"><div style="color:var(--en,#56665a)"><b><i>frame</i></b> the issue strategically</div><div style="font-weight:600">đóng khung vấn đề theo hướng chiến lược</div></div></div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">›</div><div style="flex:1 1 120px;min-width:0;display:flex"><div style="flex:1;border:1px solid #dae4d6;background:#f3f6f8;padding:8px 10px;display:flex;gap:8px;align-items:flex-start"><div style="font-weight:700;font-size:22px;line-height:1;color:#2f5f8a">2</div><div style="line-height:1.35;font-size:12.5px"><div style="color:var(--en,#56665a)"><b><i>discuss</i></b> difficult trade-offs</div><div style="font-weight:600">thảo luận các đánh đổi khó</div></div></div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">›</div><div style="flex:1 1 120px;min-width:0;display:flex"><div style="flex:1;border:1px solid #dae4d6;background:#f3f6f8;padding:8px 10px;display:flex;gap:8px;align-items:flex-start"><div style="font-weight:700;font-size:22px;line-height:1;color:#2f5f8a">3</div><div style="line-height:1.35;font-size:12.5px"><div style="color:var(--en,#56665a)"><b><i>coach</i></b> people</div><div style="font-weight:600">khai vấn con người</div></div></div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">›</div><div style="flex:1 1 120px;min-width:0;display:flex"><div style="flex:1;border:1px solid #dae4d6;background:#f3f6f8;padding:8px 10px;display:flex;gap:8px;align-items:flex-start"><div style="font-weight:700;font-size:22px;line-height:1;color:#2f5f8a">4</div><div style="line-height:1.35;font-size:12.5px"><div style="color:var(--en,#56665a)"><b><i>develop</i></b> people</div><div style="font-weight:600">phát triển con người</div></div></div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">›</div><div style="flex:1 1 120px;min-width:0;display:flex"><div style="flex:1;border:1px solid #dae4d6;background:#f3f6f8;padding:8px 10px;display:flex;gap:8px;align-items:flex-start"><div style="font-weight:700;font-size:22px;line-height:1;color:#2f5f8a">5</div><div style="line-height:1.35;font-size:12.5px"><div style="color:var(--en,#56665a)"><b><i>strengthen</i></b> organisational capability</div><div style="font-weight:600">củng cố năng lực tổ chức</div></div></div></div></div></div>
+</section>
+
+<section id="s11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">Ecosystem of Performance</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Sustainable performance management recognises that performance emerges from the interaction of:</div>
+<div>Quản trị hiệu suất bền vững thừa nhận rằng hiệu suất xuất hiện từ sự tương tác của:</div>
+</div>
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/amo-interaction.png" alt="Ecosystem of Performance" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình trong slide — <i>Ecosystem of Performance</i> (Hệ sinh thái của hiệu suất). Tương tác của sáu yếu tố tạo ra hiệu suất cao; diễn giải theo cấu trúc hình ở bên dưới.</figcaption>
+</figure><div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="text-align:center;line-height:1.35;margin-bottom:12px"><div style="font-weight:700;color:#1b2a20;letter-spacing:.02em">Ecosystem of Performance</div><div style="font-weight:700">Hệ sinh thái của hiệu suất</div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px;align-items:center"><div style="display:flex;flex-direction:column;gap:10px"><div style="border:1px solid #dae4d6;border-top:3px solid #2f63b0;padding:8px 10px;font-size:12.5px;line-height:1.35"><div style="font-weight:700;color:#2f63b0">INDIVIDUAL CAPABILITY</div><div style="font-weight:700">Năng lực cá nhân</div><div style="color:var(--en,#56665a);margin-top:4px">Skills · Knowledge · Competence · Potential</div><div>Kỹ năng · Kiến thức · Năng lực · Tiềm năng</div></div><div style="border:1px solid #dae4d6;border-top:3px solid #1f8a8a;padding:8px 10px;font-size:12.5px;line-height:1.35"><div style="font-weight:700;color:#1f8a8a">WORK DESIGN &amp; SYSTEMS</div><div style="font-weight:700">Thiết kế công việc &amp; hệ thống</div><div style="color:var(--en,#56665a);margin-top:4px">Processes · Roles · Efficiency · Structure</div><div>Quy trình · Vai trò · Hiệu quả · Cấu trúc</div></div><div style="border:1px solid #dae4d6;border-top:3px solid #c4473a;padding:8px 10px;font-size:12.5px;line-height:1.35"><div style="font-weight:700;color:#c4473a">TEAM CULTURE</div><div style="font-weight:700">Văn hoá nhóm</div><div style="color:var(--en,#56665a);margin-top:4px">Values · Trust · Collaboration · Shared Goals</div><div>Giá trị · Niềm tin · Hợp tác · Mục tiêu chung</div></div></div><div style="justify-self:center;align-self:center;width:150px;height:150px;border-radius:50%;background:#1d3a6b;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.3;padding:12px;box-sizing:border-box;font-size:12.5px"><div style="font-size:11px;opacity:.85">PERFORMANCE EMERGES</div><div style="font-weight:700">HIGH PERFORMANCE</div><div style="margin-top:4px;font-weight:600">Hiệu suất cao</div></div><div style="display:flex;flex-direction:column;gap:10px"><div style="border:1px solid #dae4d6;border-top:3px solid #d0631a;padding:8px 10px;font-size:12.5px;line-height:1.35"><div style="font-weight:700;color:#d0631a">EMPLOYEE ENGAGEMENT &amp; MOTIVATION</div><div style="font-weight:700">Gắn kết &amp; động lực của nhân viên</div><div style="color:var(--en,#56665a);margin-top:4px">Passion · Commitment · Energy · Drive</div><div>Đam mê · Cam kết · Năng lượng · Động lực</div></div><div style="border:1px solid #dae4d6;border-top:3px solid #3c8a3f;padding:8px 10px;font-size:12.5px;line-height:1.35"><div style="font-weight:700;color:#3c8a3f">ORGANISATIONAL SUPPORT &amp; RESOURCES</div><div style="font-weight:700">Hỗ trợ &amp; nguồn lực của tổ chức</div><div style="color:var(--en,#56665a);margin-top:4px">Tools · Budget · Technology · Infrastructure</div><div>Công cụ · Ngân sách · Công nghệ · Hạ tầng</div></div><div style="border:1px solid #dae4d6;border-top:3px solid #6a3fa0;padding:8px 10px;font-size:12.5px;line-height:1.35"><div style="font-weight:700;color:#6a3fa0">LEADERSHIP BEHAVIOURS</div><div style="font-weight:700">Hành vi lãnh đạo</div><div style="color:var(--en,#56665a);margin-top:4px">Direction · Guidance · Support · Role Modeling</div><div>Định hướng · Dẫn dắt · Hỗ trợ · Làm gương</div></div></div></div></div>
+</section>
+
+<section id="s12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 12</span>
+<span style="color:#86958a">2 · Sustainable performance conversations</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Often, organizational problems are often disguised as employee problems.</div>
+<div>Rất thường xuyên, vấn đề của tổ chức được ngụy trang thành vấn đề của nhân viên.</div>
+<div style="color:var(--en,#56665a)">Examples: Poor processes, resource constraints, unclear priorities, excessive workload.</div>
+<div>Ví dụ: quy trình kém, hạn chế về nguồn lực, ưu tiên không rõ ràng, khối lượng công việc quá tải.</div>
+<div style="color:var(--en,#56665a)">As a result, managers must look beyond measuring performance outcomes and seek to understand the conditions/context that enable or constrain performance.</div>
+<div>Vì vậy, người quản lý phải nhìn xa hơn việc đo lường kết quả hiệu suất và tìm hiểu các điều kiện/bối cảnh đang tạo điều kiện hay đang cản trở hiệu suất.</div>
+</div>
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/amo-interaction.png" alt="Ecosystem of Performance" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Slide này dùng lại hình <i>Ecosystem of Performance</i> đã xuất hiện ở slide 11.</figcaption>
+</figure>
+</section>
+
+<section id="s13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 13</span>
+<span style="color:#86958a">2 · The changing role of managers</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">2. The changing role of managers</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">2. Vai trò đang thay đổi của người quản lý</h3>
+<div style="color:var(--en,#56665a)">Today, managers are increasingly expected to: <i>(see the roles in the figure)</i></div>
+<div>Ngày nay, người quản lý ngày càng được kỳ vọng phải: <i>(xem các vai trò trong hình)</i></div>
+<div style="color:var(--en,#56665a)">This requires a shift in mindset. Instead of asking: “How do I improve this employee's performance?”</div>
+<div>Điều này đòi hỏi một sự chuyển dịch trong tư duy. Thay vì hỏi: “Làm sao để tôi cải thiện hiệu suất của nhân viên này?”</div>
+<div style="color:var(--en,#56665a)">Managers should ask: “What is helping or preventing this employee from performing at their best?”</div>
+<div>Người quản lý nên hỏi: “Điều gì đang giúp hoặc đang ngăn nhân viên này làm việc ở mức tốt nhất của họ?”</div>
+</div>
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/role-diagram.png" alt="Manager roles" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình trong slide — bảy vai trò của người quản lý, xếp thành hai hàng (bốn ô trên, ba ô dưới). Diễn giải theo cấu trúc hình ở bên dưới.</figcaption>
+</figure><div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px">
+<div style="grid-column:1/3;border:1px solid #dae4d6;border-top:3px solid #c4473a;padding:8px 10px;min-width:0;font-size:12.5px"><div style="font-weight:700;color:#c4473a;line-height:1.3">Coach performance</div><div style="font-weight:700;line-height:1.3;margin-bottom:5px">Khai vấn hiệu suất</div><ul style="margin:0;padding:0 0 0 16px;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Provide actionable feedback</span><br /><span>Phản hồi khả thi</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Set clear goals</span><br /><span>Đặt mục tiêu rõ ràng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Empower growth</span><br /><span>Trao quyền để phát triển</span></li></ul></div>
+<div style="grid-column:3/5;border:1px solid #dae4d6;border-top:3px solid #c7741a;padding:8px 10px;min-width:0;font-size:12.5px"><div style="font-weight:700;color:#c7741a;line-height:1.3">Develop capability</div><div style="font-weight:700;line-height:1.3;margin-bottom:5px">Phát triển năng lực</div><ul style="margin:0;padding:0 0 0 16px;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Invest in skill training</span><br /><span>Đầu tư đào tạo kỹ năng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Identify potential</span><br /><span>Nhận diện tiềm năng</span></li></ul></div>
+<div style="grid-column:5/7;border:1px solid #dae4d6;border-top:3px solid #9c7f0e;padding:8px 10px;min-width:0;font-size:12.5px"><div style="font-weight:700;color:#9c7f0e;line-height:1.3">Remove barriers</div><div style="font-weight:700;line-height:1.3;margin-bottom:5px">Loại bỏ rào cản</div><ul style="margin:0;padding:0 0 0 16px;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Address bottlenecks</span><br /><span>Xử lý điểm nghẽn</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Streamline processes</span><br /><span>Tinh gọn quy trình</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Clarify roles</span><br /><span>Làm rõ vai trò</span></li></ul></div>
+<div style="grid-column:7/9;border:1px solid #dae4d6;border-top:3px solid #3c8a4f;padding:8px 10px;min-width:0;font-size:12.5px"><div style="font-weight:700;color:#3c8a4f;line-height:1.3">Enable collaboration</div><div style="font-weight:700;line-height:1.3;margin-bottom:5px">Tạo điều kiện hợp tác</div><ul style="margin:0;padding:0 0 0 16px;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Foster open communication</span><br /><span>Khuyến khích giao tiếp mở</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Support diverse perspectives</span><br /><span>Tôn trọng góc nhìn đa dạng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Encourage shared responsibility</span><br /><span>Thúc đẩy trách nhiệm chung</span></li></ul></div>
+<div style="grid-column:2/4;border:1px solid #dae4d6;border-top:3px solid #2f74b5;padding:8px 10px;min-width:0;font-size:12.5px"><div style="font-weight:700;color:#2f74b5;line-height:1.3">Develop performance</div><div style="font-weight:700;line-height:1.3;margin-bottom:5px">Phát triển hiệu suất</div><ul style="margin:0;padding:0 0 0 16px;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Invest in skills</span><br /><span>Đầu tư kỹ năng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Set clear goals</span><br /><span>Đặt mục tiêu rõ ràng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Mentorship programs</span><br /><span>Chương trình cố vấn</span></li></ul></div>
+<div style="grid-column:4/6;border:1px solid #dae4d6;border-top:3px solid #4f55a8;padding:8px 10px;min-width:0;font-size:12.5px"><div style="font-weight:700;color:#4f55a8;line-height:1.3">Build psychological safety</div><div style="font-weight:700;line-height:1.3;margin-bottom:5px">Xây dựng an toàn tâm lý</div><ul style="margin:0;padding:0 0 0 16px;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Encourage speaking up</span><br /><span>Khuyến khích lên tiếng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Make it safe to take risks</span><br /><span>Tạo môi trường dám thử</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Practice active listening</span><br /><span>Thực hành lắng nghe chủ động</span></li></ul></div>
+<div style="grid-column:6/8;border:1px solid #dae4d6;border-top:3px solid #8a4fa0;padding:8px 10px;min-width:0;font-size:12.5px"><div style="font-weight:700;color:#8a4fa0;line-height:1.3">Create sustainable conditions for success</div><div style="font-weight:700;line-height:1.3;margin-bottom:5px">Tạo điều kiện bền vững cho thành công</div><ul style="margin:0;padding:0 0 0 16px;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Establish long term processes</span><br /><span>Thiết lập quy trình dài hạn</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Promote work-life balance</span><br /><span>Thúc đẩy cân bằng công việc – cuộc sống</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Celebrate iterative progress</span><br /><span>Ghi nhận tiến bộ từng bước</span></li></ul></div>
+</div></div>
+</section>
+
+<section id="s14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 14</span>
+<span style="color:#86958a">2 · The role of performance conversations</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">2. The role of performance conversations — they help managers:</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">2. Vai trò của các cuộc trao đổi hiệu suất — giúp người quản lý:</h3>
+<div style="color:var(--en,#56665a)"><b>Understand Performance Drivers</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">What is working? What is not working?</li><li style="margin:0 0 3px">What barriers exist?</li><li style="margin:0">What support is needed?</li></ul></div>
+<div><b>Hiểu các yếu tố dẫn dắt hiệu suất</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Điều gì đang hiệu quả? Điều gì không hiệu quả?</li><li style="margin:0 0 3px">Đang tồn tại những rào cản nào?</li><li style="margin:0">Cần hỗ trợ những gì?</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Diagnose Root Causes (AMO diagnostic lens)</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Is this an Ability issue? Knowledge, skill, experience, training</li><li style="margin:0 0 3px">Is this a Motivation issue? Engaged with responsibilities, energising</li><li style="margin:0">Is this an Opportunity issue? Resource, barriers (structure, process)</li></ul></div>
+<div><b>Chẩn đoán nguyên nhân gốc (lăng kính chẩn đoán AMO)</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Đây có phải vấn đề Năng lực? Kiến thức, kỹ năng, kinh nghiệm, đào tạo</li><li style="margin:0 0 3px">Đây có phải vấn đề Động lực? Mức độ gắn kết với trách nhiệm, cảm giác được tiếp thêm năng lượng</li><li style="margin:0">Đây có phải vấn đề Điều kiện – cơ hội? Nguồn lực, rào cản (cấu trúc, quy trình)</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Build Employee Capability</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Develop skills, strengthen judgement</li><li style="margin:0 0 3px">Increase self-awareness</li><li style="margin:0">Support career growth</li></ul></div>
+<div><b>Xây dựng năng lực nhân viên</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Phát triển kỹ năng, củng cố khả năng phán đoán</li><li style="margin:0 0 3px">Tăng khả năng tự nhận thức</li><li style="margin:0">Hỗ trợ phát triển sự nghiệp</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Improve Organisational Performance</b></div>
+<div><b>Cải thiện hiệu suất của tổ chức</b></div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start"><img src="assets/t4/s14a.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s14b.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /></div>
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hai hình minh hoạ trong slide (Image by macrovector on Magnific).</figcaption>
+</figure>
+</section>
+
+<section id="s15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 15</span>
+<span style="color:#86958a">2.3 · Not all conversations are the same</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">2.3 Not all performance conversations are the same</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">2.3 Không phải cuộc trao đổi hiệu suất nào cũng giống nhau</h3>
+<div style="color:var(--en,#56665a)">Move away from “Performance = Results” Mindset. Performance conversation is NOT to judge performance but to improve it.</div>
+<div>Rời khỏi tư duy “Hiệu suất = Kết quả”. Cuộc trao đổi hiệu suất KHÔNG nhằm phán xét hiệu suất mà để cải thiện nó.</div>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:6%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">No.</th>
+<th style="text-align:left;padding:5px 6px;width:32%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Performance level</span><br /><span>Mức hiệu suất</span></th>
+<th style="text-align:left;padding:5px 6px;width:38%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Conversation focus</span><br /><span>Trọng tâm cuộc trao đổi</span></th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Manager’s role</span><br /><span>Vai trò của quản lý</span></th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">1</td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Exceeding expectations</span><br /><span>Vượt kỳ vọng</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Growth &amp; stretch opportunities</span><br /><span>Cơ hội phát triển &amp; thử thách mở rộng</span></td><td style="padding:7px 0 7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Coach</span><br /><span>Người khai vấn</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">2</td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Meeting expectations</span><br /><span>Đạt kỳ vọng</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Development &amp; continuous improvement</span><br /><span>Phát triển &amp; cải tiến liên tục</span></td><td style="padding:7px 0 7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Facilitator</span><br /><span>Người dẫn dắt, tạo điều kiện</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">3</td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Below expectations</span><br /><span>Dưới kỳ vọng</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Performance improvement &amp; support</span><br /><span>Cải thiện hiệu suất &amp; hỗ trợ</span></td><td style="padding:7px 0 7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Diagnostician &amp; coach</span><br /><span>Người chẩn đoán &amp; khai vấn</span></td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">4</td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Persistent Underperformance</span><br /><span>Hiệu suất kém kéo dài</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Performance recovery &amp; accountability</span><br /><span>Phục hồi hiệu suất &amp; trách nhiệm giải trình</span></td><td style="padding:7px 0 7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Coach</span><br /><span>Người khai vấn</span></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 16</span>
+<span style="color:#86958a">Video · Listening skills</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Communication… — Listening skills</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Giao tiếp… — Kỹ năng lắng nghe</h3>
+</div>
+<p style="margin:8px 0 0;font-size:11px;line-height:1.5;color:#86958a">Hai video ngắn: <span style="word-break:break-all">youtube.com/shorts/SP6RuDD-2WQ</span> · <span style="word-break:break-all">youtube.com/shorts/WGxUAedAfvg</span></p>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start"><img src="assets/t4/s16a.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s16b.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /></div>
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hai ảnh chụp từ hai video ngắn về kỹ năng lắng nghe.</figcaption>
+</figure>
+</section>
+
+<section id="s17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 17</span>
+<span style="color:#86958a">3 · Performance conversations · AMO</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">3. Performance conversations</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">3. Các cuộc trao đổi hiệu suất</h3>
+<div style="color:var(--en,#56665a)">Move away from “Performance = Results” Mindset. How many of you have employees who consistently hit targets but there are other employees that you worry about? Why? Are the reasons related to performance?</div>
+<div>Rời khỏi tư duy “Hiệu suất = Kết quả”. Bao nhiêu người trong số các bạn có nhân viên luôn đạt chỉ tiêu, nhưng lại có những nhân viên khác khiến bạn lo lắng? Vì sao? Những lý do đó có liên quan đến hiệu suất không?</div>
+<div style="color:var(--en,#56665a)">Investigate AMO when employee performance declines:</div>
+<div>Hãy tìm hiểu theo AMO khi hiệu suất của nhân viên đi xuống:</div>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.5">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 8px 5px 0;width:33.3%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Ability<span> · Năng lực</span></th>
+<th style="text-align:left;padding:5px 8px;width:33.3%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Motivation<span> · Động lực</span></th>
+<th style="text-align:left;padding:5px 0 5px 8px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Opportunities<span> · Điều kiện – cơ hội</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="padding:8px 8px 8px 0;vertical-align:top"><ul style="margin:0 0 6px;padding-left:15px;color:var(--en,#56665a)"><li style="margin:0 0 3px">Does the employee know what good performance looks like?</li><li style="margin:0 0 3px">Do they have the required skills?</li><li style="margin:0 0 3px">Have expectations been clearly communicated?</li><li style="margin:0">Have they received adequate training?</li></ul><ul style="margin:0;padding-left:15px"><li style="margin:0 0 3px">Nhân viên có biết hiệu suất tốt trông như thế nào không?</li><li style="margin:0 0 3px">Họ có các kỹ năng cần thiết không?</li><li style="margin:0 0 3px">Kỳ vọng đã được truyền đạt rõ ràng chưa?</li><li style="margin:0">Họ đã được đào tạo đầy đủ chưa?</li></ul></td>
+<td style="padding:8px;vertical-align:top"><ul style="margin:0 0 6px;padding-left:15px;color:var(--en,#56665a)"><li style="margin:0 0 3px">Does the employee want to perform?</li><li style="margin:0 0 3px">Are they engaged?</li><li style="margin:0 0 3px">Do they see value in the work?</li><li style="margin:0">Are there morale or wellbeing concerns?</li></ul><ul style="margin:0;padding-left:15px"><li style="margin:0 0 3px">Nhân viên có muốn làm tốt không?</li><li style="margin:0 0 3px">Họ có đang gắn kết không?</li><li style="margin:0 0 3px">Họ có thấy giá trị trong công việc không?</li><li style="margin:0">Có vấn đề về tinh thần hay sức khoẻ tinh thần không?</li></ul></td>
+<td style="padding:8px 0 8px 8px;vertical-align:top"><ul style="margin:0 0 6px;padding-left:15px;color:var(--en,#56665a)"><li style="margin:0 0 3px">Does the employee have the resources needed?</li><li style="margin:0 0 3px">Are processes helping or hindering?</li><li style="margin:0 0 3px">Are priorities conflicting?</li><li style="margin:0">Is workload realistic?</li></ul><ul style="margin:0;padding-left:15px"><li style="margin:0 0 3px">Nhân viên có đủ nguồn lực cần thiết không?</li><li style="margin:0 0 3px">Quy trình đang hỗ trợ hay đang cản trở?</li><li style="margin:0 0 3px">Các ưu tiên có xung đột với nhau không?</li><li style="margin:0">Khối lượng công việc có khả thi không?</li></ul></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section id="s18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">3.1 · Example 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">3.1 Performance conversations</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">3.1 Các cuộc trao đổi hiệu suất</h3>
+<div style="color:var(--en,#56665a)">Investigate AMO when employee performance declines. We should not immediately blame attitude.</div>
+<div>Hãy tìm hiểu theo AMO khi hiệu suất của nhân viên đi xuống. Chúng ta không nên vội quy cho thái độ.</div>
+<div style="color:var(--en,#56665a)"><b>Example 1</b> An AI engineer suddenly misses milestones: Manager thinks performance slipped.</div>
+<div><b>Ví dụ 1</b> Một kỹ sư AI bất ngờ trễ các mốc công việc: người quản lý cho rằng hiệu suất đã tụt.</div>
+<div style="color:var(--en,#56665a)"><b>Reality</b> A new Generative AI framework was introduced. The employee has not yet mastered it.</div>
+<div><b>Thực tế</b> Một framework Generative AI mới vừa được đưa vào áp dụng. Nhân viên chưa thành thạo nó.</div>
+<div style="color:var(--en,#56665a)"><b>Diagnosis:</b> <span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span> Issue</div>
+<div><b>Chẩn đoán:</b> Vấn đề <span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span></div>
+<div style="color:var(--en,#56665a)"><b>Conversation:</b> <span style="display:inline-block;width:60%;border-bottom:1px solid #acb9ad;height:.9em"></span> ?</div>
+<div><b>Cuộc trao đổi:</b> <span style="display:inline-block;width:60%;border-bottom:1px solid #acb9ad;height:.9em"></span> ?</div>
+</div>
+</section>
+
+<section id="s19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 19</span>
+<span style="color:#86958a">3.2 · Example 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">3.2 Performance conversations</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">3.2 Các cuộc trao đổi hiệu suất</h3>
+<div style="color:var(--en,#56665a)">Investigate AMO when employee performance declines. We should not immediately blame attitude.</div>
+<div>Hãy tìm hiểu theo AMO khi hiệu suất của nhân viên đi xuống. Chúng ta không nên vội quy cho thái độ.</div>
+<div style="color:var(--en,#56665a)"><b>Example 2</b> A Product Owner fails to deliver roadmap objectives: Manager thinks performance slipped.</div>
+<div><b>Ví dụ 2</b> Một Product Owner không hoàn thành các mục tiêu trong lộ trình sản phẩm: người quản lý cho rằng hiệu suất đã tụt.</div>
+<div style="color:var(--en,#56665a)"><b>Reality</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Engineering priorities changed three times.</li><li style="margin:0">Business stakeholders added new requirements weekly.</li></ul></div>
+<div><b>Thực tế</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Ưu tiên của bộ phận kỹ thuật thay đổi ba lần.</li><li style="margin:0">Các bên liên quan phía kinh doanh bổ sung yêu cầu mới hằng tuần.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Diagnosis:</b> <span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span> Issue</div>
+<div><b>Chẩn đoán:</b> Vấn đề <span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span></div>
+<div style="color:var(--en,#56665a)">This is not an employee performance problem. It is a work system problem.</div>
+<div>Đây không phải vấn đề hiệu suất của nhân viên. Đây là vấn đề của hệ thống công việc.</div>
+<div style="color:var(--en,#56665a)"><b>Conversation:</b> <span style="display:inline-block;width:60%;border-bottom:1px solid #acb9ad;height:.9em"></span> ?</div>
+<div><b>Cuộc trao đổi:</b> <span style="display:inline-block;width:60%;border-bottom:1px solid #acb9ad;height:.9em"></span> ?</div>
+</div>
+</section>
+
+<section id="s20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 20</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">What is commonly important/valuable to people may not be true</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điều mà người ta thường cho là quan trọng/có giá trị có thể không đúng</h3>
+</div>
+<p style="margin:8px 0 0;font-size:11px;line-height:1.5;color:#86958a">Hai video ngắn: <span style="word-break:break-all">youtube.com/shorts/E5885eYb41c</span> · <span style="word-break:break-all">youtube.com/shorts/94M7wLbVYps</span></p>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start"><img src="assets/t4/s20a.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s20b.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /></div>
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hai ảnh chụp từ hai video ngắn được chiếu trong slide.</figcaption>
+</figure>
+</section>
+
+<section id="s21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 21</span>
+<span style="color:#86958a">3.3 · Example 3</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">3.3 Performance conversations</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">3.3 Các cuộc trao đổi hiệu suất</h3>
+<div style="color:var(--en,#56665a)">Investigate AMO when employee performance declines.</div>
+<div>Hãy tìm hiểu theo AMO khi hiệu suất của nhân viên đi xuống.</div>
+<div style="color:var(--en,#56665a)"><b>Example 3</b> A Data Scientist's results remain acceptable: Manager thinks performance is a no-surprise but could do better.</div>
+<div><b>Ví dụ 3</b> Kết quả của một Data Scientist vẫn ở mức chấp nhận được: người quản lý thấy không có gì bất ngờ, nhưng cho rằng lẽ ra có thể tốt hơn.</div>
+<div style="color:var(--en,#56665a)"><b>Reality</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Participation is minimal. Team engagement is declining.</li><li style="margin:0">Innovation suggestions have disappeared.</li></ul></div>
+<div><b>Thực tế</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Mức độ tham gia rất ít. Sự gắn kết với nhóm đang giảm.</li><li style="margin:0">Các đề xuất đổi mới đã biến mất.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Diagnosis:</b> <span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span> Issue</div>
+<div><b>Chẩn đoán:</b> Vấn đề <span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span></div>
+<div style="color:var(--en,#56665a)">The manager must explore:<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Career <span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span></li><li style="margin:0 0 3px">Recog<span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span></li><li style="margin:0">Work <span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span></li></ul></div>
+<div>Người quản lý cần tìm hiểu:<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Sự nghiệp (Career) <span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span></li><li style="margin:0 0 3px">Ghi nhận (Recog<span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span>)</li><li style="margin:0">Công việc (Work) <span style="display:inline-block;width:120px;border-bottom:1px solid #acb9ad;height:.9em"></span></li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Conversation:</b> <span style="display:inline-block;width:60%;border-bottom:1px solid #acb9ad;height:.9em"></span> ?</div>
+<div><b>Cuộc trao đổi:</b> <span style="display:inline-block;width:60%;border-bottom:1px solid #acb9ad;height:.9em"></span> ?</div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s21.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình minh hoạ trong slide (Image by Lifestylememory).</figcaption>
+</figure>
+</section>
+
+<section id="s22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 22</span>
+<span style="color:#86958a">4 · SAIL</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">4. Conversation approach for underperformance: SAIL</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">4. Cách tiếp cận cuộc trao đổi khi hiệu suất chưa đạt: SAIL</h3>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:5%;color:var(--ac,#2f6b45);font-weight:700">S</td><td style="padding:7px 8px;vertical-align:top;width:44%;color:var(--en,#56665a)">State the gap</td><td style="padding:7px 0 7px 8px;vertical-align:top">Nêu rõ khoảng cách hiệu suất</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">A</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Ask and understand</td><td style="padding:7px 0 7px 8px;vertical-align:top">Hỏi và tìm hiểu</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">I</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Identify root causes (AMO)</td><td style="padding:7px 0 7px 8px;vertical-align:top">Xác định nguyên nhân gốc (theo AMO)</td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">L</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Launch improvement actions</td><td style="padding:7px 0 7px 8px;vertical-align:top">Khởi động các hành động cải thiện</td></tr>
+</tbody>
+</table>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s22.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Trong slide gốc, phần hình là ảnh chụp lại slide “The role of performance conversations”.</figcaption>
+</figure>
+</section>
+
+<section id="s23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 23</span>
+<span style="color:#86958a">Video · Evidence</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Evidence is a must for performance management</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bằng chứng là điều bắt buộc trong quản trị hiệu suất</h3>
+</div>
+<p style="margin:8px 0 0;font-size:11px;line-height:1.5;color:#86958a">Video: <span style="word-break:break-all">youtube.com/shorts/vEXKEKaWxfk</span></p>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s23.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Ảnh chụp từ video được chiếu trong slide.</figcaption>
+</figure>
+</section>
+
+<section id="s24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 24</span>
+<span style="color:#86958a">4.1 · State the gap (1)</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">4.1 SAIL (1) — S = State the gap</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">4.1 SAIL (1) — S = Nêu rõ khoảng cách hiệu suất</h3>
+<div style="color:var(--en,#56665a)">Use objective facts:<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">KPI reports</li><li style="margin:0 0 3px">Customer feedback</li><li style="margin:0 0 3px">Error rates</li><li style="margin:0 0 3px">Project delivery data</li><li style="margin:0">Stakeholder feedback</li></ul></div>
+<div>Dùng dữ kiện khách quan:<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Báo cáo KPI</li><li style="margin:0 0 3px">Phản hồi của khách hàng</li><li style="margin:0 0 3px">Tỷ lệ lỗi</li><li style="margin:0 0 3px">Dữ liệu tiến độ giao dự án</li><li style="margin:0">Phản hồi của các bên liên quan</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Examples</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">“Over the last three months, the target was 95% service accuracy. The average achieved was 77%. This gap requires improvement.”</li><li style="margin:0 0 3px">“I want to discuss your recent performance results because they are currently below the expected standard for the role.”</li><li style="margin:0">“I noticed recent project milestones have been difficult to achieve.”</li></ul></div>
+<div><b>Ví dụ</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">“Trong ba tháng vừa qua, mục tiêu là 95% độ chính xác dịch vụ. Mức trung bình đạt được là 77%. Khoảng cách này cần được cải thiện.”</li><li style="margin:0 0 3px">“Tôi muốn trao đổi về kết quả làm việc gần đây của bạn, vì hiện nay nó đang dưới chuẩn kỳ vọng của vị trí này.”</li><li style="margin:0">“Tôi nhận thấy các mốc dự án gần đây khá khó hoàn thành.”</li></ul></div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s24.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình minh hoạ trong slide.</figcaption>
+</figure>
+</section>
+
+<section id="s25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 25</span>
+<span style="color:#86958a">4.1 · State the gap (2)</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">4.1 SAIL (2) — S = State the gap</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">4.1 SAIL (2) — S = Nêu rõ khoảng cách hiệu suất</h3>
+<div style="color:var(--en,#56665a)"><b>Example</b> “Over the last three months, the target was 95% service accuracy. The average achieved was 77%.”</div>
+<div><b>Ví dụ</b> “Trong ba tháng vừa qua, mục tiêu là 95% độ chính xác dịch vụ. Mức trung bình đạt được là 77%.”</div>
+<div style="color:var(--en,#56665a)"><b>Avoid</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">“Your performance has been poor. Go and fix it”</li><li style="margin:0 0 3px">“Why are you underperforming?”</li><li style="margin:0 0 3px">“Your performance is unacceptable. You need to improve”</li><li style="margin:0">“You need to improve your attitude.”</li></ul></div>
+<div><b>Tránh</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">“Kết quả làm việc của bạn tệ. Tự đi mà sửa.”</li><li style="margin:0 0 3px">“Sao bạn lại làm việc kém như vậy?”</li><li style="margin:0 0 3px">“Hiệu suất của bạn không thể chấp nhận được. Bạn phải cải thiện.”</li><li style="margin:0">“Bạn cần cải thiện thái độ của mình.”</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Try using these</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">“Let's explore what is making it difficult to achieve the expected results.” <i>(remove barriers)</i></li><li style="margin:0 0 3px">“What specific actions can help close the performance gap?”</li><li style="margin:0 0 3px">“Let's discuss what success would look like &amp; how we can get there.”</li><li style="margin:0">“I'd like to better understand your experience and explore what support may help.”</li></ul></div>
+<div><b>Hãy thử dùng những câu này</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">“Hãy cùng tìm hiểu điều gì đang làm cho việc đạt kết quả kỳ vọng trở nên khó khăn.” <i>(loại bỏ rào cản)</i></li><li style="margin:0 0 3px">“Những hành động cụ thể nào có thể giúp thu hẹp khoảng cách hiệu suất?”</li><li style="margin:0 0 3px">“Hãy cùng bàn xem thành công sẽ trông như thế nào và làm sao để đạt được.”</li><li style="margin:0">“Tôi muốn hiểu rõ hơn trải nghiệm của bạn và cùng xem hình thức hỗ trợ nào có thể giúp được.”</li></ul></div>
+</div>
+</section>
+
+<section id="s26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 26</span>
+<span style="color:#86958a">Video · Being fair and honest</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">State the gap: Being fair and honest in courting</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nêu rõ khoảng cách: sự công bằng và thẳng thắn trong chuyện hẹn hò</h3>
+<div style="color:var(--en,#56665a)">Here is a couple. Is the man attractive? Is the lady attractive?</div>
+<div>Đây là một cặp đôi. Người đàn ông có hấp dẫn không? Người phụ nữ có hấp dẫn không?</div>
+</div>
+<p style="margin:8px 0 0;font-size:11px;line-height:1.5;color:#86958a">Slide chiếu ảnh một cặp đôi để lấy phán đoán tức thời của người học. Video: <span style="word-break:break-all">youtube.com/shorts/PKpff2iTQDY</span></p>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s26.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Ảnh cặp đôi được chiếu để người học đưa ra phán đoán tức thời.</figcaption>
+</figure>
+</section>
+
+<section id="s27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 27</span>
+<span style="color:#86958a">4.2 · Ask and understand</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">4.2 SAIL — A = Ask and understand</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">4.2 SAIL — A = Hỏi và tìm hiểu</h3>
+<div style="color:var(--en,#56665a)">Use diagnostic questioning → What conditions are enabling or constraining sustainable performance?</div>
+<div>Dùng câu hỏi chẩn đoán → Những điều kiện nào đang tạo điều kiện hoặc đang cản trở hiệu suất bền vững?</div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">What challenges are affecting your performance?</li><li style="margin:0 0 3px">“What percentage of critical work depends solely on you?”</li><li style="margin:0 0 3px">What obstacles are you encountering?</li><li style="margin:0 0 3px">“Which activities should you stop doing?”</li><li style="margin:0 0 3px">What support would be helpful?</li><li style="margin:0 0 3px">“Which responsibilities could be transferred?”</li><li style="margin:0">“Where are you experiencing overload?”</li></ul></div>
+<div><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">Những khó khăn nào đang ảnh hưởng đến hiệu suất của bạn?</li><li style="margin:0 0 3px">“Bao nhiêu phần trăm công việc quan trọng chỉ phụ thuộc vào một mình bạn?”</li><li style="margin:0 0 3px">Bạn đang gặp phải những trở ngại nào?</li><li style="margin:0 0 3px">“Những việc nào bạn nên ngừng làm?”</li><li style="margin:0 0 3px">Hình thức hỗ trợ nào sẽ hữu ích?</li><li style="margin:0 0 3px">“Những trách nhiệm nào có thể chuyển giao cho người khác?”</li><li style="margin:0">“Bạn đang bị quá tải ở đâu?”</li></ul></div>
+</div>
+</section>
+
+<section id="s28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 28</span>
+<span style="color:#86958a">4.3 · Identify root causes</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">4.3 SAIL — I = Identify root causes</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">4.3 SAIL — I = Xác định nguyên nhân gốc</h3>
+<div style="color:var(--en,#56665a)">Map responses against AMO. Discuss:</div>
+<div>Đối chiếu câu trả lời với khung AMO. Trao đổi:</div>
+<div style="color:var(--en,#56665a)">“From what you've shared, it seems workload and competing priorities may be major contributors.” <i>(Opportunity)</i></div>
+<div>“Từ những gì bạn chia sẻ, có vẻ khối lượng công việc và các ưu tiên xung đột là những nguyên nhân chính.” <i>(Điều kiện – cơ hội)</i></div>
+<div style="color:var(--en,#56665a)">“From our conversation, it seems that the work has become mundane and less meaningful to motivate you.” <i>(Motivation)</i></div>
+<div>“Qua cuộc trao đổi, có vẻ công việc đã trở nên đơn điệu và ít ý nghĩa nên không còn tạo động lực cho bạn.” <i>(Động lực)</i></div>
+<div style="color:var(--en,#56665a)">“From what you've shared, it seems the AI direction we are moving towards is too demanding for your current skills.” <i>(Ability)</i></div>
+<div>“Từ những gì bạn chia sẻ, có vẻ hướng đi về AI mà chúng ta đang theo đuổi đòi hỏi cao hơn mức kỹ năng hiện tại của bạn.” <i>(Năng lực)</i></div>
+</div>
+</section>
+
+<section id="s29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 29</span>
+<span style="color:#86958a">4.4 · Launch improvement actions</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">4.4 SAIL — L = Launch improvement actions</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">4.4 SAIL — L = Khởi động các hành động cải thiện</h3>
+<div style="color:var(--en,#56665a)">Discuss and agree on:<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Step 1: Expectations</li><li style="margin:0 0 3px">Step 2: Support required</li><li style="margin:0 0 3px">Step 3: Timeline</li><li style="margin:0">Step 4: Follow-up checkpoints</li></ul></div>
+<div>Trao đổi và thống nhất về:<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Bước 1: Kỳ vọng</li><li style="margin:0 0 3px">Bước 2: Hỗ trợ cần thiết</li><li style="margin:0 0 3px">Bước 3: Mốc thời gian</li><li style="margin:0">Bước 4: Các điểm kiểm tra tiến độ</li></ul></div>
+<div style="color:var(--en,#56665a)">Performance recovery agreement</div>
+<div>Bản cam kết phục hồi hiệu suất</div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s29.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình minh hoạ trong slide.</figcaption>
+</figure>
+</section>
+
+<section id="s30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 30</span>
+<span style="color:#86958a">4.4 · Step 1 · Expectations</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Step 1: Agree on performance expectations</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bước 1: Thống nhất về kỳ vọng hiệu suất</h3>
+<div style="color:var(--en,#56665a)"><b>Discussion Question</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">What performance standard needs to be achieved?</li><li style="margin:0 0 3px">What evidence will demonstrate improvement?</li><li style="margin:0">What behaviours are expected?</li></ul></div>
+<div><b>Câu hỏi thảo luận</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Chuẩn hiệu suất nào cần đạt được?</li><li style="margin:0 0 3px">Bằng chứng nào sẽ cho thấy có sự cải thiện?</li><li style="margin:0">Những hành vi nào được kỳ vọng?</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Purpose</b> Clarify exactly what successful performance looks like<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Specific performance outcomes</li><li style="margin:0 0 3px">Behavioural expectations</li><li style="margin:0 0 3px">Quality standards</li><li style="margin:0">Productivity targets</li></ul></div>
+<div><b>Mục đích</b> Làm rõ chính xác hiệu suất thành công trông như thế nào<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Kết quả hiệu suất cụ thể</li><li style="margin:0 0 3px">Kỳ vọng về hành vi</li><li style="margin:0 0 3px">Tiêu chuẩn chất lượng</li><li style="margin:0">Chỉ tiêu năng suất</li></ul></div>
+<div style="color:var(--en,#56665a)">Current → Required performance → Evidence</div>
+<div>Hiện tại → Hiệu suất yêu cầu → Bằng chứng</div>
+</div>
+</section>
+
+<section id="s31" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 31</span>
+<span style="color:#86958a">4.4 · Step 2 · Ability-based support</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Step 2: Agree on support mechanism — Ability-based support</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bước 2: Thống nhất cơ chế hỗ trợ — hỗ trợ theo hướng Năng lực</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">Skill training</li><li style="margin:0 0 3px">Refresher program</li><li style="margin:0 0 3px">Mentoring</li><li style="margin:0 0 3px">Shadowing high performers</li><li style="margin:0">Job aids and guides</li></ul></div>
+<div><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">Đào tạo kỹ năng</li><li style="margin:0 0 3px">Chương trình ôn luyện, cập nhật lại</li><li style="margin:0 0 3px">Cố vấn (mentoring)</li><li style="margin:0 0 3px">Đi kèm học việc từ người làm tốt (shadowing)</li><li style="margin:0">Tài liệu hướng dẫn, cẩm nang công việc</li></ul></div>
+</div>
+</section>
+
+<section id="s32" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 32</span>
+<span style="color:#86958a">4.4 · Step 2 · Ability example</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Ability-based support — agreement example</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hỗ trợ theo hướng Năng lực — ví dụ cam kết</h3>
+<div style="color:var(--en,#56665a)">Skill training, Mentoring, Job aids and guides</div>
+<div>Đào tạo kỹ năng, cố vấn, tài liệu hướng dẫn công việc</div>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:16%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 2 · Employee</td><td style="padding:7px 8px;vertical-align:top;width:42%;color:var(--en,#56665a)">Attend advanced R programming skills</td><td style="padding:7px 0 7px 8px;vertical-align:top">Tham gia khoá kỹ năng lập trình R nâng cao</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 2 · Manager / team leader</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Provide weekly coaching for 30 minutes<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">What progress have you made?</li><li style="margin:0 0 3px">What challenges remain?</li><li style="margin:0">What support is needed?</li></ul></td><td style="padding:7px 0 7px 8px;vertical-align:top">Khai vấn 30 phút mỗi tuần<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Bạn đã tiến bộ được những gì?</li><li style="margin:0 0 3px">Còn những khó khăn nào?</li><li style="margin:0">Bạn cần hỗ trợ gì?</li></ul></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 3 · Duration</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">4 weeks</td><td style="padding:7px 0 7px 8px;vertical-align:top">4 tuần</td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 4 · Progress noting</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Upskilling for each of the 4 weeks</td><td style="padding:7px 0 7px 8px;vertical-align:top">Ghi nhận việc nâng cấp kỹ năng theo từng tuần trong 4 tuần</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s33" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 33</span>
+<span style="color:#86958a">4.4 · Step 2 · Motivation example</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Motivation-based support — agreement example</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hỗ trợ theo hướng Động lực — ví dụ cam kết</h3>
+<div style="color:var(--en,#56665a)">Career development discussion, More meaningful work assignments, Recognition for improvement</div>
+<div>Trao đổi về phát triển sự nghiệp, phân công công việc có ý nghĩa hơn, ghi nhận sự tiến bộ</div>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:16%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 2 · Employee</td><td style="padding:7px 8px;vertical-align:top;width:42%;color:var(--en,#56665a)">Complete weekly reflection on career development related new projects/responsibilities/tasks</td><td style="padding:7px 0 7px 8px;vertical-align:top">Hoàn thành bài tự đánh giá hằng tuần về các dự án/trách nhiệm/nhiệm vụ mới gắn với phát triển sự nghiệp</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 2 · Manager / team leader</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Provide fortnightly career coaching discussion<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">What progress have you made?</li><li style="margin:0 0 3px">What challenges remain?</li><li style="margin:0">What support is needed?</li></ul></td><td style="padding:7px 0 7px 8px;vertical-align:top">Trao đổi khai vấn về sự nghiệp hai tuần một lần<ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Bạn đã tiến bộ được những gì?</li><li style="margin:0 0 3px">Còn những khó khăn nào?</li><li style="margin:0">Bạn cần hỗ trợ gì?</li></ul></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 3 · Duration</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">12 weeks</td><td style="padding:7px 0 7px 8px;vertical-align:top">12 tuần</td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 4 · Progress noting</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Learning reflection</td><td style="padding:7px 0 7px 8px;vertical-align:top">Bài tự đánh giá về việc học</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s34" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 34</span>
+<span style="color:#86958a">4.4 · Step 2 · Role clarity &amp; wellbeing</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Motivation-based support — clarification of role importance, wellbeing support</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hỗ trợ theo hướng Động lực — làm rõ tầm quan trọng của vai trò, hỗ trợ sức khoẻ tinh thần</h3>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:16%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 2 · Employee</td><td style="padding:7px 8px;vertical-align:top;width:42%;color:var(--en,#56665a)">Complete weekly reflection on progress</td><td style="padding:7px 0 7px 8px;vertical-align:top">Hoàn thành bài tự đánh giá tiến độ hằng tuần</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 2 · Manager / team leader</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Provide fortnightly role clarification discussion</td><td style="padding:7px 0 7px 8px;vertical-align:top">Trao đổi làm rõ vai trò hai tuần một lần</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 3 · Duration</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">4 weeks</td><td style="padding:7px 0 7px 8px;vertical-align:top">4 tuần</td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 4 · Progress noting</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Learning reflection</td><td style="padding:7px 0 7px 8px;vertical-align:top">Bài tự đánh giá về việc học</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s35" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 35</span>
+<span style="color:#86958a">4.4 · Step 2 · Opportunity-based support</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Opportunity-based support</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hỗ trợ theo hướng Điều kiện – cơ hội</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">Workload reallocation</li><li style="margin:0 0 3px">Process simplification</li><li style="margin:0 0 3px">Resource provision</li><li style="margin:0 0 3px">Clarification of priorities</li><li style="margin:0">Removal of barriers</li></ul></div>
+<div><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">Phân bổ lại khối lượng công việc</li><li style="margin:0 0 3px">Đơn giản hoá quy trình</li><li style="margin:0 0 3px">Cung cấp nguồn lực</li><li style="margin:0 0 3px">Làm rõ các ưu tiên</li><li style="margin:0">Loại bỏ rào cản</li></ul></div>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:16%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 2 · Employee</td><td style="padding:7px 8px;vertical-align:top;width:42%;color:var(--en,#56665a)">Focus on Project A &amp; B only (need similar skills)</td><td style="padding:7px 0 7px 8px;vertical-align:top">Chỉ tập trung vào Dự án A và B (vì cần các kỹ năng tương tự nhau)</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 2 · Manager / team leader</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Transfer Project C responsibilities to another team member</td><td style="padding:7px 0 7px 8px;vertical-align:top">Chuyển trách nhiệm Dự án C sang một thành viên khác trong nhóm</td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Step 3 &amp; 4 · Timeline &amp; progress</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Depend on operational needs</td><td style="padding:7px 0 7px 8px;vertical-align:top">Tuỳ theo nhu cầu vận hành</td></tr>
+</tbody>
+</table>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s35.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình minh hoạ trong slide (Image by Lifestylememory).</figcaption>
+</figure>
+</section>
+
+<section id="s36" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 36</span>
+<span style="color:#86958a">LEGO Serious Play®</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Unleashing Potentials through Playful Learning via the Lego Serious Play® Methodology</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Khai phóng tiềm năng qua học tập bằng trò chơi với phương pháp LEGO Serious Play®</h3>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s36.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình bìa trong slide về phương pháp LEGO Serious Play®.</figcaption>
+</figure>
+</section>
+
+<section id="s37" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 37</span>
+<span style="color:#86958a">Recognition</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Honorable Mention Recognition for Education Excellence</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Giải thưởng Ghi nhận (Honorable Mention) cho Xuất sắc trong Giáo dục</h3>
+<div style="color:var(--en,#56665a)">Elaine YinTeng Chew — Interim Head of Department, Management, TBS (Certified LSP Facilitator), RMIT Vietnam · Professor Robert McClelland — Dean of The Business School, RMIT University, Vietnam · Dr. Trang Le — Lecturer (Certified LSP Facilitator) · Dr. Thao Luong — Senior Program Manager (Certified LSP Facilitator) · Dr. Jessica Helmi — Senior Lecturer (Certified LSP Facilitator) · Dr. Chuyen Nguyen — Lecturer</div>
+<div>Elaine YinTeng Chew — Quyền Trưởng Bộ môn Quản trị, TBS (Facilitator LSP được chứng nhận), RMIT Việt Nam · Giáo sư Robert McClelland — Trưởng Khoa Kinh doanh, Đại học RMIT Việt Nam · TS. Trang Lê — Giảng viên (Facilitator LSP được chứng nhận) · TS. Thảo Lương — Senior Program Manager (Facilitator LSP được chứng nhận) · TS. Jessica Helmi — Giảng viên cao cấp (Facilitator LSP được chứng nhận) · TS. Chuyên Nguyễn — Giảng viên</div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;align-items:start"><img src="assets/t4/s37a.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s37b.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s37c.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s37d.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s37e.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s37f.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /></div>
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Ảnh chân dung các thành viên được ghi nhận trong slide.</figcaption>
+</figure>
+</section>
+
+<section id="s38" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 38</span>
+<span style="color:#86958a">Recognition</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Honorable Mention Recognition for Education Excellence</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Giải thưởng Ghi nhận (Honorable Mention) cho Xuất sắc trong Giáo dục</h3>
+<div style="color:var(--en,#56665a)">Assoc Prof. Elaine Chew — Interim Head of Department, Management, TBS (Certified LSP Facilitator), RMIT Vietnam · Dr. Trang Le — Lecturer (Certified LSP Facilitator) · Mr. Vincent Ha Quach — Associate Lecturer (Certified LSP Facilitator)</div>
+<div>PGS. Elaine Chew — Quyền Trưởng Bộ môn Quản trị, TBS (Facilitator LSP được chứng nhận), RMIT Việt Nam · TS. Trang Lê — Giảng viên (Facilitator LSP được chứng nhận) · Ông Vincent Hà Quách — Trợ giảng viên (Facilitator LSP được chứng nhận)</div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:start"><img src="assets/t4/s38a.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s38b.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s38c.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /></div>
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Ảnh chân dung các thành viên được ghi nhận trong slide.</figcaption>
+</figure>
+</section>
+
+<section id="s39" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 39</span>
+<span style="color:#86958a">LSP pedagogy</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Why learning through playing (LSP pedagogy)?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Vì sao học thông qua chơi (phương pháp LSP)?</h3>
+<div style="color:var(--en,#56665a)">Cognitive · Social · Emotional</div>
+<div>Nhận thức · Xã hội · Cảm xúc</div>
+<div style="color:var(--en,#56665a)">FUN LEARNING · COMMUNICATION · TEAMWORK &amp; BRAINSTORMING · PARTICIPATIVE → SOLUTION</div>
+<div>HỌC MÀ VUI · GIAO TIẾP · LÀM VIỆC NHÓM &amp; ĐỘNG NÃO · CÙNG THAM GIA → GIẢI PHÁP</div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:start"><img src="assets/t4/s39a.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s39b.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s39c.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s39d.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /></div>
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Các hình minh hoạ trong slide về học thông qua chơi với LEGO Serious Play®.</figcaption>
+</figure>
+</section>
+
+<section id="s40" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 40</span>
+<span style="color:#86958a">LSP applications</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">LSP in the classroom &amp; corporate training</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">LSP trong lớp học &amp; đào tạo doanh nghiệp</h3>
+<div style="color:var(--en,#56665a)">Entrepreneurship &amp; MBA courses (Design thinking, HRM) — Problem-solving (Kyons); Team building; Problem identification</div>
+<div>Các môn Khởi nghiệp &amp; MBA (Tư duy thiết kế, Quản trị nhân sự) — Giải quyết vấn đề (Kyons); Xây dựng đội nhóm; Nhận diện vấn đề</div>
+<div style="color:var(--en,#56665a)">Negotiation and conflict management course — Negotiation skills; Effective roleplay; Engagement and feedback</div>
+<div>Môn Đàm phán và quản trị xung đột — Kỹ năng đàm phán; Đóng vai hiệu quả; Gắn kết và phản hồi</div>
+<div style="color:var(--en,#56665a)">Cross-cultural communication course — Identification of challenges &amp; solution development</div>
+<div>Môn Giao tiếp đa văn hoá — Nhận diện thách thức &amp; phát triển giải pháp</div>
+<div style="color:var(--en,#56665a)">LSP® to unpack the Singapore Red Cross Business Challenge (SIM Integrate Business Perspective for revenue generation)</div>
+<div>Dùng LSP® để giải mã Singapore Red Cross Business Challenge (SIM Integrate Business Perspective về tạo doanh thu)</div>
+<div style="color:var(--en,#56665a)">Corporate training: Leadership skill development (Executive Presence, Communication etc)</div>
+<div>Đào tạo doanh nghiệp: Phát triển kỹ năng lãnh đạo (Phong thái điều hành, Giao tiếp, v.v.)</div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s40.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình minh hoạ trong slide.</figcaption>
+</figure>
+</section>
+
+<section id="s41" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 41</span>
+<span style="color:#86958a">Transition</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Let's (Seriously) play!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Cùng chơi (một cách nghiêm túc)!</h3>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s41.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình minh hoạ trong slide “Let’s (Seriously) play!”.</figcaption>
+</figure>
+</section>
+
+<section id="s42" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 42</span>
+<span style="color:#86958a">Activity · Your play time</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Your play time!!!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Đến lượt bạn chơi!!!</h3>
+<div style="color:var(--en,#56665a)"><b>Question for ideas</b> Considering Zalo's company culture and what you learnt today, how could Zalo improve performance conversation?</div>
+<div><b>Câu hỏi lấy ý tưởng</b> Xét đến văn hoá công ty của Zalo và những gì bạn học được hôm nay, Zalo có thể cải thiện việc trao đổi hiệu suất như thế nào?</div>
+<div style="color:var(--en,#56665a)">In 3 minutes, based on your ideas, build a LEGO model that shows your ideas for Zalo's performance management/conversation.</div>
+<div>Trong 3 phút, dựa trên ý tưởng của mình, hãy xây một mô hình LEGO thể hiện ý tưởng của bạn cho việc quản trị/trao đổi hiệu suất tại Zalo.</div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s42.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình minh hoạ trong slide phần hoạt động xây mô hình LEGO.</figcaption>
+</figure>
+</section>
+
+<section id="s43" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 43</span>
+<span style="color:#86958a">Activity · Photo upload</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Your LEGO model photo time!!!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Đến lúc chụp ảnh mô hình LEGO của bạn!!!</h3>
+<div style="color:var(--en,#56665a)">Take a photo. Upload your LEGO model photo onto Padlet with (I) the title of your model, (II) a description of your model (less than 10 words in English or no limit for Vietnamese language).</div>
+<div>Chụp một tấm ảnh. Tải ảnh mô hình LEGO của bạn lên Padlet kèm (I) tên mô hình, (II) phần mô tả mô hình (dưới 10 từ nếu viết bằng tiếng Anh, không giới hạn nếu viết bằng tiếng Việt).</div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:start"><img src="assets/t4/s43a.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s43b.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s43c.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /></div>
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình hướng dẫn chụp ảnh và tải mô hình lên Padlet.</figcaption>
+</figure>
+</section>
+
+<section id="s44" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 44</span>
+<span style="color:#86958a">Activity · Group photo upload</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Your group model photo time!!!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Đến lúc chụp ảnh mô hình của nhóm!!!</h3>
+<div style="color:var(--en,#56665a)">Take a photo. Upload your LEGO model photo onto Padlet with (I) the title of your model, (II) a description of your model (less than 10 words in English or no limit for Vietnamese language).</div>
+<div>Chụp một tấm ảnh. Tải ảnh mô hình LEGO của nhóm lên Padlet kèm (I) tên mô hình, (II) phần mô tả mô hình (dưới 10 từ nếu viết bằng tiếng Anh, không giới hạn nếu viết bằng tiếng Việt).</div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:start"><img src="assets/t4/s43a.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s43b.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /><img src="assets/t4/s43c.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" /></div>
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình hướng dẫn chụp ảnh và tải mô hình lên Padlet (giống slide 43).</figcaption>
+</figure>
+</section>
+
+<section id="s45" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 45</span>
+<span style="color:#86958a">—</span>
+</div>
+<figure style="margin:0;break-inside:avoid">
+<img src="assets/t4/closing-image.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Slide chỉ có hình minh hoạ, không có chữ.</figcaption>
+</figure>
+</section>
+
+<section id="s46" style="margin:0 0 10px">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 46</span>
+<span style="color:#86958a">Close</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Thank you! — Ready for what's next</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xin cảm ơn! — Sẵn sàng cho chặng tiếp theo</h3>
+<div style="color:var(--en,#56665a)">Position title: Interim Head of Department, Management, The Business School<br />Name: Associate Professor Elaine Chew<br />Email address: elaine.chew@rmit.edu.vn</div>
+<div><span>Chức danh: Quyền Trưởng Bộ môn Quản trị, Khoa Kinh doanh</span><br /><span>Họ tên: Phó Giáo sư Elaine Chew</span><br />Email: elaine.chew@rmit.edu.vn</div>
+</div>
+
+<figure style="margin:10px 0 0;break-inside:avoid">
+<img src="assets/t4/s46.png" alt="" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình minh hoạ trong slide kết.</figcaption>
+</figure>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 4 · Practise Performance Conversations</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t4.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Chủ đề 5: Thực hành trao đổi hiệu suất với khung AMO","lv":0,"en":"Topic 5: Practise Performance Conversation with AMO Framework","vi":"Chủ đề 5: Thực hành trao đổi hiệu suất với khung AMO"},
+  {"id":"s02","num":"02","label":"Giới thiệu Elaine Chew","lv":0,"en":"About Elaine Chew","vi":"Giới thiệu Elaine Chew"},
+  {"id":"s03","num":"03","label":"Nội dung buổi học","lv":0,"en":"Session outline","vi":"Nội dung buổi học"},
+  {"id":"s04","num":"04","label":"Quản trị hiệu suất bền vững & vai trò của cuộc trao đổi hiệu suất","lv":0,"en":"Sustainable performance management & role of performance conversation","vi":"Quản trị hiệu suất bền vững & vai trò của cuộc trao đổi hiệu suất"},
+  {"id":"s05","num":"05","label":"1. Quản trị hiệu suất truyền thống","lv":0,"en":"1. Traditional performance management","vi":"1. Quản trị hiệu suất truyền thống"},
+  {"id":"s06","num":"06","label":"2. Trao đổi hiệu suất bền vững","lv":0,"en":"2. Sustainable performance conversations","vi":"2. Trao đổi hiệu suất bền vững"},
+  {"id":"s07","num":"07","label":"Giao tiếp… — Tin nhắn · Trao đổi không gặp mặt trực tiếp","lv":0,"en":"Communication… — Text · Non Face-to-Face conversation","vi":"Giao tiếp… — Tin nhắn · Trao đổi không gặp mặt trực tiếp"},
+  {"id":"s08","num":"08","label":"Bạn có muốn một người quản lý như vậy phụ trách quản trị hiệu suất không?","lv":0,"en":"Do you want such a manager for performance management?","vi":"Bạn có muốn một người quản lý như vậy phụ trách quản trị hiệu suất không?"},
+  {"id":"s09","num":"09","label":"Vì sao buổi đánh giá hiệu suất này không phải là một phần tốt của cuộc trao đổi hiệu suất?","lv":0,"en":"Why is this performance review not a good part of performance conversation?","vi":"Vì sao buổi đánh giá hiệu suất này không phải là một phần tốt của cuộc trao đổi hiệu suất?"},
+  {"id":"s10","num":"10","label":"2 · Sustainable performance conversations","lv":0,"en":"2 · Sustainable performance conversations","vi":""},
+  {"id":"s11","num":"11","label":"Ecosystem of Performance","lv":0,"en":"Ecosystem of Performance","vi":""},
+  {"id":"s12","num":"12","label":"2 · Sustainable performance conversations","lv":0,"en":"2 · Sustainable performance conversations","vi":""},
+  {"id":"s13","num":"13","label":"2. Vai trò đang thay đổi của người quản lý","lv":0,"en":"2. The changing role of managers","vi":"2. Vai trò đang thay đổi của người quản lý"},
+  {"id":"s14","num":"14","label":"2. Vai trò của các cuộc trao đổi hiệu suất — giúp người quản lý:","lv":0,"en":"2. The role of performance conversations — they help managers:","vi":"2. Vai trò của các cuộc trao đổi hiệu suất — giúp người quản lý:"},
+  {"id":"s15","num":"15","label":"2.3 Không phải cuộc trao đổi hiệu suất nào cũng giống nhau","lv":0,"en":"2.3 Not all performance conversations are the same","vi":"2.3 Không phải cuộc trao đổi hiệu suất nào cũng giống nhau"},
+  {"id":"s16","num":"16","label":"Giao tiếp… — Kỹ năng lắng nghe","lv":0,"en":"Communication… — Listening skills","vi":"Giao tiếp… — Kỹ năng lắng nghe"},
+  {"id":"s17","num":"17","label":"3. Các cuộc trao đổi hiệu suất","lv":0,"en":"3. Performance conversations","vi":"3. Các cuộc trao đổi hiệu suất"},
+  {"id":"s18","num":"18","label":"3.1 Các cuộc trao đổi hiệu suất","lv":0,"en":"3.1 Performance conversations","vi":"3.1 Các cuộc trao đổi hiệu suất"},
+  {"id":"s19","num":"19","label":"3.2 Các cuộc trao đổi hiệu suất","lv":0,"en":"3.2 Performance conversations","vi":"3.2 Các cuộc trao đổi hiệu suất"},
+  {"id":"s20","num":"20","label":"Điều mà người ta thường cho là quan trọng/có giá trị có thể không đúng","lv":0,"en":"What is commonly important/valuable to people may not be true","vi":"Điều mà người ta thường cho là quan trọng/có giá trị có thể không đúng"},
+  {"id":"s21","num":"21","label":"3.3 Các cuộc trao đổi hiệu suất","lv":0,"en":"3.3 Performance conversations","vi":"3.3 Các cuộc trao đổi hiệu suất"},
+  {"id":"s22","num":"22","label":"4. Cách tiếp cận cuộc trao đổi khi hiệu suất chưa đạt: SAIL","lv":0,"en":"4. Conversation approach for underperformance: SAIL","vi":"4. Cách tiếp cận cuộc trao đổi khi hiệu suất chưa đạt: SAIL"},
+  {"id":"s23","num":"23","label":"Bằng chứng là điều bắt buộc trong quản trị hiệu suất","lv":0,"en":"Evidence is a must for performance management","vi":"Bằng chứng là điều bắt buộc trong quản trị hiệu suất"},
+  {"id":"s24","num":"24","label":"4.1 SAIL (1) — S = Nêu rõ khoảng cách hiệu suất","lv":0,"en":"4.1 SAIL (1) — S = State the gap","vi":"4.1 SAIL (1) — S = Nêu rõ khoảng cách hiệu suất"},
+  {"id":"s25","num":"25","label":"4.1 SAIL (2) — S = Nêu rõ khoảng cách hiệu suất","lv":0,"en":"4.1 SAIL (2) — S = State the gap","vi":"4.1 SAIL (2) — S = Nêu rõ khoảng cách hiệu suất"},
+  {"id":"s26","num":"26","label":"Nêu rõ khoảng cách: sự công bằng và thẳng thắn trong chuyện hẹn hò","lv":0,"en":"State the gap: Being fair and honest in courting","vi":"Nêu rõ khoảng cách: sự công bằng và thẳng thắn trong chuyện hẹn hò"},
+  {"id":"s27","num":"27","label":"4.2 SAIL — A = Hỏi và tìm hiểu","lv":0,"en":"4.2 SAIL — A = Ask and understand","vi":"4.2 SAIL — A = Hỏi và tìm hiểu"},
+  {"id":"s28","num":"28","label":"4.3 SAIL — I = Xác định nguyên nhân gốc","lv":0,"en":"4.3 SAIL — I = Identify root causes","vi":"4.3 SAIL — I = Xác định nguyên nhân gốc"},
+  {"id":"s29","num":"29","label":"4.4 SAIL — L = Khởi động các hành động cải thiện","lv":0,"en":"4.4 SAIL — L = Launch improvement actions","vi":"4.4 SAIL — L = Khởi động các hành động cải thiện"},
+  {"id":"s30","num":"30","label":"Bước 1: Thống nhất về kỳ vọng hiệu suất","lv":0,"en":"Step 1: Agree on performance expectations","vi":"Bước 1: Thống nhất về kỳ vọng hiệu suất"},
+  {"id":"s31","num":"31","label":"Bước 2: Thống nhất cơ chế hỗ trợ — hỗ trợ theo hướng Năng lực","lv":0,"en":"Step 2: Agree on support mechanism — Ability-based support","vi":"Bước 2: Thống nhất cơ chế hỗ trợ — hỗ trợ theo hướng Năng lực"},
+  {"id":"s32","num":"32","label":"Hỗ trợ theo hướng Năng lực — ví dụ cam kết","lv":0,"en":"Ability-based support — agreement example","vi":"Hỗ trợ theo hướng Năng lực — ví dụ cam kết"},
+  {"id":"s33","num":"33","label":"Hỗ trợ theo hướng Động lực — ví dụ cam kết","lv":0,"en":"Motivation-based support — agreement example","vi":"Hỗ trợ theo hướng Động lực — ví dụ cam kết"},
+  {"id":"s34","num":"34","label":"Hỗ trợ theo hướng Động lực — làm rõ tầm quan trọng của vai trò, hỗ trợ sức khoẻ tinh thần","lv":0,"en":"Motivation-based support — clarification of role importance, wellbeing support","vi":"Hỗ trợ theo hướng Động lực — làm rõ tầm quan trọng của vai trò, hỗ trợ sức khoẻ tinh thần"},
+  {"id":"s35","num":"35","label":"Hỗ trợ theo hướng Điều kiện – cơ hội","lv":0,"en":"Opportunity-based support","vi":"Hỗ trợ theo hướng Điều kiện – cơ hội"},
+  {"id":"s36","num":"36","label":"Khai phóng tiềm năng qua học tập bằng trò chơi với phương pháp LEGO Serious Play®","lv":0,"en":"Unleashing Potentials through Playful Learning via the Lego Serious Play® Methodology","vi":"Khai phóng tiềm năng qua học tập bằng trò chơi với phương pháp LEGO Serious Play®"},
+  {"id":"s37","num":"37","label":"Giải thưởng Ghi nhận (Honorable Mention) cho Xuất sắc trong Giáo dục","lv":0,"en":"Honorable Mention Recognition for Education Excellence","vi":"Giải thưởng Ghi nhận (Honorable Mention) cho Xuất sắc trong Giáo dục"},
+  {"id":"s38","num":"38","label":"Giải thưởng Ghi nhận (Honorable Mention) cho Xuất sắc trong Giáo dục","lv":0,"en":"Honorable Mention Recognition for Education Excellence","vi":"Giải thưởng Ghi nhận (Honorable Mention) cho Xuất sắc trong Giáo dục"},
+  {"id":"s39","num":"39","label":"Vì sao học thông qua chơi (phương pháp LSP)?","lv":0,"en":"Why learning through playing (LSP pedagogy)?","vi":"Vì sao học thông qua chơi (phương pháp LSP)?"},
+  {"id":"s40","num":"40","label":"LSP trong lớp học & đào tạo doanh nghiệp","lv":0,"en":"LSP in the classroom & corporate training","vi":"LSP trong lớp học & đào tạo doanh nghiệp"},
+  {"id":"s41","num":"41","label":"Cùng chơi (một cách nghiêm túc)!","lv":0,"en":"Let's (Seriously) play!","vi":"Cùng chơi (một cách nghiêm túc)!"},
+  {"id":"s42","num":"42","label":"Đến lượt bạn chơi!!!","lv":0,"en":"Your play time!!!","vi":"Đến lượt bạn chơi!!!"},
+  {"id":"s43","num":"43","label":"Đến lúc chụp ảnh mô hình LEGO của bạn!!!","lv":0,"en":"Your LEGO model photo time!!!","vi":"Đến lúc chụp ảnh mô hình LEGO của bạn!!!"},
+  {"id":"s44","num":"44","label":"Đến lúc chụp ảnh mô hình của nhóm!!!","lv":0,"en":"Your group model photo time!!!","vi":"Đến lúc chụp ảnh mô hình của nhóm!!!"},
+  {"id":"s45","num":"45","label":"—","lv":0,"en":"—","vi":""},
+  {"id":"s46","num":"46","label":"Xin cảm ơn! — Sẵn sàng cho chặng tiếp theo","lv":0,"en":"Thank you! — Ready for what's next","vi":"Xin cảm ơn! — Sẵn sàng cho chặng tiếp theo"}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t4.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t4.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t4.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t4.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

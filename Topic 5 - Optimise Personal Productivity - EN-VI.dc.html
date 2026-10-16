@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 5 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Optimise Personal Productivity</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Tối ưu năng suất cá nhân</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 5: Tối ưu năng suất cá nhân</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Topic 5: Optimise Personal Productivity — bản đối chiếu Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">PGS. Agnis Stibe · 78 slide</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide là một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ.</p>
+<p style="margin:0 0 8px">Đây là bài giảng dùng rất nhiều hình ảnh và video. Nhiều slide chỉ có một vài chữ lớn hoặc hoàn toàn không có chữ. Với những slide đó, phần mô tả hình ảnh được ghi bằng chữ nghiêng màu xám để người đọc hình dung được mạch trình bày; phần mô tả này là ghi chú của bản dịch, không phải nội dung gốc trên slide.</p>
+<p style="margin:0">Thuật ngữ chuyên môn được dịch sang tiếng Việt kèm nguyên bản tiếng Anh trong ngoặc ở lần xuất hiện đầu tiên. Tên riêng, tên tổ chức, tên sách và địa chỉ liên hệ giữ nguyên. Khái niệm trung tâm của diễn giả — <i>hyper-performance</i> — được dịch là “hiệu suất vượt trội”.</p>
+</div>
+
+<section id="s01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Topic 5: Optimise Personal Productivity</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chủ đề 5: Tối ưu năng suất cá nhân</h3>
+<div style="color:var(--en,#56665a)">Assoc. Professor Agnis Stibe<br />RMIT University Vietnam, Saigon South Campus<br />me.grow — RMIT &amp; Zalo</div>
+<div><span>Phó Giáo sư Agnis Stibe</span><br /><span>Đại học RMIT Việt Nam, cơ sở Nam Sài Gòn</span><br />me.grow — RMIT &amp; Zalo</div>
+</div>
+<figure style="margin:10px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p01a.png" alt="Slide tiêu đề me.grow" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Slide tiêu đề của chương trình me.grow.</figcaption>
+</figure>
+</section>
+
+<section id="s02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">Manager productivity challenges (1–5)</span>
+</div>
+<table style="font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1.5px solid #1b2a20">
+<td style="padding:0 8px 7px 0;vertical-align:bottom;width:20%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Challenge</span><br /><span>Thách thức</span></td>
+<td style="padding:0 8px 7px;vertical-align:bottom;width:40%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Typical manager situation</span><br /><span>Tình huống thường gặp của quản lý</span></td>
+<td style="padding:0 0 7px 8px;vertical-align:bottom;width:40%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Productivity problem</span><br /><span>Vấn đề về năng suất</span></td>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">1. Everything feels urgent</span><br /><b style="font-weight:500">1. Mọi việc đều có vẻ khẩn cấp</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Product issue, senior-management request, partner escalation, and team problem arrive simultaneously.</span><br /><span>Sự cố sản phẩm, yêu cầu từ ban lãnh đạo, khiếu nại leo thang từ đối tác và vấn đề của đội ngũ ập đến cùng lúc.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Difficulty distinguishing urgent work from high-impact work.</span><br /><span>Khó phân biệt việc khẩn cấp với việc có tác động lớn.</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">2. Meeting overload</span><br /><b style="font-weight:500">2. Quá tải họp hành</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Calendar is filled with stand-ups, cross-functional meetings, reviews, and ad-hoc discussions.</span><br /><span>Lịch làm việc kín đặc các buổi stand-up, họp liên bộ phận, họp rà soát và trao đổi phát sinh.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Little uninterrupted time for thinking and important decisions.</span><br /><span>Rất ít khoảng thời gian liền mạch để suy nghĩ và ra các quyết định quan trọng.</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">3. Constant Zalo messages</span><br /><b style="font-weight:500">3. Tin nhắn Zalo liên tục</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Team members and stakeholders expect rapid responses throughout the day.</span><br /><span>Thành viên đội ngũ và các bên liên quan mong được phản hồi nhanh suốt cả ngày.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Attention fragmentation and continuous context switching.</span><br /><span>Sự chú ý bị phân mảnh và liên tục phải chuyển đổi bối cảnh công việc.</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">4. Managing upward and downward</span><br /><b style="font-weight:500">4. Quản lý cả cấp trên lẫn cấp dưới</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Senior leaders want fast results while team members need guidance and decisions.</span><br /><span>Lãnh đạo cấp cao muốn có kết quả nhanh, trong khi nhân viên cần được hướng dẫn và cần quyết định.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Manager becomes the execution bottleneck.</span><br /><span>Người quản lý trở thành nút thắt cổ chai trong triển khai.</span></td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">5. Too many decisions</span><br /><b style="font-weight:500">5. Quá nhiều quyết định</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Dozens of small approvals, prioritisation choices, and exceptions reach the manager every day.</span><br /><span>Mỗi ngày có hàng chục phê duyệt nhỏ, lựa chọn ưu tiên và trường hợp ngoại lệ dồn về người quản lý.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Decision fatigue and cognitive overload.</span><br /><span>Mệt mỏi vì ra quyết định và quá tải nhận thức.</span></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">Manager productivity challenges (6–10)</span>
+</div>
+<table style="font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1.5px solid #1b2a20">
+<td style="padding:0 8px 7px 0;vertical-align:bottom;width:20%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Challenge</span><br /><span>Thách thức</span></td>
+<td style="padding:0 8px 7px;vertical-align:bottom;width:40%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Typical manager situation</span><br /><span>Tình huống thường gặp của quản lý</span></td>
+<td style="padding:0 0 7px 8px;vertical-align:bottom;width:40%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Productivity problem</span><br /><span>Vấn đề về năng suất</span></td>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">6. AI creates more work, not less</span><br /><b style="font-weight:500">6. AI tạo thêm việc chứ không bớt việc</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Manager uses AI for reports, summaries, analysis, content, and ideation but constantly checks and revises outputs.</span><br /><span>Người quản lý dùng AI để làm báo cáo, tóm tắt, phân tích, nội dung và ý tưởng, nhưng phải liên tục kiểm tra và chỉnh sửa kết quả.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">AI increases information volume without necessarily increasing value.</span><br /><span>AI làm tăng khối lượng thông tin nhưng không hẳn làm tăng giá trị.</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">7. Knowing what to do but not doing it</span><br /><b style="font-weight:500">7. Biết phải làm gì nhưng không làm</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Manager knows the strategic priorities but spends most of the day responding to immediate demands.</span><br /><span>Người quản lý biết rõ các ưu tiên chiến lược nhưng dành phần lớn thời gian trong ngày để phản ứng với những yêu cầu trước mắt.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Classic Knowledge–Behaviour Gap.</span><br /><span>Đây chính là Khoảng cách Tri thức – Hành vi (Knowledge–Behaviour Gap) kinh điển.</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">8. Delegation vs. “I can do it faster myself”</span><br /><b style="font-weight:500">8. Giao việc và suy nghĩ “tự làm cho nhanh”</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Under deadline pressure, the manager takes work back from employees.</span><br /><span>Dưới áp lực thời hạn, người quản lý lấy lại phần việc đã giao cho nhân viên.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Short-term efficiency creates long-term dependency and overload.</span><br /><span>Hiệu quả ngắn hạn tạo ra sự phụ thuộc và tình trạng quá tải trong dài hạn.</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">9. Cross-functional dependencies</span><br /><b style="font-weight:500">9. Phụ thuộc liên bộ phận</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">A launch requires product, engineering, marketing, data, legal, and commercial teams.</span><br /><span>Một lần ra mắt sản phẩm cần đến các bộ phận sản phẩm, kỹ thuật, marketing, dữ liệu, pháp lý và kinh doanh.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Manager spends excessive cognitive energy coordinating dependencies.</span><br /><span>Người quản lý tiêu tốn quá nhiều năng lượng trí óc cho việc điều phối các mối phụ thuộc.</span></td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">10. Performance vs. wellbeing</span><br /><b style="font-weight:500">10. Hiệu suất và sức khoẻ tinh thần</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">High-growth expectations encourage long hours and permanent availability.</span><br /><span>Kỳ vọng tăng trưởng cao khuyến khích làm việc nhiều giờ và luôn phải sẵn sàng.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Short-term output may undermine sustained hyper-performance.</span><br /><span>Kết quả ngắn hạn có thể làm suy giảm hiệu suất vượt trội bền vững.</span></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">Example</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">EXAMPLE</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">VÍ DỤ</h3>
+<div style="color:var(--en,#56665a)">It is 9:00 AM on Monday. You have planned two hours to prepare a strategically important proposal.<br /><br />By 9:20, you have 34 unread Zalo messages, your director asks for numbers by noon, a key employee needs an urgent decision, another team requests approval, and AI has generated a 15-page analysis you need to review.<br /><br />What do you do next?</div>
+<div><span>Bây giờ là 9:00 sáng thứ Hai. Bạn đã dành sẵn hai tiếng để chuẩn bị một đề xuất quan trọng về mặt chiến lược.</span><br /><br /><span>Đến 9:20, bạn có 34 tin nhắn Zalo chưa đọc, giám đốc yêu cầu số liệu trước buổi trưa, một nhân sự chủ chốt cần một quyết định gấp, một bộ phận khác xin phê duyệt, và AI vừa tạo ra bản phân tích 15 trang mà bạn phải rà soát.</span><br /><br /><span>Bạn sẽ làm gì tiếp theo?</span></div>
+</div>
+</section>
+
+<section id="s05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 05</span>
+<span style="color:#86958a">Example — four decisions</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">EXAMPLE</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">VÍ DỤ</h3>
+<div style="color:var(--en,#56665a)">Make four decisions:<ul style="margin:6px 0 0;padding-left:18px"><li>Do now / Schedule / Delegate or AI-augment / Eliminate or decline.</li></ul><br />Then ask:<ul style="margin:6px 0 0;padding-left:18px"><li>Which of these tasks requires me?</li><li>Which requires another human?</li><li>Which can be handled by AI?</li><li>Which should not be done at all?</li></ul></div>
+<div>Hãy đưa ra bốn quyết định:<ul style="margin:6px 0 0;padding-left:18px"><li>Làm ngay / Xếp lịch / Giao việc hoặc để AI hỗ trợ / Loại bỏ hoặc từ chối.</li></ul><br /><span>Sau đó tự hỏi:</span><ul style="margin:6px 0 0;padding-left:18px"><li>Việc nào nhất thiết cần đến tôi?</li><li>Việc nào cần một người khác làm?</li><li>Việc nào AI có thể đảm nhận?</li><li>Việc nào lẽ ra không nên làm?</li></ul></div>
+</div>
+</section>
+
+<section id="s06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: YOUTUBE</div>
+<div>NGUỒN: YOUTUBE</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide chiếu một đoạn video phỏng vấn Steve Jobs.</i></p>
+</section>
+
+<section id="s07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 07</span>
+<span style="color:#86958a">Wrong shortcuts</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">WRONG SHORTCUTS</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">NHỮNG LỐI TẮT SAI LẦM</h3>
+<div style="color:var(--en,#56665a)">Hình trên slide: “I saw a book called <i>How To Solve 50% Of Your Problems</i>, so I bought two.”</div>
+<div>Hình trên slide: “Tôi thấy một cuốn sách tên là <i>Cách giải quyết 50% vấn đề của bạn</i>, thế là tôi mua hai cuốn.”</div>
+</div>
+<figure style="margin:10px 0 0;max-width:420px;break-inside:avoid">
+<img src="assets/t5/p07a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 08</span>
+<span style="color:#86958a">Visual only</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide không có chữ. Bốn hình chụp những vật dụng “giải pháp” được thiết kế cầu kỳ nhưng vô dụng — minh hoạ cho các lối tắt sai lầm ở slide trước.</i></p>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px;break-inside:avoid">
+<img src="assets/t5/p08a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p08b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p08c.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p08d.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 09</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: YOUTUBE</div>
+<div>NGUỒN: YOUTUBE</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Video một người biểu diễn cầm hai chiếc búa gỗ trên sân khấu tối.</i></p>
+</section>
+
+<section id="s10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">WHAT IS BURNOUT</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">KIỆT SỨC LÀ GÌ</h3>
+</div>
+</section>
+
+<section id="s11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: YOUTUBE<br /><br />Trong hình: “FEELING THE ‘BURN’ — World Health Organization recognizes ‘burnout’ as medical condition”.</div>
+<div><span>NGUỒN: YOUTUBE</span><br /><br /><span>Trong hình: “CẢM GIÁC ‘CHÁY’ — Tổ chức Y tế Thế giới công nhận ‘kiệt sức’ là một tình trạng y tế”.</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p11a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 12</span>
+<span style="color:#86958a">Video — cortisol</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: YOUTUBE<br /><br />Chú thích trong hình: cortisol; blood sugar. “…providing the body with a lot of readily available energy.”</div>
+<div><span>NGUỒN: YOUTUBE</span><br /><br /><span>Chú thích trong hình: cortisol; đường huyết. “…cung cấp cho cơ thể một lượng lớn năng lượng sẵn sàng sử dụng.”</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p12a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 13</span>
+<span style="color:#86958a">Video — adrenaline</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: YOUTUBE<br /><br />Chú thích trong hình: adrenaline; noradrenaline. “Adrenaline and noradrenaline enable the body to perform quickly.”</div>
+<div><span>NGUỒN: YOUTUBE</span><br /><br /><span>Chú thích trong hình: adrenaline; noradrenaline. “Adrenaline và noradrenaline giúp cơ thể phản ứng nhanh.”</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p13a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 14</span>
+<span style="color:#86958a">Human energetic intelligence</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Hình trên slide: “HUMAN ENERGETIC INTELLIGENCE — energy, conversion, infinite, potential, money”. Agnis Stibe, February 02, 2020.</div>
+<div>Hình trên slide: “TRÍ TUỆ NĂNG LƯỢNG CON NGƯỜI — năng lượng, chuyển hoá, vô hạn, tiềm năng, tiền bạc”. Agnis Stibe, ngày 02 tháng 02 năm 2020.</div>
+</div>
+<figure style="margin:10px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p14a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 15</span>
+<span style="color:#86958a">Conservation of energy</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: ONLINE<br /><br />Conservation of energy. “The law of conservation of energy states that <b>energy can neither be created nor destroyed — only converted from one form of energy to another</b>. This means that a system always has the same amount of energy, unless it’s added from the outside.”</div>
+<div><span>NGUỒN: TRỰC TUYẾN</span><br /><br /><span>Bảo toàn năng lượng. “Định luật bảo toàn năng lượng phát biểu rằng </span><b>năng lượng không tự sinh ra cũng không tự mất đi — nó chỉ chuyển từ dạng này sang dạng khác</b>. Điều đó có nghĩa là một hệ luôn có cùng một lượng năng lượng, trừ khi được bổ sung từ bên ngoài.”</div>
+</div>
+<figure style="margin:10px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p15b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 16</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">LOST BALANCE</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">MẤT CÂN BẰNG</h3>
+</div>
+</section>
+
+<section id="s17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 17</span>
+<span style="color:#86958a">Burnout mask</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">BURNOUT MASK</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">CHIẾC MẶT NẠ KIỆT SỨC</h3>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Video diễn giả đưa bàn tay che trước mặt như một chiếc mặt nạ.</i></p>
+<figure style="margin:10px 0 0;max-width:320px;break-inside:avoid">
+<img src="assets/t5/p17a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">My thoughts</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">MY THOUGHTS<br />HYPER PERFORMANCE<br />BURNOUT</div>
+<div><span>SUY NGHĨ CỦA TÔI</span><br /><span>HIỆU SUẤT VƯỢT TRỘI</span><br /><span>KIỆT SỨC</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Hình âm dương: hiệu suất vượt trội và kiệt sức là hai mặt của cùng một thể, do suy nghĩ quyết định.</i></p>
+<figure style="margin:10px 0 0;max-width:240px;break-inside:avoid">
+<img src="assets/t5/p18a.png" alt="" style="display:block;width:100%;height:auto" />
+</figure>
+</section>
+
+<section id="s19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 19</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">PERFORMANCE CHALLENGES</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">NHỮNG THÁCH THỨC VỀ HIỆU SUẤT</h3>
+</div>
+</section>
+
+<section id="s20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 20</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: YOUTUBE</div>
+<div>NGUỒN: YOUTUBE</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Video hình ảnh người tiền sử — bộ não của chúng ta vẫn mang cơ chế phản ứng từ thời nguyên thuỷ.</i></p>
+</section>
+
+<section id="s21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 21</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">REPLACING THOUGHTS</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">THAY THẾ SUY NGHĨ</h3>
+</div>
+</section>
+
+<section id="s22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 22</span>
+<span style="color:#86958a">Visual only</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide không có chữ. Loạt ảnh cá nhân của diễn giả từ thời thơ ấu đến tuổi thiếu niên, kết thúc bằng ảnh mặc áo đấu thể thao.</i></p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px;break-inside:avoid">
+<img src="assets/t5/p22d.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p22b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p22f.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p22a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p22h.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p22c.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p22i.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p22e.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p22g.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 23</span>
+<span style="color:#86958a">I can change</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">I CAN’T CHANGE<br />I CAN CHANGE</div>
+<div><span>TÔI KHÔNG THỂ THAY ĐỔI</span><br /><span>TÔI CÓ THỂ THAY ĐỔI</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:400px;break-inside:avoid">
+<img src="assets/t5/p23a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 24</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">HYPER DAY</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">NGÀY VƯỢT TRỘI</h3>
+</div>
+</section>
+
+<section id="s25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 25</span>
+<span style="color:#86958a">Compounding</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">0.99<sup>365</sup> = 0.03<br />1.01<sup>365</sup> = 37.78</div>
+<div>0,99<sup>365</sup> = 0,03<br />1,01<sup>365</sup> = 37,78</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Mỗi ngày kém đi 1% trong một năm còn lại 3%; mỗi ngày tốt hơn 1% trong một năm tăng gần 38 lần.</i></p>
+</section>
+
+<section id="s26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 26</span>
+<span style="color:#86958a">Neuroplasticity</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">NEUROPLASTICITY<br />SOURCE: ONLINE</div>
+<div><span>TÍNH MỀM DẺO THẦN KINH (neuroplasticity)</span><br /><span>NGUỒN: TRỰC TUYẾN</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:400px;break-inside:avoid">
+<img src="assets/t5/p26a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 27</span>
+<span style="color:#86958a">Relentless honesty</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">RELENTLESS HONESTY</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">TRUNG THỰC KHÔNG KHOAN NHƯỢNG</h3>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Hình hai khối Rubik cùng đồng hồ bấm giờ hiển thị 03:36,61.</i></p>
+<figure style="margin:10px 0 0;max-width:300px;break-inside:avoid">
+<img src="assets/t5/p27a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 28</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: YOUTUBE</div>
+<div>NGUỒN: YOUTUBE</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Video một kỳ thủ Rubik thi đấu tốc độ trên sân khấu.</i></p>
+</section>
+
+<section id="s29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 29</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">HYPER PERFORMANCE</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">HIỆU SUẤT VƯỢT TRỘI</h3>
+</div>
+</section>
+
+<section id="s30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 30</span>
+<span style="color:#86958a">Diagram</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">TIME<br />PERFORMANCE</div>
+<div><span>THỜI GIAN</span><br /><span>HIỆU SUẤT</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Biểu đồ trục hoành là thời gian, trục tung là hiệu suất.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><svg viewBox="0 0 340 176" width="100%" style="display:block;max-width:430px" role="img" aria-label="Biểu đồ hiệu suất theo thời gian"><line x1="34" y1="140" x2="306" y2="140" stroke="#1b2a20" stroke-width="1.5" /><line x1="34" y1="140" x2="34" y2="24" stroke="#1b2a20" stroke-width="1.5" /><path d="M34 132 C 120 128, 190 112, 300 58" fill="none" stroke="var(--ac,#2f6b45)" stroke-width="2" /><text x="336" y="168" text-anchor="end" font-size="10" fill="#68786b">TIME<span> · THỜI GIAN</span></text><text x="4" y="14" font-size="10" fill="#68786b">PERFORMANCE<span> · HIỆU SUẤT</span></text></svg></div>
+</section>
+
+<section id="s31" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 31</span>
+<span style="color:#86958a">Diagram</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">BURNOUT<br />HYPER PERFORMANCE</div>
+<div><span>KIỆT SỨC</span><br /><span>HIỆU SUẤT VƯỢT TRỘI</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Cùng một biểu đồ, nay thêm hai nhánh: đi lên thành hiệu suất vượt trội hoặc đi xuống thành kiệt sức.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><svg viewBox="0 0 520 180" width="100%" style="display:block;max-width:470px" role="img" aria-label="Hai nhánh hiệu suất"><line x1="34" y1="150" x2="300" y2="150" stroke="#1b2a20" stroke-width="1.5" /><line x1="34" y1="150" x2="34" y2="20" stroke="#1b2a20" stroke-width="1.5" /><path d="M34 140 C 90 136, 130 122, 165 106" fill="none" stroke="#1b2a20" stroke-width="2" /><path d="M165 106 C 215 88, 250 60, 286 34" fill="none" stroke="var(--ac,#2f6b45)" stroke-width="2" /><path d="M165 106 C 205 118, 240 132, 286 142" fill="none" stroke="#a5b2a6" stroke-width="2" stroke-dasharray="4 3" /><circle cx="165" cy="106" r="3" fill="#1b2a20" /><text x="294" y="34" font-size="10" fill="var(--ac,#2f6b45)">HYPER PERFORMANCE<span> · HIỆU SUẤT VƯỢT TRỘI</span></text><text x="294" y="150" font-size="10" fill="#86958a">BURNOUT<span> · KIỆT SỨC</span></text></svg></div>
+</section>
+
+<section id="s32" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 32</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">GUIDING ARROWS</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">NHỮNG MŨI TÊN DẪN ĐƯỜNG</h3>
+</div>
+</section>
+
+<section id="s33" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 33</span>
+<span style="color:#86958a">Diagram</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">LATER<br />AS ALWAYS<br />AS USUAL<br />OTHER TIME<br /><br />HYPER PERFORMANCE</div>
+<div><span>ĐỂ SAU</span><br /><span>NHƯ MỌI KHI</span><br /><span>NHƯ THƯỜNG LỆ</span><br /><span>ĐỂ LÚC KHÁC</span><br /><br /><span>HIỆU SUẤT VƯỢT TRỘI</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bốn lối nghĩ quen thuộc kéo đường hiệu suất đi xuống; chỉ một hướng dẫn tới hiệu suất vượt trội.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><svg viewBox="0 0 540 200" width="100%" style="display:block;max-width:480px" role="img" aria-label="Bốn mũi tên đi xuống, một mũi tên đi lên"><circle cx="40" cy="100" r="4" fill="#1b2a20" /><path d="M46 100 L 250 40" stroke="var(--ac,#2f6b45)" stroke-width="2" /><path d="M46 100 L 250 86" stroke="#bccbbb" stroke-width="1.5" /><path d="M46 100 L 250 116" stroke="#bccbbb" stroke-width="1.5" /><path d="M46 100 L 250 146" stroke="#bccbbb" stroke-width="1.5" /><path d="M46 100 L 250 176" stroke="#bccbbb" stroke-width="1.5" /><text x="258" y="44" font-size="10" fill="var(--ac,#2f6b45)">HYPER PERFORMANCE<span> · HIỆU SUẤT VƯỢT TRỘI</span></text><text x="258" y="90" font-size="10" fill="#86958a">LATER<span> · ĐỂ SAU</span></text><text x="258" y="120" font-size="10" fill="#86958a">AS ALWAYS<span> · NHƯ MỌI KHI</span></text><text x="258" y="150" font-size="10" fill="#86958a">AS USUAL<span> · NHƯ THƯỜNG LỆ</span></text><text x="258" y="180" font-size="10" fill="#86958a">OTHER TIME<span> · ĐỂ LÚC KHÁC</span></text></svg></div>
+</section>
+
+<section id="s34" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 34</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: ONLINE<br /><br />Phụ đề trong hình: “So how do you like?”</div>
+<div><span>NGUỒN: TRỰC TUYẾN</span><br /><br /><span>Phụ đề trong hình: “Vậy bạn thấy thế nào?”</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:400px;break-inside:avoid">
+<img src="assets/t5/p34a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s35" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 35</span>
+<span style="color:#86958a">Desire paths</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: ONLINE<br />10 000 : 1<br /><br />Biển báo trong hình: “PLEASE USE SIDEWALK”.<br />Nguồn dẫn trên slide: echristensen42.com/2016/10/07/creating-your-own-pathways-through-the-cloud/usesidewalks/</div>
+<div><span>NGUỒN: TRỰC TUYẾN</span><br />10 000 : 1<br /><br /><span>Biển báo trong hình: “VUI LÒNG ĐI TRÊN VỈA HÈ”.</span><br />Nguồn dẫn trên slide: echristensen42.com/2016/10/07/creating-your-own-pathways-through-the-cloud/usesidewalks/</div>
+</div>
+<figure style="margin:10px 0 0;max-width:420px;break-inside:avoid">
+<img src="assets/t5/p35a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Lối mòn do người đi bộ tự tạo, cắt ngang bãi cỏ bất chấp biển báo.</figcaption>
+</figure>
+</section>
+
+<section id="s36" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 36</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">HUMAN BRAIN</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">BỘ NÃO CON NGƯỜI</h3>
+</div>
+</section>
+
+<section id="s37" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 37</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: ONLINE</div>
+<div>NGUỒN: TRỰC TUYẾN</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Video một diễn giả đang giảng bài trước phông nền vàng.</i></p>
+</section>
+
+<section id="s38" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 38</span>
+<span style="color:#86958a">Kahneman</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide không có chữ ngoài hình: chân dung Daniel Kahneman và bìa sách </i>Thinking, Fast and Slow<i> (Tư duy nhanh và chậm).</i></p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p38a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p38b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s39" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 39</span>
+<span style="color:#86958a">Two systems</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">INTELLIGENT<br />DECISIVE<br />INSTINCTIVE<br />RESISTIVE<br />SOURCE: ONLINE</div>
+<div><span>THÔNG MINH</span><br /><span>QUYẾT ĐOÁN</span><br /><span>BẢN NĂNG</span><br /><span>KHÁNG CỰ</span><br /><span>NGUỒN: TRỰC TUYẾN</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:340px;break-inside:avoid">
+<img src="assets/t5/p39a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s40" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 40</span>
+<span style="color:#86958a">Visual only</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide không có chữ. Ảnh chụp từ trong xe: một chiếc xe điện đang sạc tại trạm sạc nhanh.</i></p>
+<figure style="margin:10px 0 0;max-width:400px;break-inside:avoid">
+<img src="assets/t5/p40a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s41" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 41</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">BRAIN GYM</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">PHÒNG TẬP CHO NÃO</h3>
+</div>
+</section>
+
+<section id="s42" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 42–43</span>
+<span style="color:#86958a">Optical illusions</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Hai slide không có chữ ngoài dòng “SOURCE: ONLINE” (NGUỒN: TRỰC TUYẾN) ở slide 43. Slide 42: ảo ảnh khối Rubik nổi trên mặt bàn. Slide 43: hai ảnh tháp nghiêng Pisa giống hệt nhau nhưng trông như nghiêng khác nhau.</i></p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p42a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p43a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s43" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 44</span>
+<span style="color:#86958a">Visual only</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide không có chữ. Ảnh chụp màn hình bảng tin mạng xã hội với dãy “story” ở đầu trang.</i></p>
+<figure style="margin:10px 0 0;max-width:380px;break-inside:avoid">
+<img src="assets/t5/p44a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s44" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 45–48</span>
+<span style="color:#86958a">Spot the difference</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Bốn slide liên tiếp không có chữ. Mỗi cặp ảnh gần như giống hệt nhau, chỉ khác một chi tiết nhỏ — bài tập quan sát về việc não bỏ sót thay đổi.</i></p>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px;break-inside:avoid">
+<img src="assets/t5/p45a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p46a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p47a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p48a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s45" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 49–50</span>
+<span style="color:#86958a">3D crossing</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Hai slide không có chữ. Vạch sang đường được sơn theo kiểu 3D để người lái nhìn thấy như những khối nổi trên mặt đường, nhờ đó tự động giảm tốc độ.</i></p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p49a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p50a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s46" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 51–52</span>
+<span style="color:#86958a">Checker shadow illusion</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: ONLINE</div>
+<div>NGUỒN: TRỰC TUYẾN</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ảo ảnh ô cờ và bóng đổ: hai ô A và B có cùng một sắc xám nhưng não ta nhìn thấy khác nhau.</i></p>
+<figure style="margin:10px 0 0;max-width:360px;break-inside:avoid">
+<img src="assets/t5/p51b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s47" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 53</span>
+<span style="color:#86958a">Congratulations</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">CONGRATULATIONS<br />SOURCE: ONLINE</div>
+<div><span>XIN CHÚC MỪNG</span><br /><span>NGUỒN: TRỰC TUYẾN</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Hình bộ não sáng lên — phần thưởng cho người vừa vượt qua loạt bài tập nhận thức.</i></p>
+</section>
+
+<section id="s48" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 54</span>
+<span style="color:#86958a">Visual only</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide không có chữ. Hai khối xếp hình: một khối Rubik quen thuộc và một khối Megaminx phức tạp hơn.</i></p>
+<figure style="margin:10px 0 0;max-width:340px;break-inside:avoid">
+<img src="assets/t5/p54a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s49" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 55</span>
+<span style="color:#86958a">Human + AI matrix</span>
+</div>
+<div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin:14px 0 4px;break-inside:avoid;border:1.5px solid #9fb8a2;border-radius:10px;background:#fbfdf9;padding:14px 16px 12px 10px"><div style="display:grid;grid-template-rows:1fr 1fr;gap:8px"><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"></span></div><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"></span></div></div><div style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:1fr;gap:8px"><div style="background:#dcebd3;border:1px solid #9fc49a;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">TRÍ TUỆ HỖ TRỢ</b></div><div style="font-size:13px;line-height:1.55">Hỗ trợ con người ra quyết định và hành động.</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #9fc49a;padding-top:6px"><b>ASSISTED INTELLIGENCE</b> Assistance in making decisions and taking actions.</div></div><div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">TỰ ĐỘNG HOÁ</b></div><div style="font-size:13px;line-height:1.55">Tự động hoá các tác vụ lặp đi lặp lại.</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>AUTOMATION</b> Automation of routine tasks.</div></div><div style="background:#f9eee3;border:1px solid #e6cdb3;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">TRÍ TUỆ TĂNG CƯỜNG</b></div><div style="font-size:13px;line-height:1.55">Tự động hoá việc ra quyết định của con người.</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #e6cdb3;padding-top:6px"><b>AUGMENTED INTELLIGENCE</b> Human decision making automation.</div></div><div style="background:#f2f2ee;border:1px solid #dcdcd4;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">TRÍ TUỆ TỰ CHỦ</b></div><div style="font-size:13px;line-height:1.55">Thích ứng với các tình huống khác nhau, hành động không cần con người hỗ trợ.</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #dcdcd4;padding-top:6px"><b>AUTONOMOUS INTELLIGENCE</b> Adaptation to different situations, acting without human assistance.</div></div></div><div></div><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;border-top:1.5px solid #86958a;padding-top:6px"><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center">Con người + AI · Human + AI</span><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center">AI</span></div></div>
+<figure style="margin:10px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p55a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s50" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 56</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: ONLINE</div>
+<div>NGUỒN: TRỰC TUYẾN</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Video về nhận diện khuôn mặt trong cửa hàng.</i></p>
+</section>
+
+<section id="s51" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 57</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">EVOLVING INTELLIGENCE</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">TRÍ TUỆ TIẾN HOÁ</h3>
+</div>
+</section>
+
+<section id="s52" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 58</span>
+<span style="color:#86958a">Intelligence over time</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">TIME → INTELLIGENCE<br /><br />GESTURES · SPEAKING · DRAWINGS · WRITING · PRINTING · LIBRARIES · INTERNET · AI</div>
+<div><span>THỜI GIAN → TRÍ TUỆ</span><br /><br /><span>CỬ CHỈ</span><span> · LỜI NÓI</span><span> · HÌNH VẼ</span><span> · CHỮ VIẾT</span><span> · IN ẤN</span><span> · THƯ VIỆN</span> · INTERNET · AI</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Đường cong đi lên: mỗi bước tiến của công nghệ lưu trữ và truyền tải lại nâng mức trí tuệ chung của loài người.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><svg viewBox="0 0 360 188" width="100%" style="display:block;max-width:460px" role="img" aria-label="Đường cong trí tuệ theo thời gian"><line x1="30" y1="150" x2="345" y2="150" stroke="#1b2a20" stroke-width="1.5" /><line x1="30" y1="150" x2="30" y2="20" stroke="#1b2a20" stroke-width="1.5" /><path d="M30 146 C 150 144, 240 130, 340 26" fill="none" stroke="var(--ac,#2f6b45)" stroke-width="2" /><circle cx="60" cy="145" r="2.5" fill="#1b2a20" /><circle cx="105" cy="143" r="2.5" fill="#1b2a20" /><circle cx="150" cy="140" r="2.5" fill="#1b2a20" /><circle cx="195" cy="135" r="2.5" fill="#1b2a20" /><circle cx="235" cy="128" r="2.5" fill="#1b2a20" /><circle cx="275" cy="113" r="2.5" fill="#1b2a20" /><circle cx="310" cy="80" r="2.5" fill="#1b2a20" /><circle cx="336" cy="34" r="3.5" fill="var(--ac,#2f6b45)" /><text x="356" y="184" text-anchor="end" font-size="10" fill="#68786b">TIME<span> · THỜI GIAN</span></text><text x="4" y="14" font-size="10" fill="#68786b">INTELLIGENCE<span> · TRÍ TUỆ</span></text></svg><p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a"><span>Các mốc trên đường cong: cử chỉ</span><span> · lời nói</span><span> · hình vẽ</span><span> · chữ viết</span><span> · in ấn</span><span> · thư viện</span> · internet · AI.</p></div>
+</section>
+
+<section id="s53" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 59</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: ONLINE</div>
+<div>NGUỒN: TRỰC TUYẾN</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Video một người dẫn chuyện do AI tạo sinh.</i></p>
+</section>
+
+<section id="s54" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 60</span>
+<span style="color:#86958a">Who is next?</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">? ? ?<br />SOURCE: ONLINE</div>
+<div>? ? ?<br /><span>NGUỒN: TRỰC TUYẾN</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Chân dung ba nhà sáng lập công nghệ, tiếp theo là ba dấu hỏi: ai sẽ là người kế tiếp.</i></p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p60a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p60b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p60c.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s55" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 61</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">HIGH ACCURACY DECISION MAKING</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">RA QUYẾT ĐỊNH VỚI ĐỘ CHÍNH XÁC CAO</h3>
+</div>
+</section>
+
+<section id="s56" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 62</span>
+<span style="color:#86958a">Decision model</span>
+</div>
+<div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="text-align:center;line-height:1.35;margin-bottom:12px"><div style="font-weight:700;color:#1b2a20;letter-spacing:.02em">A Decision-Making Model That Combines the Power of AI and Human Judgment</div><div style="font-weight:700">Một mô hình ra quyết định kết hợp sức mạnh của AI và phán đoán con người</div></div><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end">
+<div style="flex:3 1 300px;border:1.5px dashed #2a6fd6;border-radius:10px;padding:8px 10px"><div style="text-align:center;line-height:1.3;margin-bottom:8px"><div style="color:var(--en,#56665a)">Machines</div><div style="font-weight:700">Máy móc</div></div><div style="display:flex;gap:6px;align-items:center"><div style="flex:1;min-width:0"><div style="background:#2a6fd6;color:#fff;border-radius:8px;padding:6px 10px;line-height:1.3;text-align:center;font-size:12.5px"><div style="font-weight:700">Big data</div><div>Dữ liệu lớn</div></div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">→</div><div style="flex:1;min-width:0"><div style="background:#2a6fd6;color:#fff;border-radius:8px;padding:6px 10px;line-height:1.3;text-align:center;font-size:12.5px"><div style="font-weight:700">AI</div><div>AI</div></div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">→</div><div style="flex:1;min-width:0"><div style="background:#2a6fd6;color:#fff;border-radius:8px;padding:6px 10px;line-height:1.3;text-align:center;font-size:12.5px"><div style="font-weight:700">Possible actions</div><div>Các phương án hành động</div></div></div></div></div>
+<div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">→</div>
+<div style="flex:1 1 120px;display:flex;flex-direction:column;gap:4px;align-items:stretch"><div style="background:#2a6fd6;color:#fff;border-radius:8px;padding:6px 10px;line-height:1.3;text-align:center;font-size:12.5px"><div style="font-weight:700">Other info (nondigital)</div><div>Thông tin khác (phi số hoá)</div></div><div style="text-align:center;color:#86958a;font-weight:700">↓</div><div style="background:#2a6fd6;color:#fff;border-radius:8px;padding:6px 10px;line-height:1.3;text-align:center;font-size:12.5px"><div style="font-weight:700">Human judgment</div><div>Phán đoán của con người</div></div></div>
+<div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">→</div>
+<div style="flex:1 1 110px"><div style="background:#2a6fd6;color:#fff;border-radius:8px;padding:6px 10px;line-height:1.3;text-align:center;font-size:12.5px"><div style="font-weight:700">Business decisions</div><div>Quyết định kinh doanh</div></div></div>
+</div><div style="line-height:1.4;margin-top:10px;font-size:12px"><div style="color:var(--en,#56665a)">Source: Eric Colson, HBR.</div><div>Nguồn: Eric Colson, HBR.</div></div></div>
+<figure style="margin:10px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p62a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s57" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 63</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: ONLINE</div>
+<div>NGUỒN: TRỰC TUYẾN</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Video một cuộc đối thoại giữa con người và robot hình người.</i></p>
+</section>
+
+<section id="s58" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 64</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">SUSTAINABLE HYPER PERFORMANCE</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">HIỆU SUẤT VƯỢT TRỘI BỀN VỮNG</h3>
+</div>
+</section>
+
+<section id="s59" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 65</span>
+<span style="color:#86958a">The gap</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">KNOWLEDGE<br />BEHAVIOR</div>
+<div><span>TRI THỨC</span><br /><span>HÀNH VI</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Khoảng cách giữa điều ta biết và điều ta thực sự làm.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><div style="display:grid;gap:8px;font-size:11px"><div style="display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center"><span style="color:var(--en,#56665a)">KNOWLEDGE<br /><b style="font-weight:500;color:#1b2a20">TRI THỨC</b></span><div style="height:14px;background:var(--ac,#2f6b45)"></div></div><div style="display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center"><span style="color:var(--en,#56665a)">BEHAVIOR<br /><b style="font-weight:500;color:#1b2a20">HÀNH VI</b></span><div style="display:grid;grid-template-columns:38% 1fr;align-items:center;gap:6px"><div style="height:14px;background:#1b2a20"></div><span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a"><span>Khoảng cách</span> · the gap</span></div></div></div></div>
+</section>
+
+<section id="s60" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 66</span>
+<span style="color:#86958a">Visual only</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide không có chữ. Ảnh một đoạn cao tốc kẹt cứng xe.</i></p>
+<figure style="margin:10px 0 0;max-width:420px;break-inside:avoid">
+<img src="assets/t5/p66a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s61" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 67</span>
+<span style="color:#86958a">Knowledge–Behaviour Gap model</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">KNOWLEDGE → ACCEPTANCE → INTENTION → BEHAVIOR</div>
+<div>TRI THỨC → CHẤP NHẬN → Ý ĐỊNH → HÀNH VI</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bốn chặng được minh hoạ bằng một chiếc gậy lần lượt xoay đổi hướng trên các slide liên tiếp.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:11.5px"><div style="border:1px solid #d3dfd0;padding:6px 10px"><span style="color:var(--en,#56665a)">KNOWLEDGE</span><br /><b style="font-weight:500">TRI THỨC</b></div><span style="color:var(--ac,#2f6b45)">→</span><div style="border:1px solid #d3dfd0;padding:6px 10px"><span style="color:var(--en,#56665a)">ACCEPTANCE</span><br /><b style="font-weight:500">CHẤP NHẬN</b></div><span style="color:var(--ac,#2f6b45)">→</span><div style="border:1px solid #d3dfd0;padding:6px 10px"><span style="color:var(--en,#56665a)">INTENTION</span><br /><b style="font-weight:500">Ý ĐỊNH</b></div><span style="color:var(--ac,#2f6b45)">→</span><div style="border:1px solid #d3dfd0;padding:6px 10px"><span style="color:var(--en,#56665a)">BEHAVIOR</span><br /><b style="font-weight:500">HÀNH VI</b></div></div></div>
+</section>
+
+<section id="s62" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 68</span>
+<span style="color:#86958a">Research paper</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Knowledge Behavior Gap Model: An Application for Technology Acceptance</div>
+<div>Mô hình Khoảng cách Tri thức – Hành vi: Ứng dụng cho việc chấp nhận công nghệ</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide chiếu trang đầu của bài báo khoa học; phần tóm tắt không đọc được ở độ phân giải này nên không dịch.</i></p>
+<figure style="margin:10px 0 0;max-width:400px;break-inside:avoid">
+<img src="assets/t5/p68b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s63" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 69</span>
+<span style="color:#86958a">Video</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide không có chữ. Đoạn phim hai người đàn ông đứng giữa vùng đất khô cằn.</i></p>
+</section>
+
+<section id="s64" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 70–71</span>
+<span style="color:#86958a">Time matrix</span>
+</div>
+<div style="grid-column:1/-1;display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin:14px 0 4px;break-inside:avoid;border:1.5px solid #9fb8a2;border-radius:10px;background:#fbfdf9;padding:14px 16px 12px 10px">
+<div style="display:grid;grid-template-rows:1fr 1fr;gap:8px"><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Quan trọng</span> · Important</span></div><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Không quan trọng</span> · Not important</span></div></div>
+<div style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:1fr;gap:8px">
+<div style="background:#f9eee3;border:1px solid #e6cdb3;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Q1<span> · Điều cần thiết</span></b><span style="font-size:10.5px;color:#56665a">Làm trước</span></div>
+<div style="font-size:13px;line-height:1.55">Khủng hoảng. Họp khẩn. Hạn chót sát nút. Vấn đề cấp bách. Sự cố bất ngờ.</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #e6cdb3;padding-top:6px"><b>Q1 · Necessity</b> Crises. Emergency meetings. Last-minute deadlines. Pressing problems. Unforeseen events.</div>
+</div>
+<div style="background:#dcebd3;border:1px solid #9fc49a;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Q2<span> · Điều hiệu quả</span></b><span style="font-size:10.5px;color:#56665a">Xếp lịch</span></div>
+<div style="font-size:13px;line-height:1.55">Làm việc chủ động. Mục tiêu quan trọng. Tư duy sáng tạo. Lập kế hoạch và phòng ngừa. Xây dựng quan hệ. Học hỏi và tái tạo. Nghỉ ngơi.</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #9fc49a;padding-top:6px"><b>Q2 · Effectiveness</b> Proactive work. Important goals. Creative thinking. Planning and prevention. Relationship building. Learning and renewal. Recreation.</div>
+</div>
+<div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Q3<span> · Điều gây xao nhãng</span></b><span style="font-size:10.5px;color:#56665a">Giao việc</span></div>
+<div style="font-size:13px;line-height:1.55">Những gián đoạn không cần thiết. Báo cáo thừa. Cuộc họp không liên quan. Việc vặt của người khác. Email, đầu việc, cuộc gọi, thông báo trạng thái không quan trọng.</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>Q3 · Distraction</b> Needless interruptions. Unnecessary reports. Irrelevant meetings. Other people’s minor issues. Unimportant email, tasks, phone calls, status posts, etc.</div>
+</div>
+<div style="background:#f2f2ee;border:1px solid #dcdcd4;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Q4<span> · Điều lãng phí</span></b><span style="font-size:10.5px;color:#56665a">Loại bỏ</span></div>
+<div style="font-size:13px;line-height:1.55">Việc vụn vặt. Hoạt động né tránh. Thư giãn quá đà, xem tivi, chơi game, lướt mạng. Việc giết thời gian. Chuyện phiếm.</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #dcdcd4;padding-top:6px"><b>Q4 · Waste</b> Trivial work. Avoidance activities. Excessive relaxation, television, gaming, internet. Time-wasters. Gossip.</div>
+</div>
+
+</div>
+<div></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;border-top:1.5px solid #86958a;padding-top:6px"><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Khẩn cấp</span> · Urgent</span><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Không khẩn cấp</span> · Not urgent</span></div>
+</div>
+
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:12px">
+<div style="color:var(--en,#56665a)">The FranklinCovey Time Matrix®. “The Time Matrix is a tool for triaging every activity, moving the Thinking brain, through a lens towards things that are important — but not urgent (the Q2 quadrant of extraordinary productivity). The more time we can spend in Q2, the less we’ll be dealing with other people’s urgencies.”<br /><br />What Is the Eisenhower Matrix? A Complete Guide to Prioritization. Urgent &amp; Important (Do First) · Not Urgent &amp; Important (Schedule) · Urgent &amp; Not Important (Delegate) · Not Urgent &amp; Not Important (Eliminate).</div>
+<div><span>Ma trận Thời gian FranklinCovey®. “Ma trận Thời gian là công cụ để phân loại mọi hoạt động, đưa phần não tư duy hướng về những việc quan trọng nhưng không khẩn cấp (ô Q2 của năng suất phi thường). Càng dành nhiều thời gian cho Q2, ta càng ít phải chạy theo việc gấp của người khác.”</span><br /><br /><span>Ma trận Eisenhower là gì? Hướng dẫn đầy đủ về sắp xếp ưu tiên. Khẩn cấp &amp; Quan trọng (Làm trước) · Không khẩn cấp &amp; Quan trọng (Xếp lịch) · Khẩn cấp &amp; Không quan trọng (Giao việc) · Không khẩn cấp &amp; Không quan trọng (Loại bỏ).</span></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p70b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t5/p71b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s65" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 72</span>
+<span style="color:#86958a">Getting Things Done</span>
+</div>
+<div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="text-align:center;line-height:1.35;margin-bottom:12px"><div style="font-weight:700;color:#1b2a20;letter-spacing:.02em">Getting Things Done (GTD) Method</div><div style="font-weight:700">Phương pháp Getting Things Done (GTD)</div></div><div style="display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start"><div style="flex:1 1 100px;min-width:0;display:flex;flex-direction:column;gap:4px"><div style="border-radius:14px;background:#0ea5d9;color:#fff;border:1px solid transparent;padding:8px;text-align:center;line-height:1.3;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:center"><div style="opacity:.85">Is the task actionable?</div><div style="font-weight:600">Việc này có hành động được không?</div></div><div style="text-align:center;font-size:10.5px;line-height:1.2;color:#56665a">No<span> · Không</span><br /><b style="font-size:15px;color:#86958a">↓</b></div><div style="border-radius:14px;background:#fff;color:#1b2a20;border:1px solid #9aa4ad;padding:8px;text-align:center;line-height:1.3;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:center"><div style="color:var(--en,#56665a)">Trash it / Do it Someday</div><div style="font-weight:600">Bỏ đi / Để làm một lúc nào đó</div></div></div><div style="flex:0 0 auto;align-self:flex-start;margin-top:22px;text-align:center;font-size:10.5px;line-height:1.2;color:#56665a"><div>Yes<span> · Có</span></div><div style="font-weight:700;font-size:16px;color:#86958a">→</div></div><div style="flex:1 1 100px;min-width:0;display:flex;flex-direction:column;gap:4px"><div style="border-radius:14px;background:#2b2f36;color:#fff;border:1px solid transparent;padding:8px;text-align:center;line-height:1.3;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:center"><div style="opacity:.85">Just one thing to do?</div><div style="font-weight:600">Chỉ là một việc duy nhất?</div></div><div style="text-align:center;font-size:10.5px;line-height:1.2;color:#56665a">No<span> · Không</span><br /><b style="font-size:15px;color:#86958a">↓</b></div><div style="border-radius:14px;background:#fff;color:#1b2a20;border:1px solid #9aa4ad;padding:8px;text-align:center;line-height:1.3;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:center"><div style="color:var(--en,#56665a)">Create a project</div><div style="font-weight:600">Lập thành một dự án</div></div></div><div style="flex:0 0 auto;align-self:flex-start;margin-top:22px;text-align:center;font-size:10.5px;line-height:1.2;color:#56665a"><div>Yes<span> · Có</span></div><div style="font-weight:700;font-size:16px;color:#86958a">→</div></div><div style="flex:1 1 100px;min-width:0;display:flex;flex-direction:column;gap:4px"><div style="border-radius:14px;background:#2b2f36;color:#fff;border:1px solid transparent;padding:8px;text-align:center;line-height:1.3;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:center"><div style="opacity:.85">Does it take more than 2 minutes?</div><div style="font-weight:600">Có mất hơn 2 phút không?</div></div><div style="text-align:center;font-size:10.5px;line-height:1.2;color:#56665a">No<span> · Không</span><br /><b style="font-size:15px;color:#86958a">↓</b></div><div style="border-radius:14px;background:#fff;color:#1b2a20;border:1px solid #9aa4ad;padding:8px;text-align:center;line-height:1.3;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:center"><div style="color:var(--en,#56665a)">Do it now</div><div style="font-weight:600">Làm ngay</div></div></div><div style="flex:0 0 auto;align-self:flex-start;margin-top:22px;text-align:center;font-size:10.5px;line-height:1.2;color:#56665a"><div>Yes<span> · Có</span></div><div style="font-weight:700;font-size:16px;color:#86958a">→</div></div><div style="flex:1 1 100px;min-width:0;display:flex;flex-direction:column;gap:4px"><div style="border-radius:14px;background:#2b2f36;color:#fff;border:1px solid transparent;padding:8px;text-align:center;line-height:1.3;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:center"><div style="opacity:.85">Do I have to do it?</div><div style="font-weight:600">Tôi có nhất thiết phải làm không?</div></div><div style="text-align:center;font-size:10.5px;line-height:1.2;color:#56665a">No<span> · Không</span><br /><b style="font-size:15px;color:#86958a">↓</b></div><div style="border-radius:14px;background:#fff;color:#1b2a20;border:1px solid #9aa4ad;padding:8px;text-align:center;line-height:1.3;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:center"><div style="color:var(--en,#56665a)">Delegate to someone else</div><div style="font-weight:600">Giao cho người khác</div></div></div><div style="flex:0 0 auto;align-self:flex-start;margin-top:22px;text-align:center;font-size:10.5px;line-height:1.2;color:#56665a"><div>Yes<span> · Có</span></div><div style="font-weight:700;font-size:16px;color:#86958a">→</div></div><div style="flex:1 1 100px;min-width:0;display:flex;flex-direction:column;gap:4px"><div style="border-radius:14px;background:#2b2f36;color:#fff;border:1px solid transparent;padding:8px;text-align:center;line-height:1.3;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:center"><div style="opacity:.85">Is there a due date?</div><div style="font-weight:600">Có hạn chót không?</div></div><div style="text-align:center;font-size:10.5px;line-height:1.2;color:#56665a">No<span> · Không</span><br /><b style="font-size:15px;color:#86958a">↓</b></div><div style="border-radius:14px;background:#fff;color:#1b2a20;border:1px solid #9aa4ad;padding:8px;text-align:center;line-height:1.3;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:center"><div style="color:var(--en,#56665a)">Move to Next actions list</div><div style="font-weight:600">Đưa vào danh sách việc kế tiếp</div></div></div><div style="flex:0 0 auto;align-self:flex-start;margin-top:22px;text-align:center;font-size:10.5px;line-height:1.2;color:#56665a"><div>Yes<span> · Có</span></div><div style="font-weight:700;font-size:16px;color:#86958a">→</div></div><div style="flex:1 1 100px;min-width:0"><div style="border-radius:14px;background:#fff;color:#1b2a20;border:1px solid #9aa4ad;padding:8px;text-align:center;line-height:1.3;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:center"><div style="color:var(--en,#56665a)">Add to calendar</div><div style="font-weight:600">Đưa vào lịch</div></div></div></div></div>
+<figure style="margin:10px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p72b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s66" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 73</span>
+<span style="color:#86958a">Key takeaways (1)</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">KEY TAKEAWAYS</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">NHỮNG ĐIỀU CẦN NHỚ</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li><b>Productivity is about impact, not activity.</b> Focus limited attention and energy on work that creates the greatest value.</li><li><b>Prioritization means deliberate trade-offs.</b> Exceptional performance requires deciding what not to do, defer, delegate, or automate.</li><li><b>Protect attention as a strategic resource.</b> Reduce interruptions, task switching, and low-value information consumption.</li><li><b>Manage cognitive load.</b> Simplify decisions, externalise routine thinking, and create space for complex judgment and creativity.</li><li><b>Use Human Artificial Intelligence (HAI).</b> Combine distinctly human strengths — judgment, purpose, creativity, empathy, and accountability, with AI’s speed, analytical capacity, and scalability.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li><b>Năng suất là tác động, không phải hoạt động.</b> Hãy dồn sự chú ý và năng lượng có hạn vào công việc tạo ra giá trị lớn nhất.</li><li><b>Ưu tiên nghĩa là đánh đổi có chủ đích.</b> Hiệu suất xuất sắc đòi hỏi phải quyết định việc gì không làm, việc gì hoãn lại, giao đi hoặc tự động hoá.</li><li><b>Bảo vệ sự chú ý như một nguồn lực chiến lược.</b> Giảm gián đoạn, giảm chuyển đổi công việc và giảm tiêu thụ thông tin ít giá trị.</li><li><b>Quản lý tải nhận thức.</b> Đơn giản hoá quyết định, đưa những suy nghĩ thường nhật ra ngoài đầu, và tạo khoảng trống cho phán đoán phức tạp và sáng tạo.</li><li><b>Vận dụng Trí tuệ Nhân tạo mang tính Người (HAI).</b> Kết hợp những thế mạnh riêng có của con người — phán đoán, mục đích, sáng tạo, thấu cảm và tinh thần trách nhiệm — với tốc độ, năng lực phân tích và khả năng mở rộng của AI.</li></ul></div>
+</div>
+</section>
+
+<section id="s67" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 74</span>
+<span style="color:#86958a">Key takeaways (2)</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">KEY TAKEAWAYS</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">NHỮNG ĐIỀU CẦN NHỚ</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li><b>Use AI to augment, not replace, judgment.</b> Delegate appropriate cognitive work to AI while retaining human ownership of consequential decisions.</li><li><b>Turn priorities into behaviors.</b> Strategic intentions create results only when translated into specific, repeatable daily actions.</li><li><b>Design the environment for execution.</b> Good systems, routines, prompts, and defaults reduce dependence on motivation and willpower.</li><li><b>Close the Knowledge Behavior Gap.</b> Knowing what matters is insufficient; productivity comes from consistently doing what matters.</li><li><b>Optimize for sustainable hyper-performance.</b> The goal is not maximum short-term output, but sustained high-value performance without unnecessary cognitive overload or long-term harm.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li><b>Dùng AI để tăng cường chứ không thay thế phán đoán.</b> Giao cho AI phần việc trí óc phù hợp, nhưng con người vẫn giữ quyền quyết định với những việc hệ trọng.</li><li><b>Biến ưu tiên thành hành vi.</b> Ý định chiến lược chỉ tạo ra kết quả khi được chuyển thành những hành động cụ thể, lặp lại mỗi ngày.</li><li><b>Thiết kế môi trường để thực thi.</b> Hệ thống, thói quen, lời nhắc và thiết lập mặc định tốt sẽ giảm sự lệ thuộc vào động lực và ý chí.</li><li><b>Khép lại Khoảng cách Tri thức – Hành vi.</b> Biết điều gì quan trọng là chưa đủ; năng suất đến từ việc kiên trì làm điều quan trọng đó.</li><li><b>Tối ưu cho hiệu suất vượt trội bền vững.</b> Mục tiêu không phải là sản lượng tối đa trong ngắn hạn, mà là duy trì hiệu suất giá trị cao mà không gây quá tải nhận thức hay tổn hại lâu dài.</li></ul></div>
+</div>
+</section>
+
+<section id="s68" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 75</span>
+<span style="color:#86958a">Core message</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">CORE MESSAGE</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">THÔNG ĐIỆP CỐT LÕI</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Do less of what consumes attention.</li><li>Do more of what creates value.</li><li>Use AI to expand capability while keeping human judgment in control.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Làm ít hơn những việc ngốn sự chú ý.</li><li>Làm nhiều hơn những việc tạo ra giá trị.</li><li>Dùng AI để mở rộng năng lực, nhưng vẫn để phán đoán của con người nắm quyền kiểm soát.</li></ul></div>
+</div>
+</section>
+
+<section id="s69" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 76–77</span>
+<span style="color:#86958a">Closing visuals</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide 76: đoạn phim tua nhanh dòng xe trong thành phố. Slide 77: hình âm dương quay lại, kèm ảnh chụp kênh YouTube của diễn giả — AgnisStibe.com, hyper-performance.</i></p>
+<div style="display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:start;margin-top:10px;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p77a.png" alt="" style="display:block;width:100%;height:auto" />
+<img src="assets/t5/p77b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s70" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 78</span>
+<span style="color:#86958a">Closing</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Topic 5: Optimise Personal Productivity<br />Assoc. Professor Agnis Stibe<br />RMIT University Vietnam, Saigon South Campus</div>
+<div><span>Chủ đề 5: Tối ưu năng suất cá nhân</span><br /><span>Phó Giáo sư Agnis Stibe</span><br /><span>Đại học RMIT Việt Nam, cơ sở Nam Sài Gòn</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t5/p78a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Slide kết, dùng lại mẫu me.grow của slide mở đầu.</figcaption>
+</figure>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 5 · Optimise Personal Productivity</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t5.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Chủ đề 5: Tối ưu năng suất cá nhân","lv":0,"en":"Topic 5: Optimise Personal Productivity","vi":"Chủ đề 5: Tối ưu năng suất cá nhân"},
+  {"id":"s02","num":"02","label":"Manager productivity challenges (1–5)","lv":0,"en":"Manager productivity challenges (1–5)","vi":""},
+  {"id":"s03","num":"03","label":"Manager productivity challenges (6–10)","lv":0,"en":"Manager productivity challenges (6–10)","vi":""},
+  {"id":"s04","num":"04","label":"VÍ DỤ","lv":0,"en":"EXAMPLE","vi":"VÍ DỤ"},
+  {"id":"s05","num":"05","label":"VÍ DỤ","lv":0,"en":"EXAMPLE","vi":"VÍ DỤ"},
+  {"id":"s06","num":"06","label":"Video","lv":0,"en":"Video","vi":""},
+  {"id":"s07","num":"07","label":"NHỮNG LỐI TẮT SAI LẦM","lv":0,"en":"WRONG SHORTCUTS","vi":"NHỮNG LỐI TẮT SAI LẦM"},
+  {"id":"s08","num":"08","label":"Visual only","lv":0,"en":"Visual only","vi":""},
+  {"id":"s09","num":"09","label":"Video","lv":0,"en":"Video","vi":""},
+  {"id":"s10","num":"10","label":"KIỆT SỨC LÀ GÌ","lv":0,"en":"WHAT IS BURNOUT","vi":"KIỆT SỨC LÀ GÌ"},
+  {"id":"s11","num":"11","label":"Video","lv":0,"en":"Video","vi":""},
+  {"id":"s12","num":"12","label":"Video — cortisol","lv":0,"en":"Video — cortisol","vi":""},
+  {"id":"s13","num":"13","label":"Video — adrenaline","lv":0,"en":"Video — adrenaline","vi":""},
+  {"id":"s14","num":"14","label":"Human energetic intelligence","lv":0,"en":"Human energetic intelligence","vi":""},
+  {"id":"s15","num":"15","label":"Conservation of energy","lv":0,"en":"Conservation of energy","vi":""},
+  {"id":"s16","num":"16","label":"MẤT CÂN BẰNG","lv":0,"en":"LOST BALANCE","vi":"MẤT CÂN BẰNG"},
+  {"id":"s17","num":"17","label":"CHIẾC MẶT NẠ KIỆT SỨC","lv":0,"en":"BURNOUT MASK","vi":"CHIẾC MẶT NẠ KIỆT SỨC"},
+  {"id":"s18","num":"18","label":"My thoughts","lv":0,"en":"My thoughts","vi":""},
+  {"id":"s19","num":"19","label":"NHỮNG THÁCH THỨC VỀ HIỆU SUẤT","lv":0,"en":"PERFORMANCE CHALLENGES","vi":"NHỮNG THÁCH THỨC VỀ HIỆU SUẤT"},
+  {"id":"s20","num":"20","label":"Video","lv":0,"en":"Video","vi":""},
+  {"id":"s21","num":"21","label":"THAY THẾ SUY NGHĨ","lv":0,"en":"REPLACING THOUGHTS","vi":"THAY THẾ SUY NGHĨ"},
+  {"id":"s22","num":"22","label":"Visual only","lv":0,"en":"Visual only","vi":""},
+  {"id":"s23","num":"23","label":"I can change","lv":0,"en":"I can change","vi":""},
+  {"id":"s24","num":"24","label":"NGÀY VƯỢT TRỘI","lv":0,"en":"HYPER DAY","vi":"NGÀY VƯỢT TRỘI"},
+  {"id":"s25","num":"25","label":"Compounding","lv":0,"en":"Compounding","vi":""},
+  {"id":"s26","num":"26","label":"Neuroplasticity","lv":0,"en":"Neuroplasticity","vi":""},
+  {"id":"s27","num":"27","label":"TRUNG THỰC KHÔNG KHOAN NHƯỢNG","lv":0,"en":"RELENTLESS HONESTY","vi":"TRUNG THỰC KHÔNG KHOAN NHƯỢNG"},
+  {"id":"s28","num":"28","label":"Video","lv":0,"en":"Video","vi":""},
+  {"id":"s29","num":"29","label":"HIỆU SUẤT VƯỢT TRỘI","lv":0,"en":"HYPER PERFORMANCE","vi":"HIỆU SUẤT VƯỢT TRỘI"},
+  {"id":"s30","num":"30","label":"Diagram","lv":0,"en":"Diagram","vi":""},
+  {"id":"s31","num":"31","label":"Diagram","lv":0,"en":"Diagram","vi":""},
+  {"id":"s32","num":"32","label":"NHỮNG MŨI TÊN DẪN ĐƯỜNG","lv":0,"en":"GUIDING ARROWS","vi":"NHỮNG MŨI TÊN DẪN ĐƯỜNG"},
+  {"id":"s33","num":"33","label":"Diagram","lv":0,"en":"Diagram","vi":""},
+  {"id":"s34","num":"34","label":"Video","lv":0,"en":"Video","vi":""},
+  {"id":"s35","num":"35","label":"Desire paths","lv":0,"en":"Desire paths","vi":""},
+  {"id":"s36","num":"36","label":"BỘ NÃO CON NGƯỜI","lv":0,"en":"HUMAN BRAIN","vi":"BỘ NÃO CON NGƯỜI"},
+  {"id":"s37","num":"37","label":"Video","lv":0,"en":"Video","vi":""},
+  {"id":"s38","num":"38","label":"Kahneman","lv":0,"en":"Kahneman","vi":""},
+  {"id":"s39","num":"39","label":"Two systems","lv":0,"en":"Two systems","vi":""},
+  {"id":"s40","num":"40","label":"Visual only","lv":0,"en":"Visual only","vi":""},
+  {"id":"s41","num":"41","label":"PHÒNG TẬP CHO NÃO","lv":0,"en":"BRAIN GYM","vi":"PHÒNG TẬP CHO NÃO"},
+  {"id":"s42","num":"","label":"Optical illusions","lv":0,"en":"Optical illusions","vi":""},
+  {"id":"s43","num":"44","label":"Visual only","lv":0,"en":"Visual only","vi":""},
+  {"id":"s44","num":"","label":"Spot the difference","lv":0,"en":"Spot the difference","vi":""},
+  {"id":"s45","num":"","label":"3D crossing","lv":0,"en":"3D crossing","vi":""},
+  {"id":"s46","num":"","label":"Checker shadow illusion","lv":0,"en":"Checker shadow illusion","vi":""},
+  {"id":"s47","num":"53","label":"Congratulations","lv":0,"en":"Congratulations","vi":""},
+  {"id":"s48","num":"54","label":"Visual only","lv":0,"en":"Visual only","vi":""},
+  {"id":"s49","num":"55","label":"Human + AI matrix","lv":0,"en":"Human + AI matrix","vi":""},
+  {"id":"s50","num":"56","label":"Video","lv":0,"en":"Video","vi":""},
+  {"id":"s51","num":"57","label":"TRÍ TUỆ TIẾN HOÁ","lv":0,"en":"EVOLVING INTELLIGENCE","vi":"TRÍ TUỆ TIẾN HOÁ"},
+  {"id":"s52","num":"58","label":"Intelligence over time","lv":0,"en":"Intelligence over time","vi":""},
+  {"id":"s53","num":"59","label":"Video","lv":0,"en":"Video","vi":""},
+  {"id":"s54","num":"60","label":"Who is next?","lv":0,"en":"Who is next?","vi":""},
+  {"id":"s55","num":"61","label":"RA QUYẾT ĐỊNH VỚI ĐỘ CHÍNH XÁC CAO","lv":0,"en":"HIGH ACCURACY DECISION MAKING","vi":"RA QUYẾT ĐỊNH VỚI ĐỘ CHÍNH XÁC CAO"},
+  {"id":"s56","num":"62","label":"Decision model","lv":0,"en":"Decision model","vi":""},
+  {"id":"s57","num":"63","label":"Video","lv":0,"en":"Video","vi":""},
+  {"id":"s58","num":"64","label":"HIỆU SUẤT VƯỢT TRỘI BỀN VỮNG","lv":0,"en":"SUSTAINABLE HYPER PERFORMANCE","vi":"HIỆU SUẤT VƯỢT TRỘI BỀN VỮNG"},
+  {"id":"s59","num":"65","label":"The gap","lv":0,"en":"The gap","vi":""},
+  {"id":"s60","num":"66","label":"Visual only","lv":0,"en":"Visual only","vi":""},
+  {"id":"s61","num":"67","label":"Knowledge–Behaviour Gap model","lv":0,"en":"Knowledge–Behaviour Gap model","vi":""},
+  {"id":"s62","num":"68","label":"Research paper","lv":0,"en":"Research paper","vi":""},
+  {"id":"s63","num":"69","label":"Video","lv":0,"en":"Video","vi":""},
+  {"id":"s64","num":"","label":"Time matrix","lv":0,"en":"Time matrix","vi":""},
+  {"id":"s65","num":"72","label":"Getting Things Done","lv":0,"en":"Getting Things Done","vi":""},
+  {"id":"s66","num":"73","label":"NHỮNG ĐIỀU CẦN NHỚ","lv":0,"en":"KEY TAKEAWAYS","vi":"NHỮNG ĐIỀU CẦN NHỚ"},
+  {"id":"s67","num":"74","label":"NHỮNG ĐIỀU CẦN NHỚ","lv":0,"en":"KEY TAKEAWAYS","vi":"NHỮNG ĐIỀU CẦN NHỚ"},
+  {"id":"s68","num":"75","label":"THÔNG ĐIỆP CỐT LÕI","lv":0,"en":"CORE MESSAGE","vi":"THÔNG ĐIỆP CỐT LÕI"},
+  {"id":"s69","num":"","label":"Closing visuals","lv":0,"en":"Closing visuals","vi":""},
+  {"id":"s70","num":"78","label":"Closing","lv":0,"en":"Closing","vi":""}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t5.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t5.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t5.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t5.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

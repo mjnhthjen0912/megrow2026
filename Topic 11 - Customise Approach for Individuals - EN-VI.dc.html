@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 11 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Customise Approach for Individuals</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Cách tiếp cận phù hợp với từng cá nhân</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 11: Cách tiếp cận phù hợp với từng cá nhân</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Topic 11: Customise Approach for Individuals — bản đối chiếu Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">TS. Gavin Nicholson · 45 slide</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide là một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ. Chữ nằm trong hình đồ hoạ của slide cũng được dịch. Các dòng lặp lại trên hầu hết slide (“RMIT University”, “Ready for what’s next”) không nhắc lại. Số slide theo thứ tự trang của file PDF.</p>
+<p style="margin:0 0 8px">Phần mô tả hình ảnh và các ghi chú về slide gốc được ghi bằng chữ nghiêng màu xám. Các khung “Giải thích thêm”, “Cách chơi” và “Hướng dẫn nhập vai” là phần tóm tắt, giải thích bằng tiếng Việt do bản dịch bổ sung, không có trên slide gốc.</p>
+<p style="margin:0">Tên riêng, tên tổ chức và trích dẫn nguồn giữ nguyên. Bốn phong cách làm việc: <i>Driver</i> – “Người Thúc đẩy”, <i>Analytical</i> – “Người Phân tích”, <i>Amiable</i> – “Người Hoà nhã”, <i>Expressive</i> – “Người Biểu cảm”. <i>Self-awareness</i> là “tự nhận thức”, <i>self-management</i> là “tự quản lý”, <i>social awareness</i> là “nhận thức xã hội”, <i>relationship management</i> là “quản lý mối quan hệ”, <i>emotional intelligence</i> là “trí tuệ cảm xúc”. <i>Ownership</i> là “tinh thần làm chủ”. Tên mô hình ERG và từ <i>coaching</i> giữ nguyên.</p>
+</div>
+
+<section id="s01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Leadership - Customised Approach for Individuals</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lãnh đạo – Cách tiếp cận phù hợp với từng cá nhân</h3>
+<div style="color:var(--en,#56665a)">Improving Communication Across Diverse Personalities and Work Styles<br /><br />Dr. Gavin Nicholson</div>
+<div><span>Cải thiện giao tiếp với những tính cách và phong cách làm việc khác nhau</span><br /><br />TS. Gavin Nicholson</div>
+</div>
+
+</section>
+<section id="s02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">About the speaker</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Dr Gavin Nicholson — Lecturer, Management, The Business School, RMIT Vietnam</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">TS. Gavin Nicholson — Giảng viên ngành Quản lý, Khoa Kinh doanh (The Business School), RMIT Việt Nam</h3>
+<div style="color:var(--en,#56665a)"><b>Nationality:</b> Australian</div>
+<div><b>Quốc tịch:</b> Úc</div>
+<div style="color:var(--en,#56665a)"><b>Teaching Areas:</b> Master of Business Administration, Management, Human Resources Management, Strategy, Organisational Behaviour. Digital Transformation</div>
+<div><b>Lĩnh vực giảng dạy:</b> Thạc sĩ Quản trị Kinh doanh (MBA), Quản lý, Quản trị Nhân sự, Chiến lược, Hành vi Tổ chức. Chuyển đổi số</div>
+<div style="color:var(--en,#56665a)"><b>Qualifications:</b><ul style="margin:0;padding-left:18px"><li>Doctorate of Business Administration - Victoria University, Melbourne, Australia</li><li>Master of Business Management – Victoria University, Melbourne, Australia</li><li>Graduate Certificate of Business – Swinburne University, Melbourne, Australia</li></ul></div>
+<div><b>Bằng cấp:</b><ul style="margin:0;padding-left:18px"><li>Tiến sĩ Quản trị Kinh doanh – Victoria University, Melbourne, Úc</li><li>Thạc sĩ Quản lý Kinh doanh – Victoria University, Melbourne, Úc</li><li>Chứng chỉ Sau đại học về Kinh doanh – Swinburne University, Melbourne, Úc</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Industry Experience:</b> Broad experience in Public Sector Management, Corporate Training and Business Management in China, Malaysia, Singapore, Hong Kong, Thailand and Taiwan.</div>
+<div><b>Kinh nghiệm thực tiễn:</b> Kinh nghiệm rộng trong quản lý khu vực công, đào tạo doanh nghiệp và quản lý kinh doanh tại Trung Quốc, Malaysia, Singapore, Hồng Kông, Thái Lan và Đài Loan.</div>
+<div style="color:var(--en,#56665a)"><b>Short courses:</b> at AIHR (Artificial Intelligence for Human Resources), Rotterdam, Leading Organisations and Change (MIT USA), Leadership Essentials (Harvard Business School USA), Digital Transformation (IMD Switzerland)</div>
+<div><b>Khoá học ngắn hạn:</b> tại AIHR (Trí tuệ nhân tạo cho Nhân sự), Rotterdam; Leading Organisations and Change – Lãnh đạo tổ chức và thay đổi (MIT, Mỹ); Leadership Essentials – Nền tảng lãnh đạo (Harvard Business School, Mỹ); Digital Transformation – Chuyển đổi số (IMD, Thụy Sĩ)</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bên phải slide là ảnh chân dung của diễn giả.</i></p>
+</section>
+<section id="s03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">Agenda</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Agenda</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chương trình</h3>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:6%">#</td><td style="padding:0 8px 7px 8px;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">English</td><td style="padding:0 0 7px 8px;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Tiếng Việt</td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">1</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><b>Understanding People: personality, behaviour and work styles</b><br />Do you understand yourself, why people behave the way they do, and how this impacts their work styles?</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Thấu hiểu con người: tính cách, hành vi và phong cách làm việc</b><br /><span>Bạn có hiểu bản thân mình, hiểu vì sao mọi người hành xử như vậy, và điều này ảnh hưởng thế nào đến phong cách làm việc của họ không?</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">2</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><b>Self- Awareness and Relationship Management</b><br />Allows Leaders to build trust, make better decisions and foster high-performing teams</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Tự nhận thức và Quản lý mối quan hệ</b><br /><span>Giúp người lãnh đạo xây dựng niềm tin, ra quyết định tốt hơn và phát triển những đội ngũ hiệu suất cao</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">3</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><b>Adapting Your Communication for Diverse Personalities</b><br />Do people hear you or do they listen? It’s not about changing who you are, but building understanding, trust and influence</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Điều chỉnh cách giao tiếp cho phù hợp với những tính cách khác nhau</b><br /><span>Mọi người chỉ nghe thấy bạn, hay họ thực sự lắng nghe bạn? Vấn đề không phải là thay đổi con người bạn, mà là xây dựng sự thấu hiểu, niềm tin và tầm ảnh hưởng</span></td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">4</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><b>Effective Communication, Motivation and the ERG Theory</b><br />Identifying how effective communication can motivate different work styles and using the ERG theory to build engagement</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Giao tiếp hiệu quả, Động lực và Thuyết ERG</b><br /><span>Nhận ra cách giao tiếp hiệu quả có thể tạo động lực cho những phong cách làm việc khác nhau, và dùng thuyết ERG để xây dựng sự gắn kết</span></td></tr>
+</tbody>
+</table>
+</section>
+<section id="s04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">Part 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Understanding People: Personality, Behaviour and Work Styles</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thấu hiểu con người: Tính cách, Hành vi và Phong cách làm việc</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide mở đầu phần 1: ảnh một doanh nhân cầm nhiều chiếc mặt nạ biểu cảm khác nhau.</i></p>
+</section>
+<section id="s05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 05</span>
+<span style="color:#86958a">Self-reflection</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">How Well Do I Know Myself?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tôi hiểu bản thân mình đến mức nào?</h3>
+<div style="color:var(--en,#56665a)">Have you ever looked in the mirror and asked yourself?<ul style="margin:0;padding-left:18px"><li>Who am I?</li><li>Do others see me the way I see myself?</li><li>Why do other people behave/think differently from me?</li></ul></div>
+<div>Bạn đã bao giờ nhìn vào gương và tự hỏi?<ul style="margin:0;padding-left:18px"><li>Tôi là ai?</li><li>Người khác có nhìn tôi giống như tôi nhìn bản thân mình không?</li><li>Vì sao người khác hành xử/suy nghĩ khác tôi?</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide có hai ảnh minh hoạ: một người nhìn vào gương và một nhóm người.</i></p>
+</section>
+<section id="s06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06</span>
+<span style="color:#86958a">Understanding behaviour</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Leading Others - Understanding Behaviour</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lãnh đạo người khác – Thấu hiểu hành vi</h3>
+<div style="color:var(--en,#56665a)"><b>Factors that Influence Individual Behaviour – Personality:</b></div>
+<div><b>Các yếu tố ảnh hưởng đến hành vi cá nhân – Tính cách:</b></div>
+<div style="color:var(--en,#56665a)"><b>The Person:</b><ul style="margin:0;padding-left:18px"><li>personality, skills, attributes, values, ethics</li></ul></div>
+<div><b>Con người:</b><ul style="margin:0;padding-left:18px"><li>tính cách, kỹ năng, phẩm chất, giá trị, đạo đức</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>The Environment:</b><ul style="margin:0;padding-left:18px"><li>work, group, job, characteristics, organisation, personal life</li></ul></div>
+<div><b>Môi trường:</b><ul style="margin:0;padding-left:18px"><li>công việc, nhóm, vị trí, đặc điểm công việc, tổ chức, đời sống cá nhân</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>The Situation:</b><ul style="margin:0;padding-left:18px"><li>strong and weak situations</li></ul></div>
+<div><b>Tình huống:</b><ul style="margin:0;padding-left:18px"><li>tình huống mạnh và tình huống yếu</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>What is common to all individuals:</b><ul style="margin:0;padding-left:18px"><li>survival and success</li></ul></div>
+<div><b>Điều chung ở mọi cá nhân:</b><ul style="margin:0;padding-left:18px"><li>tồn tại và thành công</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>“Tình huống mạnh” là tình huống có quy tắc và kỳ vọng rõ ràng, khiến mọi người hành xử giống nhau; “tình huống yếu” là tình huống ít ràng buộc, nên tính cách riêng của mỗi người thể hiện rõ hơn. (Ghi chú của bản dịch.)</i></p>
+</section>
+<section id="s07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 07</span>
+<span style="color:#86958a">Understanding behaviour</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Leading Others - Understanding Behaviour</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lãnh đạo người khác – Thấu hiểu hành vi</h3>
+<div style="color:var(--en,#56665a)"><b>Psychological Factors:</b></div>
+<div><b>Các yếu tố tâm lý:</b></div>
+<div style="color:var(--en,#56665a)"><b>Personality and temperament:</b><ul style="margin:0;padding-left:18px"><li>Internal traits like shyness, openness, or an internal locus of control create consistent patterns in how people think and respond</li></ul></div>
+<div><b>Tính cách và khí chất:</b><ul style="margin:0;padding-left:18px"><li>Những đặc điểm bên trong như tính nhút nhát, sự cởi mở hay “locus of control” bên trong (tin rằng kết quả do chính mình quyết định) tạo ra những khuôn mẫu ổn định trong cách mọi người suy nghĩ và phản ứng</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Cognition and perception:</b><ul style="margin:0;padding-left:18px"><li>How people process memories, make decisions, and use mental shortcuts dictates their interpretation of events</li></ul></div>
+<div><b>Nhận thức và tri giác:</b><ul style="margin:0;padding-left:18px"><li>Cách mọi người xử lý ký ức, ra quyết định và dùng các “lối tắt tư duy” quyết định cách họ diễn giải sự việc</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Emotions and motivation:</b><ul style="margin:0;padding-left:18px"><li>Feelings like fear, joy, or anger push people to overcome obstacles or react defensively</li></ul></div>
+<div><b>Cảm xúc và động lực:</b><ul style="margin:0;padding-left:18px"><li>Những cảm xúc như sợ hãi, vui mừng hay tức giận thúc đẩy con người vượt qua trở ngại hoặc phản ứng phòng thủ</li></ul></div>
+</div>
+
+</section>
+<section id="s08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 08</span>
+<span style="color:#86958a">Understanding behaviour</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Leading Others - Understanding Behaviour</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lãnh đạo người khác – Thấu hiểu hành vi</h3>
+<div style="color:var(--en,#56665a)"><b>Social and Environmental Factors:</b></div>
+<div><b>Các yếu tố xã hội và môi trường:</b></div>
+<div style="color:var(--en,#56665a)"><b>Culture and Norms</b><ul style="margin:0;padding-left:18px"><li>Societal rules, group memberships, and values shape what actions people view as acceptable or expected.</li></ul></div>
+<div><b>Văn hoá và chuẩn mực</b><ul style="margin:0;padding-left:18px"><li>Quy tắc xã hội, việc thuộc về các nhóm và các giá trị định hình những hành động mà mọi người coi là chấp nhận được hoặc được kỳ vọng.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Immediate surroundings:</b><ul style="margin:0;padding-left:18px"><li>Physical settings (like noisy or crowded spaces) and the presence of other people heavily influence compliance, conformity, and general conduct.</li></ul></div>
+<div><b>Môi trường xung quanh trực tiếp:</b><ul style="margin:0;padding-left:18px"><li>Không gian vật lý (như nơi ồn ào hay đông đúc) và sự có mặt của người khác ảnh hưởng mạnh đến sự tuân thủ, xu hướng làm theo số đông và cách cư xử nói chung.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Life experiences:</b><ul style="margin:0;padding-left:18px"><li>Past events, family background, and childhood upbringing create deep-seated beliefs that guide adult choices, often without conscious awareness</li></ul></div>
+<div><b>Trải nghiệm sống:</b><ul style="margin:0;padding-left:18px"><li>Những sự kiện trong quá khứ, hoàn cảnh gia đình và cách được nuôi dạy thời thơ ấu tạo nên những niềm tin sâu xa, chi phối các lựa chọn khi trưởng thành, thường mà không hề nhận ra</li></ul></div>
+</div>
+
+</section>
+<section id="s09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 09</span>
+<span style="color:#86958a">Trust</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Cultivating Trust through Behaviour</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Vun đắp niềm tin qua hành vi</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Trust is the positive expectation that another will not act opportunistically (Robbins:336)</li><li>It is a history-dependent process - Authenticity</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Niềm tin là kỳ vọng tích cực rằng người khác sẽ không hành động theo kiểu cơ hội, vụ lợi (Robbins:336)</li><li>Đó là một quá trình phụ thuộc vào lịch sử tương tác – Sự chân thực</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Key dimensions are:</b><ul style="margin:0;padding-left:18px"><li>integrity – without which other dimensions are meaningless</li><li>competence</li><li>consistency</li><li>loyalty</li><li>openness</li></ul></div>
+<div><b>Các khía cạnh chính:</b><ul style="margin:0;padding-left:18px"><li>chính trực – thiếu nó thì các khía cạnh khác đều vô nghĩa</li><li>năng lực</li><li>nhất quán</li><li>trung thành</li><li>cởi mở</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Hình minh hoạ ở giữa slide: các khối chữ “TRUST” (niềm tin), kèm dòng chữ “The cost of mistrust” (Cái giá của sự thiếu tin tưởng) và “The value of trust” (Giá trị của niềm tin).</i></p>
+</section>
+<section id="s10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">Work styles</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Behaviour and Diverse Work Styles</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hành vi và các phong cách làm việc khác nhau</h3>
+<div style="color:var(--en,#56665a)"><b>The Driver / Driven:</b><ul style="margin:0;padding-left:18px"><li>Results-focused</li><li>Direct</li><li>Decisive</li><li>Action-oriented</li></ul></div>
+<div><b>Người Thúc đẩy (Driver):</b><ul style="margin:0;padding-left:18px"><li>Tập trung vào kết quả</li><li>Thẳng thắn</li><li>Quyết đoán</li><li>Thiên về hành động</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>The Amiable</b><ul style="margin:0;padding-left:18px"><li>Relationship-focused</li><li>Supportive</li><li>Collaborative</li><li>Patient</li></ul></div>
+<div><b>Người Hoà nhã (Amiable)</b><ul style="margin:0;padding-left:18px"><li>Tập trung vào mối quan hệ</li><li>Hay hỗ trợ</li><li>Hợp tác</li><li>Kiên nhẫn</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>The Analytical</b><ul style="margin:0;padding-left:18px"><li>Detailed-oriented</li><li>Logical</li><li>Data-driven</li><li>Risk-conscious</li></ul></div>
+<div><b>Người Phân tích (Analytical)</b><ul style="margin:0;padding-left:18px"><li>Chú trọng chi tiết</li><li>Logic</li><li>Dựa trên dữ liệu</li><li>Thận trọng với rủi ro</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>The Expressive</b><ul style="margin:0;padding-left:18px"><li>Visionary</li><li>Enthusiastic</li><li>Creative</li><li>Big Picture Thinker</li></ul></div>
+<div><b>Người Biểu cảm (Expressive)</b><ul style="margin:0;padding-left:18px"><li>Có tầm nhìn</li><li>Nhiệt tình</li><li>Sáng tạo</li><li>Tư duy bức tranh tổng thể</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Mỗi phong cách đi kèm một ảnh minh hoạ.</i></p>
+</section>
+<section id="s11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">Strategies</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Strategies For Managing Diverse Personalities</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chiến lược quản lý những tính cách khác nhau</h3>
+<div style="color:var(--en,#56665a)"><b>Embrace Flexibility:</b><ul style="margin:0;padding-left:18px"><li>Effective Leadership is not a one size fits all. Adapt your approach to fit the needs of your team. Some employees may prefer detailed instructions, while others thrive with creative freedom; adjust your communication and management style accordingly.</li></ul></div>
+<div><b>Chấp nhận sự linh hoạt:</b><ul style="margin:0;padding-left:18px"><li>Lãnh đạo hiệu quả không có một khuôn mẫu chung cho tất cả. Hãy điều chỉnh cách tiếp cận cho phù hợp với nhu cầu của đội. Có nhân viên thích hướng dẫn chi tiết, có người lại phát huy tốt nhất khi được tự do sáng tạo; hãy điều chỉnh phong cách giao tiếp và quản lý của bạn cho phù hợp.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Foster open Communication:</b><ul style="margin:0;padding-left:18px"><li>Create an environment where team members feel comfortable expressing themselves. Hold regular one-on-one meetings to check in on their needs, goals and challenges. This not only builds trust but also helps you understand what motivates them</li></ul></div>
+<div><b>Thúc đẩy giao tiếp cởi mở:</b><ul style="margin:0;padding-left:18px"><li>Tạo môi trường để các thành viên cảm thấy thoải mái bày tỏ bản thân. Tổ chức các buổi gặp 1-1 định kỳ để nắm bắt nhu cầu, mục tiêu và khó khăn của họ. Việc này không chỉ xây dựng niềm tin mà còn giúp bạn hiểu điều gì tạo động lực cho họ</li></ul></div>
+</div>
+
+</section>
+<section id="s12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 12</span>
+<span style="color:#86958a">Strategies</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Strategies For Managing Diverse Personalities</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chiến lược quản lý những tính cách khác nhau</h3>
+<div style="color:var(--en,#56665a)"><b>Leverage Strengths</b><ul style="margin:0;padding-left:18px"><li>Assign tasks based on your team’s strengths; the analytical thinker might excel in project planning, while the social butterfly could lead client presentations. Matching tasks to skills increases efficiency and job satisfaction.</li></ul></div>
+<div><b>Tận dụng điểm mạnh</b><ul style="margin:0;padding-left:18px"><li>Giao việc dựa trên điểm mạnh của đội; người có tư duy phân tích có thể làm rất tốt việc lập kế hoạch dự án, còn người hoạt ngôn, giỏi giao tiếp có thể dẫn dắt các buổi thuyết trình với khách hàng. Giao việc phù hợp với kỹ năng giúp tăng hiệu quả và sự hài lòng trong công việc.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Address Conflicts Proactively</b><ul style="margin:0;padding-left:18px"><li>Personality differences can sometimes lead to misunderstandings or disagreements. As a leader, intervene early by encouraging open dialogue and helping team members find common ground. Approach conflicts with empathy and focus on shared goals and solutions, rather than blame.</li></ul></div>
+<div><b>Chủ động xử lý xung đột</b><ul style="margin:0;padding-left:18px"><li>Khác biệt về tính cách đôi khi dẫn đến hiểu lầm hoặc bất đồng. Là người lãnh đạo, hãy can thiệp sớm bằng cách khuyến khích đối thoại cởi mở và giúp các thành viên tìm được điểm chung. Tiếp cận xung đột bằng sự thấu cảm, tập trung vào mục tiêu chung và giải pháp, thay vì đổ lỗi.</li></ul></div>
+</div>
+
+</section>
+<section id="s13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 13</span>
+<span style="color:#86958a">Strategies</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Strategies For Managing Diverse Personalities</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chiến lược quản lý những tính cách khác nhau</h3>
+<div style="color:var(--en,#56665a)"><b>Provide Growth Opportunities</b><ul style="margin:0;padding-left:18px"><li>Recognise the potential in each individual and offer opportunities for personal and professional development. This might include training, mentorship, or ‘stretch’ assignments (self-efficacy) that challenge them to grow beyond their comfort zone.</li></ul></div>
+<div><b>Tạo cơ hội phát triển</b><ul style="margin:0;padding-left:18px"><li>Nhận ra tiềm năng của từng cá nhân và tạo cơ hội phát triển bản thân lẫn nghề nghiệp. Có thể là đào tạo, kèm cặp (mentorship) hoặc giao các nhiệm vụ “vươn tầm” (stretch assignment – củng cố niềm tin vào năng lực bản thân, self-efficacy) thử thách họ phát triển vượt ra khỏi vùng an toàn.</li></ul></div>
+</div>
+
+</section>
+<section id="s14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 14</span>
+<span style="color:#86958a">Case study</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Case Study – Generational Leadership Change in Vietnam</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nghiên cứu tình huống – Sự thay đổi lãnh đạo giữa các thế hệ tại Việt Nam</h3>
+<div style="color:var(--en,#56665a)"><b>From Old Bamboo to New Shoots: Leadership Competencies for Vietnam's Generation Z Lotus Leaders.</b></div>
+<div><b>Từ tre già đến măng mọc: Năng lực lãnh đạo của thế hệ lãnh đạo “Hoa sen” Gen Z Việt Nam.</b></div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>100 Gen Z males and 100 Gen Z females</li><li>Collectivism, Harmony, and Community Orientation – Convergent</li><li>Hierarchy, Power Distance, and Voice Constraints – Convergent</li><li>Global Exposure and Cultural Hybridisation – Divergent</li><li>Human-Centric Leadership Relational – Divergent</li><li>Adaptability, Learning and Change Orientation Relational – Divergent</li><li>Purpose, Vision and National Development - Convergent</li><li>Leadership Identity, Aspiration and Self-Leadership - Divergent</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>100 nam và 100 nữ thuộc thế hệ Gen Z</li><li>Chủ nghĩa tập thể, sự hài hoà và định hướng cộng đồng – Hội tụ</li><li>Thứ bậc, khoảng cách quyền lực và những hạn chế trong việc lên tiếng – Hội tụ</li><li>Tiếp xúc toàn cầu và sự pha trộn văn hoá – Phân kỳ</li><li>Lãnh đạo lấy con người làm trung tâm, thiên về quan hệ – Phân kỳ</li><li>Khả năng thích ứng, học hỏi và định hướng thay đổi, thiên về quan hệ – Phân kỳ</li><li>Mục đích, tầm nhìn và sự phát triển đất nước – Hội tụ</li><li>Bản sắc lãnh đạo, khát vọng và khả năng tự lãnh đạo – Phân kỳ</li></ul></div>
+</div>
+<div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Giải thích thêm</b></p><p style="margin:0">Nghiên cứu khảo sát 200 người Gen Z (100 nam, 100 nữ). Mỗi nhóm năng lực được gắn nhãn <i>Convergent</i> (hội tụ – Gen Z vẫn giữ giống thế hệ lãnh đạo trước, tức “tre già”) hoặc <i>Divergent</i> (phân kỳ – Gen Z khác với thế hệ trước, tức “măng mọc”). Theo slide, Gen Z vẫn giữ tinh thần tập thể, sự tôn trọng thứ bậc và gắn mục đích với sự phát triển đất nước; nhưng khác biệt ở mức độ tiếp xúc toàn cầu, cách lãnh đạo lấy con người làm trung tâm, khả năng thích ứng và cách tự định hình bản thân như một người lãnh đạo.</p></div>
+</section>
+<section id="s15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 15</span>
+<span style="color:#86958a">Part 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Self Awareness and Relationship Management</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tự nhận thức và Quản lý mối quan hệ</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide mở đầu phần 2: ảnh một người đứng nhìn biểu đồ tăng trưởng.</i></p>
+</section>
+<section id="s16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 16</span>
+<span style="color:#86958a">Emotional intelligence</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Emotional Intelligence — Understanding You – Understanding Others</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Trí tuệ cảm xúc — Hiểu mình – Hiểu người</h3>
+<div style="color:var(--en,#56665a)"><b>Leading Self:</b><ul style="margin:0;padding-left:18px"><li>Successful leaders know their strengths and weaknesses. They continually seek personal development and learn new skills or by empowering others and using their skills</li></ul></div>
+<div><b>Lãnh đạo bản thân:</b><ul style="margin:0;padding-left:18px"><li>Người lãnh đạo thành công biết điểm mạnh và điểm yếu của mình. Họ liên tục tìm cách phát triển bản thân và học kỹ năng mới, hoặc trao quyền cho người khác và tận dụng kỹ năng của họ</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Leading Others:</b><ul style="margin:0;padding-left:18px"><li>Leaders know they need other people. Sometimes you lead and other times you follow. Leaders develop other leaders</li></ul></div>
+<div><b>Lãnh đạo người khác:</b><ul style="margin:0;padding-left:18px"><li>Người lãnh đạo biết họ cần người khác. Có lúc bạn dẫn dắt, có lúc bạn đi theo. Người lãnh đạo phát triển những người lãnh đạo khác</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Leading Organisations:</b><ul style="margin:0;padding-left:18px"><li>Leadership means being visionary and having the ability to influence and motivate others to achieve organisational goals.</li></ul></div>
+<div><b>Lãnh đạo tổ chức:</b><ul style="margin:0;padding-left:18px"><li>Lãnh đạo nghĩa là có tầm nhìn và có khả năng ảnh hưởng, tạo động lực cho người khác để đạt được mục tiêu của tổ chức.</li></ul></div>
+</div>
+
+</section>
+<section id="s17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 17</span>
+<span style="color:#86958a">Self-awareness</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Self-Awareness</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tự nhận thức</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Self-Awareness is imperative in leadership contexts.</li><li>You need to be thoughtful about the experience that you want people to have of you as a leader. A key tenet of leadership is the capability for growth and learning.</li><li>You will likely encounter situations as a leader that require you to learn and grow at the very moment others expect you to be an authority. You will inevitably make mistakes in your leadership journey. Do not be embarrassed to do what it takes to develop as a leader.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Tự nhận thức là điều bắt buộc trong vai trò lãnh đạo.</li><li>Bạn cần cân nhắc kỹ trải nghiệm mà bạn muốn mọi người có được khi làm việc với bạn trong vai trò lãnh đạo. Một nguyên tắc cốt lõi của lãnh đạo là khả năng phát triển và học hỏi.</li><li>Là người lãnh đạo, nhiều khả năng bạn sẽ gặp những tình huống đòi hỏi bạn phải học hỏi và trưởng thành đúng vào lúc người khác kỳ vọng bạn là người có thẩm quyền. Bạn chắc chắn sẽ mắc sai lầm trên hành trình lãnh đạo. Đừng ngại làm những gì cần thiết để phát triển với tư cách một người lãnh đạo.</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bên trái slide là ảnh một người phụ nữ cầm chiếc mặt nạ trắng.</i></p>
+</section>
+<section id="s18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">Self & social awareness</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Developing Leadership Attributes: Self and Social Awareness</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Phát triển phẩm chất lãnh đạo: Tự nhận thức và Nhận thức xã hội</h3>
+<div style="color:var(--en,#56665a)"><b>Self Awareness:</b><ul style="margin:0;padding-left:18px"><li>the ability to understand your own emotions and their effects</li></ul></div>
+<div><b>Tự nhận thức:</b><ul style="margin:0;padding-left:18px"><li>khả năng hiểu cảm xúc của chính mình và tác động của chúng</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Social Awareness:</b><ul style="margin:0;padding-left:18px"><li>empathy</li><li>remember not everyone values or does things in the same way as you</li></ul></div>
+<div><b>Nhận thức xã hội:</b><ul style="margin:0;padding-left:18px"><li>thấu cảm</li><li>hãy nhớ rằng không phải ai cũng coi trọng hay làm mọi việc giống như bạn</li></ul></div>
+<div style="color:var(--en,#56665a)"><b><i>We recognise the impact we have on others and how others see us</i></b></div>
+<div><b><i>Chúng ta nhận ra tác động của mình lên người khác và cách người khác nhìn mình</i></b></div>
+<div style="color:var(--en,#56665a)"><span style="font-size:11.5px;color:#86958a">Source: Harvard Business School – Leadership Essentials (2024)</span></div>
+<div><span style="font-size:11.5px;color:#86958a">Nguồn: Harvard Business School – Leadership Essentials (2024)</span></div>
+</div>
+<figure style="margin:12px 0 0;max-width:420px;break-inside:avoid">
+<img src="assets/t11/p18a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Ma trận trí tuệ cảm xúc. Trục ngang: Self (Bản thân) ↔ Social (Xã hội). Trục dọc: Recognition (Nhận biết) ↕ Regulation (Điều chỉnh). Bốn ô: <b>Self-Awareness</b> – Tự nhận thức (emotional self-awareness – nhận biết cảm xúc của bản thân; accurate self-assessment – tự đánh giá chính xác; self-confidence – tự tin). <b>Social Awareness</b> – Nhận thức xã hội (organizational awareness – hiểu biết về tổ chức; service orientation – định hướng phục vụ; empathy – thấu cảm). <b>Self-Management</b> – Tự quản lý (self-control – tự chủ; transparency – minh bạch; adaptability – thích ứng; achievement drive – động lực thành tích; initiative – chủ động). <b>Social Management</b> – Quản lý xã hội (leadership – lãnh đạo; influence &amp; change – ảnh hưởng và thay đổi; teamwork – làm việc nhóm; building bonds – xây dựng gắn kết).</figcaption>
+</figure>
+<div style="grid-column:1/-1;display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin:14px 0 4px;break-inside:avoid;border:1.5px solid #9fb8a2;border-radius:10px;background:#fbfdf9;padding:14px 16px 12px 10px">
+<div style="display:grid;grid-template-rows:1fr 1fr;gap:8px"><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Nhận biết</span> · Recognition</span></div><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Điều chỉnh</span> · Regulation</span></div></div>
+<div style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:1fr;gap:8px">
+<div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Tự nhận thức</b></div>
+<div style="font-size:13px;line-height:1.55">Nhận biết cảm xúc của bản thân · Tự đánh giá chính xác · Tự tin</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>Self-Awareness</b> emotional self-awareness · accurate self-assessment · self-confidence</div>
+</div>
+<div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Nhận thức xã hội</b></div>
+<div style="font-size:13px;line-height:1.55">Hiểu biết về tổ chức · Định hướng phục vụ · Thấu cảm</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>Social Awareness</b> organizational awareness · service orientation · empathy</div>
+</div>
+<div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Tự quản lý</b></div>
+<div style="font-size:13px;line-height:1.55">Tự chủ · Minh bạch · Thích ứng · Động lực thành tích · Chủ động</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>Self-Management</b> self-control · transparency · adaptability · achievement drive · initiative</div>
+</div>
+<div style="background:#dcebd3;border:1px solid #9fc49a;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Quản lý xã hội</b></div>
+<div style="font-size:13px;line-height:1.55">Lãnh đạo · Ảnh hưởng và thay đổi · Làm việc nhóm · Xây dựng gắn kết</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #9fc49a;padding-top:6px"><b>Social Management</b> leadership · influence &amp; change · teamwork · building bonds</div>
+</div>
+
+</div>
+<div></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;border-top:1.5px solid #86958a;padding-top:6px"><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Bản thân</span> · Self</span><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Xã hội</span> · Social</span></div>
+</div>
+
+</section>
+<section id="s19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 19</span>
+<span style="color:#86958a">Self & social management</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Developing Leadership Attributes: Self and Social Management</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Phát triển phẩm chất lãnh đạo: Tự quản lý và Quản lý xã hội</h3>
+<div style="color:var(--en,#56665a)"><b>Self-Management:</b><ul style="margin:0;padding-left:18px"><li>achievement orientation – the concern of working towards standards of excellence, which also assists you in taking the initiative and seek out new opportunities</li><li>adaptability</li><li><b><i>emotional self-control - regulation</i></b></li><li>positive outlook</li></ul></div>
+<div><b>Tự quản lý:</b><ul style="margin:0;padding-left:18px"><li>định hướng thành tích – mối quan tâm hướng tới các tiêu chuẩn xuất sắc, điều này cũng giúp bạn chủ động và tìm kiếm cơ hội mới</li><li>khả năng thích ứng</li><li><b><i>tự chủ cảm xúc – điều chỉnh</i></b></li><li>thái độ tích cực</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Social Management:</b><ul style="margin:0;padding-left:18px"><li>the ability to understand the ‘power’ relationships in one’s own group or organisation to build team bonds and influence change – <b><i>regulate the halo effect and build leadership silos</i></b></li></ul></div>
+<div><b>Quản lý xã hội:</b><ul style="margin:0;padding-left:18px"><li>khả năng hiểu các mối quan hệ “quyền lực” trong nhóm hoặc tổ chức của mình để xây dựng sự gắn kết trong đội và tạo ảnh hưởng đến sự thay đổi – <b><i>kiểm soát hiệu ứng hào quang (halo effect) và xây dựng các “silo” lãnh đạo</i></b></li></ul></div>
+<div style="color:var(--en,#56665a)"><span style="font-size:11.5px;color:#86958a">Source: Harvard Business School – Leadership Essentials (2024)</span></div>
+<div><span style="font-size:11.5px;color:#86958a">Nguồn: Harvard Business School – Leadership Essentials (2024)</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide dùng lại ma trận trí tuệ cảm xúc ở slide 18 (xem hình và chú thích ở trên). <i>Halo effect</i> (hiệu ứng hào quang): xu hướng để một ấn tượng tốt về một mặt chi phối đánh giá của ta về toàn bộ con người. Cụm “build leadership silos” được dịch sát nguyên văn.</i></p>
+</section>
+<section id="s20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 20</span>
+<span style="color:#86958a">Relationship management</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Relationship Management</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Quản lý mối quan hệ</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Conflict Management</li><li>Coaching and Mentoring</li><li>Power and Influence (Expert and Referent)</li><li>Inspirational Leadership (Lead by bringing out the best in people)</li><li>Teamwork</li><li>Pattern Recognition (Systems and Critical Thinking – Problem Solving)</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Quản lý xung đột</li><li>Coaching và kèm cặp (mentoring)</li><li>Quyền lực và ảnh hưởng (quyền lực chuyên môn và quyền lực cá nhân/uy tín)</li><li>Lãnh đạo truyền cảm hứng (lãnh đạo bằng cách khơi dậy điều tốt nhất ở mỗi người)</li><li>Làm việc nhóm</li><li>Nhận diện khuôn mẫu (tư duy hệ thống và tư duy phản biện – giải quyết vấn đề)</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i><i>Expert power</i> – quyền lực đến từ chuyên môn; <i>Referent power</i> – quyền lực đến từ sự quý mến, ngưỡng mộ của người khác. Bên phải slide là ảnh một nhóm đồng nghiệp đang trao đổi.</i></p>
+</section>
+<section id="s21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 21</span>
+<span style="color:#86958a">Self-awareness model</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Self-Awareness and Relationship Management</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tự nhận thức và Quản lý mối quan hệ</h3>
+<div style="color:var(--en,#56665a)">Social awareness and self-management are key levers in relationship management. To be effective with others, you need to have a handle on your emotions and be able to channel them in an effective way.</div>
+<div>Nhận thức xã hội và tự quản lý là những đòn bẩy then chốt trong quản lý mối quan hệ. Để làm việc hiệu quả với người khác, bạn cần nắm được cảm xúc của mình và biết hướng chúng theo cách hiệu quả.</div>
+<div style="color:var(--en,#56665a)"><span style="font-size:11.5px;color:#86958a">Source: Harvard Business School – Leadership Essentials (2024)</span></div>
+<div><span style="font-size:11.5px;color:#86958a">Nguồn: Harvard Business School – Leadership Essentials (2024)</span></div>
+</div>
+<figure style="margin:12px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t11/p21a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Sơ đồ bốn ô. Cột: Self (Bản thân) – Others (Người khác). Hàng: Awareness (Nhận thức) – Actions (Hành động). Mũi tên vòng tròn nối bốn ô theo thứ tự: <b>Self-Awareness</b> (Tự nhận thức) → <b>Social Awareness</b> (Nhận thức xã hội: Empathy – Thấu cảm; Organizational Awareness – Hiểu biết về tổ chức) → <b>Relationship Management</b> (Quản lý mối quan hệ: Coach and Mentor – Coaching và kèm cặp; Conflict Management – Quản lý xung đột; Influence – Ảnh hưởng; Inspirational Leadership – Lãnh đạo truyền cảm hứng; Teamwork – Làm việc nhóm) → <b>Self Management</b> (Tự quản lý: Achievement Orientation – Định hướng thành tích; Positive Outlook – Thái độ tích cực; Emotional Self-Control – Tự chủ cảm xúc; Adaptability – Thích ứng).</figcaption>
+</figure>
+<div style="grid-column:1/-1;display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin:14px 0 4px;break-inside:avoid;border:1.5px solid #9fb8a2;border-radius:10px;background:#fbfdf9;padding:14px 16px 12px 10px">
+<div style="display:grid;grid-template-rows:1fr 1fr;gap:8px"><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Nhận thức</span> · Awareness</span></div><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Hành động</span> · Actions</span></div></div>
+<div style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:1fr;gap:8px">
+<div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px 46px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Tự nhận thức</b><span style="font-size:10.5px;color:#56665a">1</span></div>
+
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>Self-Awareness</b></div>
+</div>
+<div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px 46px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Nhận thức xã hội</b><span style="font-size:10.5px;color:#56665a">2</span></div>
+<div style="font-size:13px;line-height:1.55">Thấu cảm · Hiểu biết về tổ chức</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>Social Awareness</b> Empathy · Organizational Awareness</div>
+</div>
+<div style="background:#eef4ea;border:1px solid #d3dfd0;padding:46px 16px 14px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Tự quản lý</b><span style="font-size:10.5px;color:#56665a">4</span></div>
+<div style="font-size:13px;line-height:1.55">Định hướng thành tích · Thái độ tích cực · Tự chủ cảm xúc · Thích ứng</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>Self Management</b> Achievement Orientation · Positive Outlook · Emotional Self-Control · Adaptability</div>
+</div>
+<div style="background:#dcebd3;border:1px solid #9fc49a;padding:46px 16px 14px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Quản lý mối quan hệ</b><span style="font-size:10.5px;color:#56665a">3</span></div>
+<div style="font-size:13px;line-height:1.55">Coaching và kèm cặp · Quản lý xung đột · Ảnh hưởng · Lãnh đạo truyền cảm hứng · Làm việc nhóm</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #9fc49a;padding-top:6px"><b>Relationship Management</b> Coach and Mentor · Conflict Management · Influence · Inspirational Leadership · Teamwork</div>
+</div>
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:48%;background:#ffffff;border:1.5px solid #86958a;border-radius:999px;padding:7px 16px;text-align:center;font-size:12.5px;line-height:1.35;box-shadow:0 2px 8px rgba(0,0,0,.06)"><b>↻ 1 → 2 → 3 → 4</b><br /><span style="font-size:11.5px;color:var(--en,#56665a)">circular arrows</span></div>
+</div>
+<div></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;border-top:1.5px solid #86958a;padding-top:6px"><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Bản thân</span> · Self</span><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Người khác</span> · Others</span></div>
+</div>
+
+</section>
+<section id="s22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 22</span>
+<span style="color:#86958a">EI questionnaire</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Emotional Intelligence – Self-Assessment Questionnaire</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Trí tuệ cảm xúc – Bảng câu hỏi tự đánh giá</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide hoạt động, gồm hai hình: một tấm bảng có chữ “Activity” (Hoạt động) và một hình minh hoạ “Emotional Intelligence – Understanding, managing &amp; connecting with emotions” (Trí tuệ cảm xúc – Hiểu, quản lý và kết nối với cảm xúc) với các nhãn Self-awareness (Tự nhận thức), Self-regulation (Tự điều chỉnh), Empathy (Thấu cảm), Social skills (Kỹ năng xã hội). Bảng câu hỏi được phát riêng, không có trong file PDF.</i></p>
+</section>
+<section id="s23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 23</span>
+<span style="color:#86958a">Key points</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Key Points – Self-Awareness and Relationship Management</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điểm chính – Tự nhận thức và Quản lý mối quan hệ</h3>
+<div style="color:var(--en,#56665a)">Develop your <b>self-leadership, self-awareness, and relationship management</b>. What will be YOUR leadership legacy?</div>
+<div>Phát triển <b>khả năng tự lãnh đạo, tự nhận thức và quản lý mối quan hệ</b> của bạn. Di sản lãnh đạo CỦA BẠN sẽ là gì?</div>
+<div style="color:var(--en,#56665a)">Build trust, clear communication, and emotional intelligence for enhanced engagement and long-term partnerships</div>
+<div>Xây dựng niềm tin, giao tiếp rõ ràng và trí tuệ cảm xúc để tăng sự gắn kết và tạo dựng quan hệ hợp tác lâu dài</div>
+</div>
+
+</section>
+<section id="s24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 24</span>
+<span style="color:#86958a">Part 3</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Adapting Your Communication for Diverse Personalities</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điều chỉnh cách giao tiếp cho phù hợp với những tính cách khác nhau</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide mở đầu phần 3: ảnh ghép chân dung nhiều người với biểu cảm khác nhau.</i></p>
+</section>
+<section id="s25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 25</span>
+<span style="color:#86958a">Adapting communication</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Adapting Communication For Diverse Personalities</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điều chỉnh giao tiếp cho phù hợp với những tính cách khác nhau</h3>
+<div style="color:var(--en,#56665a)">Communication across diverse personalities requires adapting your approach to how different people process information, express themselves, and interact:</div>
+<div>Giao tiếp với những tính cách khác nhau đòi hỏi bạn điều chỉnh cách tiếp cận theo cách mỗi người xử lý thông tin, thể hiện bản thân và tương tác:</div>
+<div style="color:var(--en,#56665a)"><b>Introverts vs. Extroverts:</b><ul style="margin:0;padding-left:18px"><li>Extroverts process thoughts out loud and prefer rapid interaction, while introverts need quiet time to reflect before responding</li></ul></div>
+<div><b>Người hướng nội và người hướng ngoại:</b><ul style="margin:0;padding-left:18px"><li>Người hướng ngoại vừa nói vừa suy nghĩ và thích tương tác nhanh, còn người hướng nội cần thời gian yên tĩnh để suy ngẫm trước khi phản hồi</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Task-Oriented vs. People-Oriented:</b><ul style="margin:0;padding-left:18px"><li>Some people focus strictly on facts, data, and bottom lines, while others prioritise relationships, feelings, and team harmony. Balance your message with both data and personal warmth.</li></ul></div>
+<div><b>Định hướng công việc và định hướng con người:</b><ul style="margin:0;padding-left:18px"><li>Có người chỉ tập trung vào sự kiện, dữ liệu và kết quả cuối cùng, trong khi người khác ưu tiên mối quan hệ, cảm xúc và sự hài hoà trong đội. Hãy cân bằng thông điệp của bạn bằng cả dữ liệu lẫn sự ấm áp cá nhân.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Avoid Negative Labelling:</b><ul style="margin:0;padding-left:18px"><li>Don’t view different communication styles as difficult or argumentative.</li></ul></div>
+<div><b>Tránh dán nhãn tiêu cực:</b><ul style="margin:0;padding-left:18px"><li>Đừng coi những phong cách giao tiếp khác mình là khó chịu hay thích tranh cãi.</li></ul></div>
+</div>
+
+</section>
+<section id="s26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 26</span>
+<span style="color:#86958a">Strategies</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Strategies for Communicating across Diverse Personalities</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chiến lược giao tiếp với những tính cách khác nhau</h3>
+<div style="color:var(--en,#56665a)"><b>Practice Active Listening:</b><ul style="margin:0;padding-left:18px"><li>Focus entirely on the speaker without interrupting. Watch for nonverbal cues like tone and body language to understand their true meaning</li></ul></div>
+<div><b>Thực hành lắng nghe chủ động:</b><ul style="margin:0;padding-left:18px"><li>Tập trung hoàn toàn vào người nói, không ngắt lời. Để ý các tín hiệu phi ngôn ngữ như giọng điệu và ngôn ngữ cơ thể để hiểu đúng ý họ</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Tailor Your Tone and Pace:</b><ul style="margin:0;padding-left:18px"><li>Match your communication speed and directness to the comfort level of the person you are talking to.</li></ul></div>
+<div><b>Điều chỉnh giọng điệu và nhịp độ:</b><ul style="margin:0;padding-left:18px"><li>Điều chỉnh tốc độ và mức độ thẳng thắn khi giao tiếp cho phù hợp với mức độ thoải mái của người bạn đang nói chuyện cùng.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Ask Open-Ended Questions:</b><ul style="margin:0;padding-left:18px"><li>Use questions starting with "what" or "how" to let people elaborate in a way that feels natural to them.</li></ul></div>
+<div><b>Đặt câu hỏi mở:</b><ul style="margin:0;padding-left:18px"><li>Dùng những câu hỏi bắt đầu bằng “cái gì” hoặc “như thế nào” để mọi người trình bày chi tiết theo cách tự nhiên với họ.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Build Emotional Intelligence:</b><ul style="margin:0;padding-left:18px"><li>Be mindful of how your words affect others. Check your own personal biases before judging a different style of expression</li></ul></div>
+<div><b>Xây dựng trí tuệ cảm xúc:</b><ul style="margin:0;padding-left:18px"><li>Chú ý đến tác động của lời nói của bạn lên người khác. Hãy tự kiểm tra những thiên kiến cá nhân trước khi đánh giá một cách thể hiện khác mình</li></ul></div>
+</div>
+
+</section>
+<section id="s27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 27</span>
+<span style="color:#86958a">Communication preferences</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Communication Preferences and Work Styles</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Sở thích giao tiếp và phong cách làm việc</h3>
+<div style="color:var(--en,#56665a)"><b>The Driver / Driven:</b><ul style="margin:0;padding-left:18px"><li>Be concise</li><li>Focus on outcomes</li><li>Avoid Excessive Detail</li></ul></div>
+<div><b>Người Thúc đẩy (Driver):</b><ul style="margin:0;padding-left:18px"><li>Nói ngắn gọn</li><li>Tập trung vào kết quả</li><li>Tránh đi quá nhiều vào chi tiết</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>The Amiable:</b><ul style="margin:0;padding-left:18px"><li>Build Rapport</li><li>Show Empathy</li><li>Encourage Participation</li></ul></div>
+<div><b>Người Hoà nhã (Amiable):</b><ul style="margin:0;padding-left:18px"><li>Xây dựng sự gần gũi</li><li>Thể hiện sự thấu cảm</li><li>Khuyến khích tham gia</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>The Analytical</b><ul style="margin:0;padding-left:18px"><li>Facts and Evidence</li><li>Allow time to process information</li><li>Be organised</li></ul></div>
+<div><b>Người Phân tích (Analytical)</b><ul style="margin:0;padding-left:18px"><li>Dữ kiện và bằng chứng</li><li>Cho họ thời gian xử lý thông tin</li><li>Trình bày có tổ chức</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>The Expressive:</b><ul style="margin:0;padding-left:18px"><li>Focus on possibilities</li><li>Encourage ideas</li><li>Keep the communication engaging</li></ul></div>
+<div><b>Người Biểu cảm (Expressive):</b><ul style="margin:0;padding-left:18px"><li>Tập trung vào các khả năng</li><li>Khuyến khích ý tưởng</li><li>Giữ cho cuộc trao đổi hấp dẫn</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide này nối tiếp slide 10: cùng bốn phong cách làm việc, nay kèm cách giao tiếp phù hợp với từng phong cách.</i></p>
+</section>
+<section id="s28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 28</span>
+<span style="color:#86958a">Part 4</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Communication, Motivation and the ERG Theory</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Giao tiếp, Động lực và Thuyết ERG</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide mở đầu phần 4: ảnh người đang leo lên đỉnh núi lúc hoàng hôn, kéo tay người phía sau.</i></p>
+</section>
+<section id="s29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 29</span>
+<span style="color:#86958a">Needs & motivation</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Communication, Human Needs and Motivation</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Giao tiếp, Nhu cầu con người và Động lực</h3>
+<div style="color:var(--en,#56665a)">Human behaviour and workplace motivation are driven by three acquired needs: achievement, affiliation, and power:</div>
+<div>Hành vi của con người và động lực tại nơi làm việc được thúc đẩy bởi ba nhu cầu hình thành qua trải nghiệm: thành tích, gắn kết và quyền lực:</div>
+<div style="color:var(--en,#56665a)"><b>Need for Achievement:</b><ul style="margin:0;padding-left:18px"><li>The drive to excel, achieve success against a set of standards, and tackle moderately challenging goals.</li></ul></div>
+<div><b>Nhu cầu thành tích:</b><ul style="margin:0;padding-left:18px"><li>Động lực vươn lên xuất sắc, đạt thành công theo một bộ tiêu chuẩn và theo đuổi những mục tiêu có độ thử thách vừa phải.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Need for Affiliation:</b><ul style="margin:0;padding-left:18px"><li>The desire for friendly, close interpersonal relationships and social acceptance</li></ul></div>
+<div><b>Nhu cầu gắn kết:</b><ul style="margin:0;padding-left:18px"><li>Mong muốn có những mối quan hệ thân thiện, gần gũi với người khác và được xã hội chấp nhận</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Need for Power:</b><ul style="margin:0;padding-left:18px"><li>The desire to influence, lead, and make others behave in a way they would not have otherwise</li></ul></div>
+<div><b>Nhu cầu quyền lực:</b><ul style="margin:0;padding-left:18px"><li>Mong muốn gây ảnh hưởng, dẫn dắt và khiến người khác hành xử theo cách mà lẽ ra họ sẽ không làm</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Đây là thuyết ba nhu cầu (Acquired Needs Theory) của David McClelland; slide không nêu tên tác giả.</i></p>
+</section>
+<section id="s30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 30</span>
+<span style="color:#86958a">ERG theory</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Alderfer’s – Existence, Growth and Relatedness Theory</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thuyết Tồn tại – Quan hệ – Phát triển (ERG) của Alderfer</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>ERG Theory (existence, relatedness, growth)</li><li>Synthesises Maslow</li><li>Belief that humans have <b><i>existence needs</i></b> and <b><i>growth needs</i></b></li><li>The relatedness needs are <b><i>different for all persons</i></b> but assist in the sliding scale between existence and growth</li><li>We continually move along the sliding scale between existence and growth based on motivation and need requirements</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Thuyết ERG (existence – tồn tại, relatedness – quan hệ, growth – phát triển)</li><li>Tổng hợp lại thuyết của Maslow</li><li>Quan niệm rằng con người có <b><i>nhu cầu tồn tại</i></b> và <b><i>nhu cầu phát triển</i></b></li><li>Nhu cầu quan hệ <b><i>khác nhau ở mỗi người</i></b> nhưng giúp con người dịch chuyển trên thang trượt giữa tồn tại và phát triển</li><li>Chúng ta liên tục dịch chuyển trên thang trượt giữa tồn tại và phát triển, tuỳ theo động lực và nhu cầu</li></ul></div>
+</div>
+<figure style="margin:12px 0 0;max-width:400px;break-inside:avoid">
+<img src="assets/t11/p30a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Alderfer’s ERG Theory (Thuyết ERG của Alderfer): kim tự tháp ba tầng. Bên phải là ảnh Clayton Alderfer. Diễn giải theo cấu trúc hình ở bên dưới.</figcaption>
+</figure><div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="text-align:center;line-height:1.35;margin-bottom:12px"><div style="font-weight:700;color:#1b2a20;letter-spacing:.02em">Alderfer’s ERG Theory</div><div style="font-weight:700">Thuyết ERG của Alderfer</div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px;align-items:center"><div style="font-size:12.5px;line-height:1.4"><div style="line-height:1.4;"><div style="color:var(--en,#56665a)">“ERG theory condensed Maslow’s hierarchy of 5 needs into 3 needs”</div><div>Thuyết ERG rút gọn tháp 5 nhu cầu của Maslow thành 3 nhu cầu</div></div></div><div style="grid-column:span 2;display:flex;flex-direction:column;gap:3px;min-width:min(100%,300px)"><div style="width:34%;margin:0 auto;background:#c9c400;clip-path:polygon(50% 0,100% 100%,0 100%);padding:26px 10px 10px;text-align:center;line-height:1.3;font-size:12.5px"><div style="color:#3a3a10">Growth Needs</div><div style="font-weight:700">Nhu cầu phát triển</div></div><div style="width:66%;margin:0 auto;background:#c9c400;clip-path:polygon(8% 0,92% 0,100% 100%,0 100%);padding:10px 10px 10px;text-align:center;line-height:1.3;font-size:12.5px"><div style="color:#3a3a10">Relatedness Needs</div><div style="font-weight:700">Nhu cầu quan hệ</div></div><div style="width:100%;margin:0 auto;background:#c9c400;clip-path:polygon(8% 0,92% 0,100% 100%,0 100%);padding:10px 10px 10px;text-align:center;line-height:1.3;font-size:12.5px"><div style="color:#3a3a10">Existence Needs</div><div style="font-weight:700">Nhu cầu tồn tại</div></div></div></div></div><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Giải thích thêm</b></p><p style="margin:0 0 6px">Ba tầng của ERG tương ứng với tháp Maslow: <b>Tồn tại</b> gộp nhu cầu sinh lý và an toàn (lương, điều kiện làm việc, sự ổn định); <b>Quan hệ</b> tương ứng nhu cầu xã hội và một phần nhu cầu được tôn trọng (quan hệ với đồng nghiệp, cấp trên, cảm giác thuộc về); <b>Phát triển</b> gộp phần còn lại của nhu cầu được tôn trọng và nhu cầu tự hiện thực hoá (học hỏi, thử thách, tiến bộ).</p><p style="margin:0">Khác với Maslow, ERG cho rằng một người có thể theo đuổi nhiều nhu cầu cùng lúc và không nhất thiết đi theo thứ tự từ dưới lên. Đây là ý của “thang trượt” trên slide: tuỳ hoàn cảnh, mỗi người dịch chuyển lên xuống giữa tồn tại và phát triển. Với người quản lý, điều này nghĩa là cần nhận ra nhân viên đang ở đâu trên thang để chọn cách giao tiếp và tạo động lực phù hợp. (Ghi chú của bản dịch.)</p></div>
+</section>
+<section id="s31" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 31</span>
+<span style="color:#86958a">Questions</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Any Questions?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Có câu hỏi nào không?</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide chỉ có hình ảnh: các dấu chấm hỏi và dòng chữ “Any questions?”.</i></p>
+</section>
+<section id="s32" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 32</span>
+<span style="color:#86958a">Break</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Thank you!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Cảm ơn!</h3>
+<div style="color:var(--en,#56665a)">Position title: Lecturer Management<br />Name: Dr. Gavin Nicholson<br />Email address: gavin.nicholson@rmit.edu.vn</div>
+<div><span>Chức danh: Giảng viên ngành Quản lý</span><br />Họ tên: TS. Gavin Nicholson<br />Email: gavin.nicholson@rmit.edu.vn</div>
+<div style="color:var(--en,#56665a)"><b>Have a 15-minute break</b></div>
+<div><b>Nghỉ giải lao 15 phút</b></div>
+</div>
+
+</section>
+<section id="s33" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 33</span>
+<span style="color:#86958a">Part 5</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Communication Games: Developing Your Communication Style</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Trò chơi giao tiếp: Phát triển phong cách giao tiếp của bạn</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide mở đầu phần thực hành: ảnh các hình nhân với bong bóng thoại phía trên.</i></p>
+</section>
+<section id="s34" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 34</span>
+<span style="color:#86958a">Activity</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity: Extrovert -v- Introvert</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động: Hướng ngoại và Hướng nội</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Hình minh hoạ: một người “EXTROVERT” (hướng ngoại) đứng giữa ánh sáng và nhóm người, đối diện một người “INTROVERT” (hướng nội) đứng một mình trong bóng tối.</i></p>
+</section>
+<section id="s35" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 35</span>
+<span style="color:#86958a">Activity brief</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Customising Your Communication Style For Diverse Personalities</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điều chỉnh phong cách giao tiếp cho phù hợp với những tính cách khác nhau</h3>
+<div style="color:var(--en,#56665a)"><b>Do you think you are a Good Communicator?</b><br />In this activity, you will observe and critique the differences between Extroverts and Introverts.</div>
+<div><b>Bạn có nghĩ mình là người giao tiếp giỏi không?</b><br /><span>Trong hoạt động này, bạn sẽ quan sát và nhận xét những khác biệt giữa người hướng ngoại và người hướng nội.</span></div>
+<div style="color:var(--en,#56665a)"><b>Extroverts:</b><ul style="margin:0;padding-left:18px"><li>I want you to discuss the organisation of a company picnic. What date, time, and where should you hold this picnic? Is there a theme? What type of catering will you require, and what activities will you do at the picnic</li></ul></div>
+<div><b>Nhóm hướng ngoại:</b><ul style="margin:0;padding-left:18px"><li>Hãy thảo luận về việc tổ chức một buổi dã ngoại của công ty. Nên tổ chức vào ngày nào, giờ nào, ở đâu? Có chủ đề không? Cần dịch vụ ăn uống kiểu gì, và sẽ có những hoạt động gì trong buổi dã ngoại</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Introverts:</b><ul style="margin:0;padding-left:18px"><li>I want you to discuss the organisation of a company family day. What date, time, and where should you hold this family day? Is there a theme? What type of catering will you require, and what activities will you do at the family day?</li></ul></div>
+<div><b>Nhóm hướng nội:</b><ul style="margin:0;padding-left:18px"><li>Hãy thảo luận về việc tổ chức một ngày hội gia đình của công ty. Nên tổ chức vào ngày nào, giờ nào, ở đâu? Có chủ đề không? Cần dịch vụ ăn uống kiểu gì, và sẽ có những hoạt động gì trong ngày hội gia đình?</li></ul></div>
+</div>
+<div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Cách chơi (tóm tắt)</b></p><p style="margin:0">Lớp chia thành hai nhóm theo xu hướng tự nhận: hướng ngoại và hướng nội. Hai nhóm nhận hai đề gần giống nhau (dã ngoại công ty – ngày hội gia đình) để nội dung không khác biệt nhiều; điểm cần quan sát là <i>cách</i> mỗi nhóm thảo luận: ai nói trước, nhịp độ, mức độ nói to suy nghĩ, có khoảng lặng để suy ngẫm hay không, ý tưởng được ghi lại hay nói ra. Sau đó cả lớp nhận xét khác biệt và liên hệ với slide 25 (hướng nội – hướng ngoại) và slide 26 (điều chỉnh giọng điệu, nhịp độ). (Ghi chú của bản dịch.)</p></div>
+</section>
+<section id="s36" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 36</span>
+<span style="color:#86958a">Common conversations</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Common Manager – Staff Conversations at Zalo?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Những cuộc trao đổi thường gặp giữa quản lý và nhân viên tại Zalo?</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li><b>Performance and ownership:</b> A team member is capable but is not taking enough ownership or needs to be more proactive. The manager needs to give constructive feedback while keeping the employee motivated.</li><li><b>Different working styles/personality conflicts:</b> Two colleagues have different communication or working styles, leading to tension. The manager needs to mediate without taking sides and help them find a way to work effectively together.</li><li><b>Promotion and perceived fairness:</b> A strong employee is disappointed after being passed over for a promotion and feels that their contribution has not been recognised. The manager needs to explain the decision without damaging motivation, while also being honest about what the employee needs to improve.</li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li><b>Hiệu suất và tinh thần làm chủ:</b> Một thành viên có năng lực nhưng chưa đủ tinh thần làm chủ công việc hoặc cần chủ động hơn. Người quản lý cần đưa ra phản hồi mang tính xây dựng mà vẫn giữ được động lực của nhân viên.</li><li><b>Phong cách làm việc khác nhau/xung đột tính cách:</b> Hai đồng nghiệp có phong cách giao tiếp hoặc làm việc khác nhau, dẫn đến căng thẳng. Người quản lý cần hoà giải mà không đứng về phía ai, và giúp họ tìm cách làm việc cùng nhau hiệu quả.</li><li><b>Thăng chức và cảm nhận về sự công bằng:</b> Một nhân viên giỏi thất vọng sau khi không được chọn thăng chức và cảm thấy đóng góp của mình chưa được ghi nhận. Người quản lý cần giải thích quyết định mà không làm giảm động lực, đồng thời thẳng thắn về những điều nhân viên cần cải thiện.</li></ol></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bên phải slide là ảnh minh hoạ những người đang trò chuyện, xung quanh là các bong bóng thoại. Ba tình huống này được triển khai thành ba bài nhập vai ở slide 37–42.</i></p>
+</section>
+<section id="s37" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 37</span>
+<span style="color:#86958a">Role play 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Role Play Scenario 1: Encouraging Ownership and Proactivity</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tình huống nhập vai 1: Khuyến khích tinh thần làm chủ và sự chủ động</h3>
+<div style="color:var(--en,#56665a)"><b>Context:</b> A capable team member consistently delivers acceptable work but rarely takes initiative. They wait for instructions, avoid making decisions independently, and sometimes miss opportunities to add value. The manager wants to address this constructively, reinforcing strengths while motivating the employee to step up.</div>
+<div><b>Bối cảnh:</b> Một thành viên có năng lực luôn hoàn thành công việc ở mức chấp nhận được nhưng hiếm khi chủ động. Họ chờ chỉ thị, tránh tự đưa ra quyết định và đôi khi bỏ lỡ cơ hội tạo thêm giá trị. Người quản lý muốn xử lý việc này một cách xây dựng, củng cố điểm mạnh đồng thời thúc đẩy nhân viên tiến lên.</div>
+<div style="color:var(--en,#56665a)"><b>Characters</b><ul style="margin:0;padding-left:18px"><li><b>Manager (Ninh):</b> Calm, supportive, focused on development. Wants to empower the employee.</li><li><b>Team Member (Quang):</b> Skilled and reliable but hesitant to take ownership. Prefers clear direction and avoids risks.</li></ul></div>
+<div><b>Nhân vật</b><ul style="margin:0;padding-left:18px"><li><b>Quản lý (Ninh):</b> Điềm tĩnh, hay hỗ trợ, chú trọng phát triển nhân viên. Muốn trao quyền cho nhân viên.</li><li><b>Thành viên (Quang):</b> Có kỹ năng và đáng tin cậy nhưng ngần ngại nhận trách nhiệm làm chủ. Thích được chỉ đạo rõ ràng và tránh rủi ro.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Scenario Setup</b><br />Ninh has scheduled a one-on-one meeting with Quang after noticing several recent situations where he could have taken initiative, such as waiting for approval on small decisions or not anticipating next steps in a project.</div>
+<div><b>Thiết lập tình huống</b><br /><span>Ninh đã hẹn một buổi gặp 1-1 với Quang sau khi nhận thấy gần đây có nhiều tình huống mà lẽ ra Quang có thể chủ động, chẳng hạn chờ phê duyệt cho những quyết định nhỏ hoặc không lường trước các bước tiếp theo của dự án.</span></div>
+<div style="color:var(--en,#56665a)"><b>The Goal:</b><ul style="margin:0;padding-left:18px"><li>Give clear, actionable feedback</li><li>Reinforce Quang’s strengths</li><li>Motivate Quang to be more proactive</li><li>Maintain trust and psychological safety</li></ul></div>
+<div><b>Mục tiêu:</b><ul style="margin:0;padding-left:18px"><li>Đưa ra phản hồi rõ ràng, có thể hành động được</li><li>Củng cố điểm mạnh của Quang</li><li>Tạo động lực để Quang chủ động hơn</li><li>Giữ được niềm tin và sự an toàn tâm lý</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide có ảnh minh hoạ hai người đang trao đổi.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Hướng dẫn nhập vai (tóm tắt)</b></p><p style="margin:0">Mỗi nhóm có ít nhất hai vai: Ninh (quản lý) và Quang (nhân viên); những người còn lại quan sát. Theo bài học, Quang thuộc kiểu cần chỉ dẫn rõ ràng và ngại rủi ro, nên người đóng vai Ninh nên: mở đầu bằng điểm mạnh cụ thể của Quang; nêu một hai ví dụ cụ thể (chờ duyệt việc nhỏ, không lường trước bước tiếp theo) thay vì nhận xét chung chung; dùng câu hỏi mở (“Theo em, lần tới mình có thể…?”) để Quang tự đề xuất; thống nhất phạm vi Quang được tự quyết; và kết thúc bằng một bước hành động cụ thể. Người quan sát dùng ba câu hỏi ở slide 38 để nhận xét. (Ghi chú của bản dịch.)</p></div>
+</section>
+<section id="s38" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 38</span>
+<span style="color:#86958a">Debrief 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Role Play Scenario 1: Encouraging Ownership and Proactivity — Debrief</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tình huống nhập vai 1: Khuyến khích tinh thần làm chủ và sự chủ động — Tổng kết</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>What language/tone helped maintain motivation?</li><li>What made the feedback clear and actionable?</li><li>How did the manager balance support with accountability?</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Ngôn từ/giọng điệu nào giúp duy trì động lực?</li><li>Điều gì khiến phản hồi rõ ràng và có thể hành động được?</li><li>Người quản lý đã cân bằng giữa hỗ trợ và yêu cầu trách nhiệm như thế nào?</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bên trái slide là ảnh các khối chữ “DEBRIEF” (Tổng kết).</i></p>
+</section>
+<section id="s39" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 39</span>
+<span style="color:#86958a">Role play 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Role Play Scenario 2: Mediating Different Working Styles</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tình huống nhập vai 2: Hoà giải những phong cách làm việc khác nhau</h3>
+<div style="color:var(--en,#56665a)"><b>Context</b><br />Two competent colleagues have increasingly tense interactions because of their different communication and working styles. One prefers fast decisions and direct communication; the other prefers thoughtful analysis and written clarity. Their friction is slowing down collaboration and affecting team morale.<br /><br />The manager must mediate the conversation, stay neutral, and guide them toward shared expectations and a healthier working dynamic.</div>
+<div><b>Bối cảnh</b><br /><span>Hai đồng nghiệp có năng lực ngày càng căng thẳng khi làm việc với nhau vì khác biệt về phong cách giao tiếp và làm việc. Một người thích quyết định nhanh và giao tiếp thẳng; người kia thích phân tích kỹ và trao đổi rõ ràng bằng văn bản. Sự va chạm này làm chậm việc phối hợp và ảnh hưởng đến tinh thần của đội.</span><br /><br /><span>Người quản lý phải hoà giải cuộc trao đổi, giữ trung lập và dẫn dắt họ đến những kỳ vọng chung và một cách làm việc với nhau lành mạnh hơn.</span></div>
+<div style="color:var(--en,#56665a)"><b>Characters</b><ul style="margin:0;padding-left:18px"><li><b>Manager (Trung):</b> Not experienced, attempts to remain neutral, but focused on solutions.</li><li><b>Colleague 1 (Ngan):</b> Fast-paced, direct, prefers quick decisions and verbal communication.</li><li><b>Colleague 2 (Thu):</b> Thoughtful, detail-oriented, prefers written communication and time to process.</li></ul></div>
+<div><b>Nhân vật</b><ul style="margin:0;padding-left:18px"><li><b>Quản lý (Trung):</b> Chưa nhiều kinh nghiệm, cố gắng giữ trung lập nhưng tập trung vào giải pháp.</li><li><b>Đồng nghiệp 1 (Ngân):</b> Nhịp độ nhanh, thẳng thắn, thích quyết định nhanh và trao đổi bằng lời nói.</li><li><b>Đồng nghiệp 2 (Thu):</b> Chín chắn, chú trọng chi tiết, thích trao đổi bằng văn bản và cần thời gian để xử lý thông tin.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Scenario Setup</b><br />The manager has invited Ngan and Thu to a joint meeting after noticing tension in project discussions and receiving feedback from both individuals. The goal is not to assign blame but to help them understand each other’s styles and agree on practical ways to collaborate more effectively.</div>
+<div><b>Thiết lập tình huống</b><br /><span>Người quản lý đã mời Ngân và Thu đến một buổi họp chung sau khi nhận thấy căng thẳng trong các buổi thảo luận dự án và nhận được phản hồi từ cả hai người. Mục đích không phải là quy trách nhiệm, mà là giúp họ hiểu phong cách của nhau và thống nhất những cách thiết thực để phối hợp hiệu quả hơn.</span></div>
+<div style="color:var(--en,#56665a)"><b>The Goal:</b><ul style="margin:0;padding-left:18px"><li>Improve mutual understanding of what each person values, what triggers frustration and how their styles complement each other</li><li>How they will communicate and make decisions that benefit the organisation and each other</li></ul></div>
+<div><b>Mục tiêu:</b><ul style="margin:0;padding-left:18px"><li>Giúp hai bên hiểu nhau hơn: mỗi người coi trọng điều gì, điều gì khiến họ bực bội và phong cách của họ bổ sung cho nhau như thế nào</li><li>Họ sẽ giao tiếp và ra quyết định như thế nào để có lợi cho tổ chức và cho cả hai</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide có ảnh minh hoạ một nhóm người đang trao đổi.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Hướng dẫn nhập vai (tóm tắt)</b></p><p style="margin:0">Ba vai: Trung (quản lý), Ngân và Thu; những người còn lại quan sát. Có thể đối chiếu với bốn phong cách làm việc ở slide 10 và 27: Ngân gần với kiểu <i>Driver</i> (cần ngắn gọn, tập trung vào kết quả), Thu gần với kiểu <i>Analytical</i> (cần dữ kiện, thời gian xử lý và sự rõ ràng). Người đóng vai Trung nên: mở đầu bằng mục đích chung, không phán xét; để từng người nói điều mình coi trọng và điều khiến mình bực bội, sau đó nhắc lại (paraphrase) ý của họ; chỉ ra điểm mạnh bổ sung cho nhau của hai phong cách; và cùng chốt vài thoả thuận cụ thể (ví dụ: việc gì quyết bằng lời trong buổi họp, việc gì cần tóm tắt bằng văn bản, thời hạn phản hồi). Người quan sát dùng các câu hỏi ở slide 40. (Ghi chú của bản dịch.)</p></div>
+</section>
+<section id="s40" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 40</span>
+<span style="color:#86958a">Debrief 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Role Play Scenario 2: Mediating Different Working Styles — Debrief</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tình huống nhập vai 2: Hoà giải những phong cách làm việc khác nhau — Tổng kết</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>How did the manager stay neutral?</li><li>What techniques helped reduce tension?</li><li>How did the manager turn differences into actionable agreements?</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Người quản lý đã giữ trung lập như thế nào?</li><li>Những kỹ thuật nào giúp giảm căng thẳng?</li><li>Người quản lý đã biến những khác biệt thành các thoả thuận có thể hành động được như thế nào?</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bên phải slide là ảnh các mũi tên ngược chiều và chữ “DEBRIEF” (Tổng kết).</i></p>
+</section>
+<section id="s41" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 41</span>
+<span style="color:#86958a">Role play 3</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Role Play Scenario 3: Managing Disappointment / Missed Promotion</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tình huống nhập vai 3: Xử lý sự thất vọng / Không được thăng chức</h3>
+<div style="color:var(--en,#56665a)"><b>Context</b><br />A high-performing employee expected to be promoted and is disappointed after learning that another colleague was selected. They feel their contributions have not been fully recognised.</div>
+<div><b>Bối cảnh</b><br /><span>Một nhân viên có hiệu suất cao từng kỳ vọng được thăng chức và thất vọng khi biết một đồng nghiệp khác được chọn. Họ cảm thấy đóng góp của mình chưa được ghi nhận đầy đủ.</span></div>
+<div style="color:var(--en,#56665a)"><b>Characters</b><ul style="margin:0;padding-left:18px"><li><b>Manager (Giang):</b> Empathetic, transparent, focused on development and retention.</li><li><b>Employee (Trang):</b> Strong performer, ambitious, frustrated about being passed over.</li></ul></div>
+<div><b>Nhân vật</b><ul style="margin:0;padding-left:18px"><li><b>Quản lý (Giang):</b> Thấu cảm, minh bạch, chú trọng phát triển và giữ chân nhân viên.</li><li><b>Nhân viên (Trang):</b> Làm việc giỏi, nhiều tham vọng, bực bội vì không được chọn.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Scenario Setup</b><br />Giang has invited Trang for a private conversation after noticing her disengagement following the promotion announcement. Trang has been a consistent top performer and was considered for the role, but another candidate was selected due to broader leadership readiness.</div>
+<div><b>Thiết lập tình huống</b><br /><span>Giang đã mời Trang nói chuyện riêng sau khi nhận thấy Trang kém gắn kết hơn kể từ khi có thông báo thăng chức. Trang luôn thuộc nhóm làm việc tốt nhất và đã được cân nhắc cho vị trí này, nhưng một ứng viên khác được chọn vì sự sẵn sàng lãnh đạo toàn diện hơn.</span></div>
+<div style="color:var(--en,#56665a)"><b>The Goal:</b><ul style="margin:0;padding-left:18px"><li>Acknowledge the employee’s feelings</li><li>Explain the decision transparently</li><li>Reinforce the employee’s value</li><li>Provide clear development guidance</li><li>Maintain motivation and engagement</li></ul></div>
+<div><b>Mục tiêu:</b><ul style="margin:0;padding-left:18px"><li>Ghi nhận cảm xúc của nhân viên</li><li>Giải thích quyết định một cách minh bạch</li><li>Khẳng định giá trị của nhân viên</li><li>Đưa ra định hướng phát triển rõ ràng</li><li>Duy trì động lực và sự gắn kết</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide có ảnh minh hoạ một người phụ nữ đang suy nghĩ bên bàn làm việc.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Hướng dẫn nhập vai (tóm tắt)</b></p><p style="margin:0">Hai vai: Giang (quản lý) và Trang (nhân viên); những người còn lại quan sát. Người đóng vai Giang nên đi theo thứ tự năm mục tiêu trên slide: để Trang nói trước và ghi nhận cảm xúc của Trang mà không tranh luận; giải thích lý do của quyết định (“sự sẵn sàng lãnh đạo toàn diện hơn”) một cách thẳng thắn, không đổ cho quy trình; nhắc lại những đóng góp cụ thể của Trang; nêu rõ những năng lực lãnh đạo Trang cần phát triển và cơ hội để thể hiện chúng; và thống nhất một kế hoạch phát triển cùng lịch trao đổi tiếp theo. Có thể liên hệ với thuyết ERG ở slide 30: Trang đang ở phía “phát triển” của thang trượt, nên kế hoạch phát triển là đòn bẩy tạo động lực chính. Người quan sát dùng các câu hỏi ở slide 42. (Ghi chú của bản dịch.)</p></div>
+</section>
+<section id="s42" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 42</span>
+<span style="color:#86958a">Debrief 3</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Role Play Scenario 3: Managing Disappointment / Missed Promotion — Debrief</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tình huống nhập vai 3: Xử lý sự thất vọng / Không được thăng chức — Tổng kết</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>What language helped maintain motivation?</li><li>How did the manager avoid taking a defensive stance?</li><li>How was the development plan framed as an opportunity rather than a correction?</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Ngôn từ nào giúp duy trì động lực?</li><li>Người quản lý đã tránh thái độ phòng thủ như thế nào?</li><li>Kế hoạch phát triển đã được trình bày như một cơ hội thay vì một sự “sửa sai” như thế nào?</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bên trái slide là ảnh các mảnh ghép xếp thành chữ “DEBRIEF” (Tổng kết).</i></p>
+</section>
+<section id="s43" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 43</span>
+<span style="color:#86958a">Listening & speaking</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Key to Good Communication: Listening &amp; Speaking</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chìa khoá của giao tiếp tốt: Lắng nghe &amp; Nói</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Toàn bộ slide là một hình đồ hoạ; chữ trong hình được dịch theo cấu trúc hình ở khung dưới.</i></p><div style="margin-top:10px"></div><div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="text-align:center;line-height:1.35;margin-bottom:12px"><div style="font-weight:700;color:#1b2a20;letter-spacing:.02em">KEY TO GOOD COMMUNICATION: LISTENING &amp; SPEAKING</div><div style="font-weight:700">CHÌA KHOÁ ĐỂ GIAO TIẾP TỐT: LẮNG NGHE &amp; NÓI</div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:0;align-items:stretch"><div style="border:2px solid #1f6fc0;border-radius:120px 0 0 120px;padding-left:28px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0;background:#fff"><div style="text-align:center;line-height:1.3"><div style="font-weight:700;color:#1f6fc0;font-size:15px">LISTENING</div><div style="font-weight:700">Lắng nghe</div></div><ul style="margin:0;padding:0 0 0 16px;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Attentive ear</span><br /><span>Lắng tai chăm chú</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Active focus</span><br /><span>Tập trung chủ động</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Understand cues</span><br /><span>Hiểu các tín hiệu</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Receive message</span><br /><span>Tiếp nhận thông điệp</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Empathize</span><br /><span>Thấu cảm</span></li></ul></div><div style="border:2px solid #14857a;border-left:none;border-right:none;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0;background:#eef7f5"><div style="text-align:center;line-height:1.3"><div style="font-weight:700;color:#14857a;font-size:15px">COMMUNICATION</div><div style="font-weight:700">Giao tiếp (vùng giao nhau)</div></div><ul style="margin:0;padding:0 0 0 16px;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Mutual understanding</span><br /><span>Hiểu nhau</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Active interaction</span><br /><span>Tương tác chủ động</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Effective dialogue</span><br /><span>Đối thoại hiệu quả</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Shared ideas</span><br /><span>Chia sẻ ý tưởng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Build trust &amp; relations</span><br /><span>Xây dựng niềm tin &amp; quan hệ</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Resolve conflicts</span><br /><span>Giải quyết xung đột</span></li></ul></div><div style="border:2px solid #2f9a4a;border-radius:0 120px 120px 0;padding-right:28px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0;background:#fff"><div style="text-align:center;line-height:1.3"><div style="font-weight:700;color:#2f9a4a;font-size:15px">SPEAKING</div><div style="font-weight:700">Nói</div></div><ul style="margin:0;padding:0 0 0 16px;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Clear message</span><br /><span>Thông điệp rõ ràng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Articulate thoughts</span><br /><span>Diễn đạt suy nghĩ mạch lạc</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Tone &amp; body language</span><br /><span>Giọng điệu &amp; ngôn ngữ cơ thể</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Express ideas</span><br /><span>Bày tỏ ý tưởng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Deliver confidently</span><br /><span>Truyền đạt tự tin</span></li></ul></div></div></div><figure style="margin:12px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t11/p43a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình gốc của slide: sơ đồ Venn hai vòng tròn, Listening (Lắng nghe, bên trái) và Speaking (Nói, bên phải); vùng giao nhau ở giữa là Communication (Giao tiếp).</figcaption>
+</figure>
+</section>
+<section id="s44" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 44</span>
+<span style="color:#86958a">Takeaways</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Effective Manager-to-Employee communication requires active listening, transparency, and clear expectations.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Giao tiếp hiệu quả giữa quản lý và nhân viên đòi hỏi lắng nghe chủ động, minh bạch và kỳ vọng rõ ràng.</h3>
+<div style="color:var(--en,#56665a)"><b>Practice active listening:</b> Give your full attention during one-on-ones, avoid interrupting, and paraphrase what your employee says to ensure mutual understanding</div>
+<div><b>Thực hành lắng nghe chủ động:</b> Dành toàn bộ sự chú ý trong các buổi gặp 1-1, tránh ngắt lời, và diễn đạt lại những gì nhân viên nói để đảm bảo hai bên hiểu nhau</div>
+<div style="color:var(--en,#56665a)"><b>Set clear expectations:</b> Define the specific goal and desired outcome rather than just assigning a task, and clarify decision-making authority.</div>
+<div><b>Đặt kỳ vọng rõ ràng:</b> Xác định mục tiêu cụ thể và kết quả mong muốn thay vì chỉ giao việc, đồng thời làm rõ thẩm quyền ra quyết định.</div>
+<div style="color:var(--en,#56665a)"><b>Be transparent and provide context:</b> Explain the "why" behind decisions and company changes so employees understand how their work fits the larger strategy</div>
+<div><b>Minh bạch và cung cấp bối cảnh:</b> Giải thích “lý do” đằng sau các quyết định và thay đổi của công ty để nhân viên hiểu công việc của họ gắn với chiến lược lớn hơn như thế nào</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Mỗi ý có một ảnh minh hoạ nhỏ phía trên.</i></p>
+</section>
+<section id="s45" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 45</span>
+<span style="color:#86958a">Takeaways</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Regular one-on-ones and psychological safety</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Gặp 1-1 định kỳ và sự an toàn tâm lý</h3>
+<div style="color:var(--en,#56665a)"><b>Regular one-on-ones:</b> Have consistent, confidential check-ins focused on professional growth, coaching, and two-way feedback and don’t micromanage.</div>
+<div><b>Gặp 1-1 định kỳ:</b> Duy trì các buổi trao đổi đều đặn, bảo mật, tập trung vào phát triển nghề nghiệp, coaching và phản hồi hai chiều, và đừng quản lý vi mô.</div>
+<div style="color:var(--en,#56665a)"><b>Foster psychological safety:</b> Create an environment where employees feel secure sharing honest thoughts, admitting mistakes, or asking questions without fear of negative judgement</div>
+<div><b>Thúc đẩy sự an toàn tâm lý:</b> Tạo môi trường mà nhân viên cảm thấy an toàn khi chia sẻ suy nghĩ thật, thừa nhận sai lầm hoặc đặt câu hỏi mà không sợ bị đánh giá tiêu cực</div>
+<div style="color:var(--en,#56665a)"><b>People forget words, but they never forget how you made them feel.</b></div>
+<div><b>Người ta có thể quên lời bạn nói, nhưng không bao giờ quên cảm giác bạn mang lại cho họ.</b></div>
+<div style="color:var(--en,#56665a)">Leadership / Management is NOT learnt instantly. It is a journey and different for everyone. It requires practice and thought EVERY DAY.</div>
+<div>Lãnh đạo / Quản lý KHÔNG thể học được ngay lập tức. Đó là một hành trình và khác nhau với mỗi người. Nó đòi hỏi sự thực hành và suy ngẫm MỖI NGÀY.</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide không có tiêu đề riêng; tiêu đề ở trên do bản dịch đặt để dễ tra cứu. Ảnh minh hoạ: các mảnh giấy nhớ “Helpful tips” (Mẹo hữu ích).</i></p>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 11 · Customise Approach for Individuals</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t11.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Lãnh đạo – Cách tiếp cận phù hợp với từng cá nhân","lv":0,"en":"Leadership - Customised Approach for Individuals","vi":"Lãnh đạo – Cách tiếp cận phù hợp với từng cá nhân"},
+  {"id":"s02","num":"02","label":"TS. Gavin Nicholson — Giảng viên ngành Quản lý, Khoa Kinh doanh (The Business School), R…","lv":0,"en":"Dr Gavin Nicholson — Lecturer, Management, The Business School, RMIT Vietnam","vi":"TS. Gavin Nicholson — Giảng viên ngành Quản lý, Khoa Kinh doanh (The Business School), RMIT Việt Nam"},
+  {"id":"s03","num":"03","label":"Chương trình","lv":0,"en":"Agenda","vi":"Chương trình"},
+  {"id":"s04","num":"04","label":"Thấu hiểu con người: Tính cách, Hành vi và Phong cách làm việc","lv":0,"en":"Understanding People: Personality, Behaviour and Work Styles","vi":"Thấu hiểu con người: Tính cách, Hành vi và Phong cách làm việc"},
+  {"id":"s05","num":"05","label":"Tôi hiểu bản thân mình đến mức nào?","lv":0,"en":"How Well Do I Know Myself?","vi":"Tôi hiểu bản thân mình đến mức nào?"},
+  {"id":"s06","num":"06","label":"Lãnh đạo người khác – Thấu hiểu hành vi","lv":0,"en":"Leading Others - Understanding Behaviour","vi":"Lãnh đạo người khác – Thấu hiểu hành vi"},
+  {"id":"s07","num":"07","label":"Lãnh đạo người khác – Thấu hiểu hành vi","lv":0,"en":"Leading Others - Understanding Behaviour","vi":"Lãnh đạo người khác – Thấu hiểu hành vi"},
+  {"id":"s08","num":"08","label":"Lãnh đạo người khác – Thấu hiểu hành vi","lv":0,"en":"Leading Others - Understanding Behaviour","vi":"Lãnh đạo người khác – Thấu hiểu hành vi"},
+  {"id":"s09","num":"09","label":"Vun đắp niềm tin qua hành vi","lv":0,"en":"Cultivating Trust through Behaviour","vi":"Vun đắp niềm tin qua hành vi"},
+  {"id":"s10","num":"10","label":"Hành vi và các phong cách làm việc khác nhau","lv":0,"en":"Behaviour and Diverse Work Styles","vi":"Hành vi và các phong cách làm việc khác nhau"},
+  {"id":"s11","num":"11","label":"Chiến lược quản lý những tính cách khác nhau","lv":0,"en":"Strategies For Managing Diverse Personalities","vi":"Chiến lược quản lý những tính cách khác nhau"},
+  {"id":"s12","num":"12","label":"Chiến lược quản lý những tính cách khác nhau","lv":0,"en":"Strategies For Managing Diverse Personalities","vi":"Chiến lược quản lý những tính cách khác nhau"},
+  {"id":"s13","num":"13","label":"Chiến lược quản lý những tính cách khác nhau","lv":0,"en":"Strategies For Managing Diverse Personalities","vi":"Chiến lược quản lý những tính cách khác nhau"},
+  {"id":"s14","num":"14","label":"Nghiên cứu tình huống – Sự thay đổi lãnh đạo giữa các thế hệ tại Việt Nam","lv":0,"en":"Case Study – Generational Leadership Change in Vietnam","vi":"Nghiên cứu tình huống – Sự thay đổi lãnh đạo giữa các thế hệ tại Việt Nam"},
+  {"id":"s15","num":"15","label":"Tự nhận thức và Quản lý mối quan hệ","lv":0,"en":"Self Awareness and Relationship Management","vi":"Tự nhận thức và Quản lý mối quan hệ"},
+  {"id":"s16","num":"16","label":"Trí tuệ cảm xúc — Hiểu mình – Hiểu người","lv":0,"en":"Emotional Intelligence — Understanding You – Understanding Others","vi":"Trí tuệ cảm xúc — Hiểu mình – Hiểu người"},
+  {"id":"s17","num":"17","label":"Tự nhận thức","lv":0,"en":"Self-Awareness","vi":"Tự nhận thức"},
+  {"id":"s18","num":"18","label":"Phát triển phẩm chất lãnh đạo: Tự nhận thức và Nhận thức xã hội","lv":0,"en":"Developing Leadership Attributes: Self and Social Awareness","vi":"Phát triển phẩm chất lãnh đạo: Tự nhận thức và Nhận thức xã hội"},
+  {"id":"s19","num":"19","label":"Phát triển phẩm chất lãnh đạo: Tự quản lý và Quản lý xã hội","lv":0,"en":"Developing Leadership Attributes: Self and Social Management","vi":"Phát triển phẩm chất lãnh đạo: Tự quản lý và Quản lý xã hội"},
+  {"id":"s20","num":"20","label":"Quản lý mối quan hệ","lv":0,"en":"Relationship Management","vi":"Quản lý mối quan hệ"},
+  {"id":"s21","num":"21","label":"Tự nhận thức và Quản lý mối quan hệ","lv":0,"en":"Self-Awareness and Relationship Management","vi":"Tự nhận thức và Quản lý mối quan hệ"},
+  {"id":"s22","num":"22","label":"Trí tuệ cảm xúc – Bảng câu hỏi tự đánh giá","lv":0,"en":"Emotional Intelligence – Self-Assessment Questionnaire","vi":"Trí tuệ cảm xúc – Bảng câu hỏi tự đánh giá"},
+  {"id":"s23","num":"23","label":"Điểm chính – Tự nhận thức và Quản lý mối quan hệ","lv":0,"en":"Key Points – Self-Awareness and Relationship Management","vi":"Điểm chính – Tự nhận thức và Quản lý mối quan hệ"},
+  {"id":"s24","num":"24","label":"Điều chỉnh cách giao tiếp cho phù hợp với những tính cách khác nhau","lv":0,"en":"Adapting Your Communication for Diverse Personalities","vi":"Điều chỉnh cách giao tiếp cho phù hợp với những tính cách khác nhau"},
+  {"id":"s25","num":"25","label":"Điều chỉnh giao tiếp cho phù hợp với những tính cách khác nhau","lv":0,"en":"Adapting Communication For Diverse Personalities","vi":"Điều chỉnh giao tiếp cho phù hợp với những tính cách khác nhau"},
+  {"id":"s26","num":"26","label":"Chiến lược giao tiếp với những tính cách khác nhau","lv":0,"en":"Strategies for Communicating across Diverse Personalities","vi":"Chiến lược giao tiếp với những tính cách khác nhau"},
+  {"id":"s27","num":"27","label":"Sở thích giao tiếp và phong cách làm việc","lv":0,"en":"Communication Preferences and Work Styles","vi":"Sở thích giao tiếp và phong cách làm việc"},
+  {"id":"s28","num":"28","label":"Giao tiếp, Động lực và Thuyết ERG","lv":0,"en":"Communication, Motivation and the ERG Theory","vi":"Giao tiếp, Động lực và Thuyết ERG"},
+  {"id":"s29","num":"29","label":"Giao tiếp, Nhu cầu con người và Động lực","lv":0,"en":"Communication, Human Needs and Motivation","vi":"Giao tiếp, Nhu cầu con người và Động lực"},
+  {"id":"s30","num":"30","label":"Thuyết Tồn tại – Quan hệ – Phát triển (ERG) của Alderfer","lv":0,"en":"Alderfer’s – Existence, Growth and Relatedness Theory","vi":"Thuyết Tồn tại – Quan hệ – Phát triển (ERG) của Alderfer"},
+  {"id":"s31","num":"31","label":"Có câu hỏi nào không?","lv":0,"en":"Any Questions?","vi":"Có câu hỏi nào không?"},
+  {"id":"s32","num":"32","label":"Cảm ơn!","lv":0,"en":"Thank you!","vi":"Cảm ơn!"},
+  {"id":"s33","num":"33","label":"Trò chơi giao tiếp: Phát triển phong cách giao tiếp của bạn","lv":0,"en":"Communication Games: Developing Your Communication Style","vi":"Trò chơi giao tiếp: Phát triển phong cách giao tiếp của bạn"},
+  {"id":"s34","num":"34","label":"Hoạt động: Hướng ngoại và Hướng nội","lv":0,"en":"Activity: Extrovert -v- Introvert","vi":"Hoạt động: Hướng ngoại và Hướng nội"},
+  {"id":"s35","num":"35","label":"Điều chỉnh phong cách giao tiếp cho phù hợp với những tính cách khác nhau","lv":0,"en":"Customising Your Communication Style For Diverse Personalities","vi":"Điều chỉnh phong cách giao tiếp cho phù hợp với những tính cách khác nhau"},
+  {"id":"s36","num":"36","label":"Những cuộc trao đổi thường gặp giữa quản lý và nhân viên tại Zalo?","lv":0,"en":"Common Manager – Staff Conversations at Zalo?","vi":"Những cuộc trao đổi thường gặp giữa quản lý và nhân viên tại Zalo?"},
+  {"id":"s37","num":"37","label":"Tình huống nhập vai 1: Khuyến khích tinh thần làm chủ và sự chủ động","lv":0,"en":"Role Play Scenario 1: Encouraging Ownership and Proactivity","vi":"Tình huống nhập vai 1: Khuyến khích tinh thần làm chủ và sự chủ động"},
+  {"id":"s38","num":"38","label":"Tình huống nhập vai 1: Khuyến khích tinh thần làm chủ và sự chủ động — Tổng kết","lv":0,"en":"Role Play Scenario 1: Encouraging Ownership and Proactivity — Debrief","vi":"Tình huống nhập vai 1: Khuyến khích tinh thần làm chủ và sự chủ động — Tổng kết"},
+  {"id":"s39","num":"39","label":"Tình huống nhập vai 2: Hoà giải những phong cách làm việc khác nhau","lv":0,"en":"Role Play Scenario 2: Mediating Different Working Styles","vi":"Tình huống nhập vai 2: Hoà giải những phong cách làm việc khác nhau"},
+  {"id":"s40","num":"40","label":"Tình huống nhập vai 2: Hoà giải những phong cách làm việc khác nhau — Tổng kết","lv":0,"en":"Role Play Scenario 2: Mediating Different Working Styles — Debrief","vi":"Tình huống nhập vai 2: Hoà giải những phong cách làm việc khác nhau — Tổng kết"},
+  {"id":"s41","num":"41","label":"Tình huống nhập vai 3: Xử lý sự thất vọng / Không được thăng chức","lv":0,"en":"Role Play Scenario 3: Managing Disappointment / Missed Promotion","vi":"Tình huống nhập vai 3: Xử lý sự thất vọng / Không được thăng chức"},
+  {"id":"s42","num":"42","label":"Tình huống nhập vai 3: Xử lý sự thất vọng / Không được thăng chức — Tổng kết","lv":0,"en":"Role Play Scenario 3: Managing Disappointment / Missed Promotion — Debrief","vi":"Tình huống nhập vai 3: Xử lý sự thất vọng / Không được thăng chức — Tổng kết"},
+  {"id":"s43","num":"43","label":"Chìa khoá của giao tiếp tốt: Lắng nghe & Nói","lv":0,"en":"Key to Good Communication: Listening & Speaking","vi":"Chìa khoá của giao tiếp tốt: Lắng nghe & Nói"},
+  {"id":"s44","num":"44","label":"Giao tiếp hiệu quả giữa quản lý và nhân viên đòi hỏi lắng nghe chủ động, minh bạch và kỳ…","lv":0,"en":"Effective Manager-to-Employee communication requires active listening, transparency, and clear expectations.","vi":"Giao tiếp hiệu quả giữa quản lý và nhân viên đòi hỏi lắng nghe chủ động, minh bạch và kỳ vọng rõ ràng."},
+  {"id":"s45","num":"45","label":"Gặp 1-1 định kỳ và sự an toàn tâm lý","lv":0,"en":"Regular one-on-ones and psychological safety","vi":"Gặp 1-1 định kỳ và sự an toàn tâm lý"}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t11.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t11.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t11.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t11.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 1 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Navigating the Leadership Transition</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Điều hướng bước chuyển sang vai trò quản lý</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 1: Điều hướng bước chuyển sang vai trò quản lý</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Topic 1: Navigating the Leadership Transition — bản đối chiếu Anh – Việt</p>
+<p style="margin:0;font-size:13px;color:#a9cdae"><span>Từ nhân sự chuyên môn sang quản lý trực tiếp</span> · PGS. Burkhard Schrage · 36 slide</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide được trình bày thành một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ.</p>
+<p style="margin:0">Thuật ngữ chuyên môn được dịch sang tiếng Việt kèm nguyên bản tiếng Anh trong ngoặc ở lần xuất hiện đầu tiên. Các nguồn trích dẫn học thuật giữ nguyên tiếng Anh theo chuẩn APA.</p>
+</div>
+
+<section id="s01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Topic 1: Navigating the Leadership Transition</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chủ đề 1: Điều hướng bước chuyển sang vai trò quản lý</h3>
+<div style="color:var(--en,#56665a)">From Individual Contributor to First-Line Manager<br />Assoc. Professor Burkhard Schrage</div>
+<div><span>Từ nhân sự chuyên môn (individual contributor) sang quản lý trực tiếp (first-line manager)</span><br /><span>PGS. Burkhard Schrage</span></div>
+</div>
+</section>
+
+<section id="s02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">Session flow</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Here's How We'll Spend the Next Three Hours</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Ba giờ tới sẽ diễn ra như thế nào</h3>
+</div>
+<table style="margin-top:10px;font-size:12.5px;line-height:1.5">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 8px 5px 0;width:14%;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#86958a;font-weight:600">Time</th>
+<th style="text-align:left;padding:5px 8px;width:43%;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#86958a;font-weight:600">EN</th>
+<th style="text-align:left;padding:5px 0 5px 8px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#86958a;font-weight:600">VI</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);white-space:nowrap">9:00 – 9:10</td><td style="padding:6px 8px;vertical-align:top;color:#56665a">Welcome &amp; Frame · Kick-off</td><td style="padding:6px 0 6px 8px;vertical-align:top">Chào mừng &amp; định khung · Khai mạc</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);white-space:nowrap">9:10 – 9:35</td><td style="padding:6px 8px;vertical-align:top;color:#56665a">The Mindset Shift · LO1</td><td style="padding:6px 0 6px 8px;vertical-align:top"><span>Bước chuyển tư duy</span> · LO1</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);white-space:nowrap">9:35 – 10:10</td><td style="padding:6px 8px;vertical-align:top;color:#56665a">Group Activity 1: Spot the Trap · LO1 applied</td><td style="padding:6px 0 6px 8px;vertical-align:top">Hoạt động nhóm 1: Nhận diện cái bẫy · Vận dụng LO1</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);white-space:nowrap">10:10 – 10:30</td><td style="padding:6px 8px;vertical-align:top;color:#56665a">Debrief &amp; Bridge · LO1 → LO2</td><td style="padding:6px 0 6px 8px;vertical-align:top"><span>Tổng kết &amp; chuyển tiếp</span> · LO1 → LO2</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);white-space:nowrap">10:30 – 10:45</td><td style="padding:6px 8px;vertical-align:top;color:#56665a">Break</td><td style="padding:6px 0 6px 8px;vertical-align:top">Nghỉ giữa giờ</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);white-space:nowrap">10:45 – 11:15</td><td style="padding:6px 8px;vertical-align:top;color:#56665a">Assessing Team Readiness · LO2</td><td style="padding:6px 0 6px 8px;vertical-align:top"><span>Đánh giá mức độ sẵn sàng của nhóm</span> · LO2</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);white-space:nowrap">11:15 – 11:45</td><td style="padding:6px 8px;vertical-align:top;color:#56665a">Group Activity 2: Match the Delegation · LO3</td><td style="padding:6px 0 6px 8px;vertical-align:top"><span>Hoạt động nhóm 2: Ghép cách giao việc</span> · LO3</td></tr>
+<tr><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);white-space:nowrap">11:45 – 12:00</td><td style="padding:6px 8px;vertical-align:top;color:#56665a">Build Your Transition Plan · LO4</td><td style="padding:6px 0 6px 8px;vertical-align:top"><span>Xây dựng kế hoạch chuyển đổi</span> · LO4</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">By the end of today</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">You Will Be Able To…</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Học viên sẽ có thể…</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li style="margin:0 0 4px">Explain the shift from individual contributor to manager.</li><li style="margin:0 0 4px">Identify team members' strengths and development needs.</li><li style="margin:0 0 4px">Adapt guidance and task allocation to individual capability.</li><li style="margin:0">Create a practical leadership transition plan.</li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li style="margin:0 0 4px">Giải thích bước chuyển từ nhân sự chuyên môn sang quản lý.</li><li style="margin:0 0 4px">Xác định điểm mạnh và nhu cầu phát triển của từng thành viên trong nhóm.</li><li style="margin:0 0 4px">Điều chỉnh cách hướng dẫn và phân bổ công việc theo năng lực của từng người.</li><li style="margin:0">Xây dựng một kế hoạch chuyển đổi vai trò lãnh đạo khả thi.</li></ol></div>
+</div>
+</section>
+
+<section id="s04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">The mindset shift</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Your Job Has Changed – Now You Have to Change With It.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Công việc đã thay đổi – người làm cũng phải thay đổi theo.</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">IC · Individual Contributor</p><ul style="margin:0 0 10px;padding-left:17px"><li style="margin:0 0 3px">Success = personal output</li><li style="margin:0 0 3px">Win by doing the work yourself</li><li style="margin:0">Focus: your own tasks and craft</li></ul><p style="margin:0 0 4px;font-weight:600">M · First-Line Manager</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">Success = team output</li><li style="margin:0 0 3px">Win by building capability in others</li><li style="margin:0">Focus: growth, accountability, culture</li></ul></div>
+<div><p style="margin:0 0 4px;font-weight:600">IC<span> · Nhân sự chuyên môn</span></p><ul style="margin:0 0 10px;padding-left:17px"><li style="margin:0 0 3px">Thành công = kết quả của cá nhân</li><li style="margin:0 0 3px">Thắng bằng cách tự mình làm việc</li><li style="margin:0">Tập trung: nhiệm vụ và tay nghề của bản thân</li></ul><p style="margin:0 0 4px;font-weight:600">M<span> · Quản lý trực tiếp</span></p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">Thành công = kết quả của cả nhóm</li><li style="margin:0 0 3px">Thắng bằng cách xây dựng năng lực cho người khác</li><li style="margin:0">Tập trung: sự phát triển, tinh thần trách nhiệm (accountability), văn hoá</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Hill, L. A. (2007). Becoming the boss. <i>Harvard Business Review, 85</i>(1), 48–56.</p>
+</section>
+
+<section id="s05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 05</span>
+<span style="color:#86958a">Four stages of contribution</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">A Career Is a Journey, Not a Job</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Sự nghiệp là một hành trình, không phải một công việc</h3>
+<div style="color:var(--en,#56665a)">Four stages of contribution, and where you sit today.</div>
+<div>Bốn giai đoạn đóng góp, và vị trí hiện tại của mỗi người.</div>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:17%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">&nbsp;</th>
+<th style="text-align:left;padding:5px 6px;font-weight:600">Stage 1: Contributing Dependently<br /><span style="color:var(--ac,#2f6b45)">Giai đoạn 1: Đóng góp phụ thuộc</span></th>
+<th style="text-align:left;padding:5px 6px;font-weight:600">Stage 2: Contributing Independently<br /><span style="color:var(--ac,#2f6b45)">Giai đoạn 2: Đóng góp độc lập</span></th>
+<th style="text-align:left;padding:5px 6px;font-weight:600">Stage 3: Contributing Through Others<br /><span style="color:var(--ac,#2f6b45)">Giai đoạn 3: Đóng góp qua người khác</span></th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-weight:600">Stage 4: Contributing Strategically<br /><span style="color:var(--ac,#2f6b45)">Giai đoạn 4: Đóng góp chiến lược</span></th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Performance Expectation<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Kỳ vọng về hiệu quả</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Build credibility, learn<br /><span style="color:#1b2a20">Tạo dựng uy tín, học hỏi</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Establish and apply expertise<br /><span style="color:#1b2a20">Xác lập và áp dụng chuyên môn</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Guide, coordinate, develop others<br /><span style="color:#1b2a20">Hướng dẫn, phối hợp, phát triển người khác</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Shape organizational direction<br /><span style="color:#1b2a20">Định hình hướng đi của tổ chức</span></td>
+</tr>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Primary Role<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Vai trò chính</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Helper, learner<br /><span style="color:#1b2a20">Người hỗ trợ, người học</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Individual contributor, specialist<br /><span style="color:#1b2a20">Nhân sự chuyên môn, chuyên gia</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Coach, mentor, idea leader, internal consultant, project leader<br /><span style="color:#1b2a20">Người kèm cặp, người dẫn dắt, người dẫn dắt ý tưởng, tư vấn nội bộ, trưởng dự án</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Sponsor, innovator, business leader<br /><span style="color:#1b2a20">Người bảo trợ, người đổi mới, lãnh đạo kinh doanh</span></td>
+</tr>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Major Stage Transition Issue<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Vấn đề then chốt khi chuyển giai đoạn</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Recognize need for dependence<br /><span style="color:#1b2a20">Nhận ra sự cần thiết của việc phụ thuộc</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Accept independence<br /><span style="color:#1b2a20">Chấp nhận sự độc lập</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Accept responsibility (formal or informal) for others' efforts<br /><span style="color:#1b2a20">Chấp nhận trách nhiệm (chính thức hoặc không chính thức) với công việc của người khác</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Holistic view of business, making tough choices<br /><span style="color:#1b2a20">Nhìn tổng thể hoạt động kinh doanh, đưa ra lựa chọn khó</span></td>
+</tr>
+<tr>
+<td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Performance<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Nền tảng hiệu quả</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Support others, build credibility<br /><span style="color:#1b2a20">Hỗ trợ người khác, tạo dựng uy tín</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Individual capability, subject matter expertise<br /><span style="color:#1b2a20">Năng lực cá nhân, chuyên môn sâu</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Relationships, networks, and technical breadth<br /><span style="color:#1b2a20">Quan hệ, mạng lưới và độ rộng về kỹ thuật</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Establish organizational priorities, broad impact and influence<br /><span style="color:#1b2a20">Thiết lập ưu tiên của tổ chức, tác động và ảnh hưởng rộng</span></td>
+</tr>
+</tbody>
+</table>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Dalton, G. W., Thompson, P. H., &amp; Price, R. L. (1977). The four stages of professional careers: A new look at performance by professionals. <i>Organizational Dynamics, 6</i>(1), 19–42.</p>
+</section>
+
+<section id="s06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06–07</span>
+<span style="color:#86958a">Reference framework · Hill (2007)</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Five Common Myths Explain Why New Managers Don't Get It.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Năm ngộ nhận phổ biến giải thích vì sao quản lý mới chưa hiểu đúng vai trò.</h3>
+<div style="color:var(--en,#56665a)">Beginning managers often fail, at least initially, because they carry misconceptions about what it means to be a boss. Because these myths are simplistic and incomplete, they lead new managers to neglect key leadership responsibilities.</div>
+<div>Quản lý mới thường thất bại, ít nhất là ở giai đoạn đầu, vì mang theo những ngộ nhận về việc làm người quản lý nghĩa là gì. Do những ngộ nhận này đơn giản hoá và thiếu sót, chúng khiến quản lý mới bỏ qua các trách nhiệm lãnh đạo cốt lõi.</div>
+</div>
+<p style="margin:10px 0 0;font-size:11px;color:#86958a">Slide 06 trình bày cột “Myth”; slide 07 bổ sung cột “Reality”. Bảng dưới đây gộp cả hai bước.</p>
+<table style="margin-top:8px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:20%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">&nbsp;</th>
+<th style="text-align:left;padding:5px 6px;width:40%;font-weight:600">Myth<br /><span style="color:var(--ac,#2f6b45)">Ngộ nhận</span></th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-weight:600">Reality<br /><span style="color:var(--ac,#2f6b45)">Thực tế</span></th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Defining characteristic of the new role<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Đặc trưng định hình vai trò mới</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Authority</b> — “Now I will have the freedom to implement my ideas.”<br /><span style="color:#1b2a20"><b>Quyền hạn</b> — “Giờ mình sẽ được tự do triển khai ý tưởng của mình.”</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a"><b>Interdependency</b> — “It's humbling that someone who works for me could get me fired.”<br /><span style="color:#1b2a20"><b>Sự phụ thuộc lẫn nhau</b> — “Thật khiêm nhường khi biết một người làm việc dưới quyền mình có thể khiến mình mất việc.”</span></td>
+</tr>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Source of power<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Nguồn quyền lực</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Formal authority</b> — “I will finally be on top of the ladder.”<br /><span style="color:#1b2a20"><b>Quyền hạn chính thức</b> — “Cuối cùng mình cũng ở trên đỉnh cái thang.”</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a"><b>“Everything but”</b> — “Folks were wary, and you really had to earn it.”<br /><span style="color:#1b2a20"><b>“Mọi thứ trừ quyền hạn”</b> — “Mọi người đều dè dặt, và uy tín phải tự mình giành lấy.”</span></td>
+</tr>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Desired outcome<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Kết quả mong muốn</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Control</b> — “I must get compliance from my subordinates.”<br /><span style="color:#1b2a20"><b>Sự kiểm soát</b> — “Mình phải khiến cấp dưới tuân thủ.”</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a"><b>Commitment</b> — “Compliance does not equal commitment.”<br /><span style="color:#1b2a20"><b>Sự cam kết</b> — “Tuân thủ không đồng nghĩa với cam kết.”</span></td>
+</tr>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Managerial focus<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Trọng tâm quản lý</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Managing one-on-one</b> — “My role is to build relationships with individual subordinates.”<br /><span style="color:#1b2a20"><b>Quản lý theo từng cá nhân</b> — “Vai trò của mình là xây dựng quan hệ với từng cấp dưới.”</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a"><b>Leading the team</b> — “I need to create a culture that will allow the group to fulfill its potential.”<br /><span style="color:#1b2a20"><b>Dẫn dắt cả nhóm</b> — “Mình cần tạo ra một văn hoá cho phép cả nhóm phát huy hết tiềm năng.”</span></td>
+</tr>
+<tr>
+<td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Key challenge<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Thách thức then chốt</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Keeping the operation in working order</b> — “My job is to make sure the operation runs smoothly.”<br /><span style="color:#1b2a20"><b>Giữ cho bộ máy vận hành trơn tru</b> — “Việc của mình là đảm bảo mọi thứ chạy êm.”</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a"><b>Making changes that improve team performance</b> — “I am responsible for initiating changes to enhance the group's performance.”<br /><span style="color:#1b2a20"><b>Tạo ra thay đổi giúp nhóm làm tốt hơn</b> — “Mình có trách nhiệm khởi xướng những thay đổi nhằm nâng cao hiệu quả của nhóm.”</span></td>
+</tr>
+</tbody>
+</table>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Hill, L. A. (2007). Becoming the boss. <i>Harvard Business Review, 85</i>(1), 48–56.</p>
+</section>
+
+<section id="s07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 08</span>
+<span style="color:#86958a">Setting up the problem</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">You're Not Alone – Nearly Half of New Managers Underperform.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Không chỉ một mình – gần một nửa quản lý mới chưa đạt kỳ vọng.</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px"><b style="font-size:20px">~50%</b> of newly promoted managers underperform within their first 18 months</p><p style="margin:0">Not from lack of talent. From carrying individual-contributor habits into a job that no longer rewards them. Research on first-time managers keeps surfacing the same three failure points – the traps on the next slides.</p></div>
+<div><p style="margin:0 0 6px"><b style="font-size:20px">~50%</b> quản lý mới được đề bạt không đạt kỳ vọng trong 18 tháng đầu</p><p style="margin:0">Không phải vì thiếu năng lực, mà vì mang thói quen của nhân sự chuyên môn vào một công việc không còn ghi nhận những thói quen đó. Các nghiên cứu về quản lý lần đầu liên tục chỉ ra cùng ba điểm thất bại – ba cái bẫy ở các slide tiếp theo.</p></div>
+</div>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Smith, D. D. (2023, May 17). 5 mistakes new managers make. <i>Harvard Business Review</i>.</p>
+</section>
+
+<section id="s08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 09</span>
+<span style="color:#86958a">Trap 1 of 3</span>
+</div>
+<img src="assets/t1/icon-lightbulb.png" alt="" style="float:right;width:56px;height:56px;object-fit:contain;margin:2px 0 10px 18px" />
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">If You Keep Doing the Work Yourself, Your Team Never Learns To.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nếu quản lý cứ tự làm, nhóm sẽ không bao giờ học được cách làm.</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Doing the work instead of building the capability to do it without you.</p><p style="margin:0">The instinct is understandable – you were promoted because you were excellent at the work. But every time you jump in because you're faster, your team learns nothing. Watkins (2013) frames this as failing to make the mental shift from “doer” to “leader”; Hill (2007) documents it as the single hardest transition new managers report.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Tự làm việc thay vì xây dựng năng lực để nhóm làm được mà không cần đến mình.</p><p style="margin:0">Bản năng này dễ hiểu – việc đề bạt đến từ chuyên môn xuất sắc. Nhưng mỗi lần quản lý nhảy vào làm vì mình nhanh hơn, nhóm không học được gì. Watkins (2013) gọi đó là việc không hoàn tất bước chuyển tư duy từ “người làm” sang “người dẫn dắt”; Hill (2007) ghi nhận đây là bước chuyển khó nhất mà quản lý mới nêu ra.</p></div>
+</div>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Hill, L. A. (2007). Becoming the boss. <i>Harvard Business Review, 85</i>(1), 48–56; Watkins, M. D. (2013). <i>The first 90 days</i>. Harvard Business Review Press.</p>
+</section>
+
+<section id="s09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">Trap 2 of 3</span>
+</div>
+<img src="assets/t1/icon-loop.png" alt="" style="float:right;width:56px;height:56px;object-fit:contain;margin:2px 0 10px 18px" />
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">You Avoid Delegating Because It Feels Like Losing Control.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Né giao việc vì cảm giác như đang mất kiểm soát.</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">“It's faster if I just do it” – usually without a real readiness check behind it.</p><p style="margin:0">First-time managers consistently rank “adjusting to people management and displaying authority” among their top challenges – many avoid delegating not because their team can't handle the work, but because handing it over feels like losing control. Left unaddressed, this caps how much the team can actually deliver.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">“Mình làm thì nhanh hơn” – thường không dựa trên một đánh giá thực sự về mức độ sẵn sàng.</p><p style="margin:0">Quản lý lần đầu liên tục xếp “thích nghi với việc quản lý con người và thể hiện quyền hạn” vào nhóm thách thức lớn nhất – nhiều người né giao việc không phải vì nhóm không làm được, mà vì việc chuyển giao mang lại cảm giác mất kiểm soát. Nếu không xử lý, điều này giới hạn khối lượng nhóm có thể thực sự tạo ra.</p></div>
+</div>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Gentry, W. A., Logan, P., &amp; Tonidandel, S. (2014). <i>Understanding the leadership challenges of first-time managers</i>. Center for Creative Leadership; Smith, D. D. (2023). 5 mistakes new managers make. <i>Harvard Business Review</i>.</p>
+</section>
+
+<section id="s10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">Trap 3 of 3</span>
+</div>
+<img src="assets/t1/icon-target.png" alt="" style="float:right;width:56px;height:56px;object-fit:contain;margin:2px 0 10px 18px" />
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Your Accountability Problems Start With Expectations You Never Made Explicit.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Vấn đề về tinh thần trách nhiệm bắt đầu từ những kỳ vọng chưa bao giờ được nói rõ.</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Assuming people know what's expected instead of saying it out loud and confirming it landed.</p><p style="margin:0">Most “accountability” failures trace back to something that was never actually made explicit – what “done” looks like, how often to check in, what to escalate versus decide. Hill (2007) found this ambiguity was often invisible to the new manager, who assumed clarity existed where it didn't.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Mặc định rằng mọi người đã biết kỳ vọng là gì, thay vì nói ra và xác nhận thông điệp đã được tiếp nhận.</p><p style="margin:0">Phần lớn thất bại về “tinh thần trách nhiệm” đều bắt nguồn từ điều chưa từng được nói rõ – thế nào là “hoàn thành”, tần suất cập nhật tiến độ, việc nào cần báo lên và việc nào tự quyết. Hill (2007) nhận thấy sự mơ hồ này thường vô hình với quản lý mới, người vẫn cho rằng mọi thứ đã rõ ràng.</p></div>
+</div>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Hill, L. A. (2007). Becoming the boss. <i>Harvard Business Review, 85</i>(1), 48–56; Gentry, Logan, &amp; Tonidandel (2014). Center for Creative Leadership.</p>
+</section>
+
+<section id="s11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 12</span>
+<span style="color:#86958a">Group activity 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Now, Spot the Trap in Your Own Team.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nhận diện cái bẫy trong chính nhóm của mình.</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">How it works</p><ol style="margin:0 0 10px;padding-left:20px"><li style="margin:0 0 3px">Form groups of 8 members</li><li style="margin:0 0 3px">Each person shares one real moment – from your own experience – where a trap showed up</li><li style="margin:0 0 3px">As a group, name which trap(s) were at play</li><li style="margin:0 0 3px">Discuss what a different response could have looked like</li><li style="margin:0">Pick one story and prepare a one-line lesson for debrief</li></ol><p style="margin:0 0 3px;font-weight:600">Debrief question</p><p style="margin:0">Which trap shows up most in your own team right now?</p></div>
+<div><p style="margin:0 0 4px;font-weight:600">Cách thực hiện</p><ol style="margin:0 0 10px;padding-left:20px"><li style="margin:0 0 3px">Chia nhóm 8 người</li><li style="margin:0 0 3px">Mỗi người kể một tình huống thật – từ trải nghiệm của bản thân – khi một cái bẫy xuất hiện</li><li style="margin:0 0 3px">Cả nhóm gọi tên (những) cái bẫy đang hiện diện</li><li style="margin:0 0 3px">Thảo luận xem có thể phản ứng khác đi như thế nào</li><li style="margin:0">Chọn một câu chuyện và chuẩn bị một bài học gói trong một câu để tổng kết</li></ol><p style="margin:0 0 3px;font-weight:600">Câu hỏi tổng kết</p><p style="margin:0">Cái bẫy nào xuất hiện nhiều nhất trong nhóm của mình hiện nay?</p></div>
+</div>
+</section>
+
+<section id="s12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 13</span>
+<span style="color:#86958a">Break</span>
+</div>
+<div style="float:right;width:56px;height:56px;margin:2px 0 10px 18px;background:#1b2a20;display:flex;align-items:center;justify-content:center"><img src="assets/t1/icon-break.png" alt="" style="width:34px;height:34px;object-fit:contain" /></div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Take a 15-Minute Break – You've Earned It.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nghỉ 15 phút.</h3>
+<div style="color:var(--en,#56665a)">Back at 10:45 – next up: where “direct, coach, motivate, delegate” comes from, then matching delegation to capability.</div>
+<div>Quay lại lúc 10:45 – tiếp theo: bộ bốn “direct, coach, motivate, delegate” đến từ đâu, sau đó là cách ghép mức giao việc với năng lực.</div>
+</div>
+</section>
+
+<section id="s13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 14</span>
+<span style="color:#86958a">Readiness-based delegation</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">You Can't Use One Style on Everyone – Adapt to Their Readiness.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Không thể dùng một phong cách cho tất cả – cần điều chỉnh theo mức độ sẵn sàng.</h3>
+<div style="color:var(--en,#56665a)">These four styles aren't arbitrary. They come from Hersey and Blanchard's life cycle theory of leadership (1969) – one of the most widely used people-management models. The core idea: effective leaders don't have one fixed style, they adapt based on how ready a person is for a given task.</div>
+<div>Bốn phong cách này không phải tuỳ ý. Chúng đến từ lý thuyết vòng đời lãnh đạo (life cycle theory of leadership) của Hersey và Blanchard (1969) – một trong những mô hình quản lý con người được dùng rộng rãi nhất. Ý tưởng cốt lõi: người lãnh đạo hiệu quả không có một phong cách cố định, mà điều chỉnh theo mức độ sẵn sàng của từng người với từng công việc.</div>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:6%;font-size:10px;color:#86958a;font-weight:600">#</th>
+<th style="text-align:left;padding:5px 6px;width:22%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Style</th>
+<th style="text-align:left;padding:5px 6px;width:22%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Readiness</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">What the manager does</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">1</td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Telling</b> · Direct<br /><span style="color:#1b2a20"><b>Chỉ dẫn</b> · Chỉ đạo</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Low readiness<br /><span style="color:#1b2a20">Mức sẵn sàng thấp</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Give clear instructions and supervise closely.<br /><span style="color:#1b2a20">Đưa hướng dẫn rõ ràng và giám sát chặt.</span></td>
+</tr>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">2</td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Selling</b> · Coach<br /><span style="color:#1b2a20"><b>Thuyết phục</b> · Kèm cặp</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Some readiness<br /><span style="color:#1b2a20">Sẵn sàng ở mức nhất định</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Explain your reasoning; stay involved, invite questions.<br /><span style="color:#1b2a20">Giải thích lý do; vẫn tham gia sát, khuyến khích đặt câu hỏi.</span></td>
+</tr>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">3</td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Participating</b> · Motivate<br /><span style="color:#1b2a20"><b>Cùng tham gia</b> · Tạo động lực</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">Growing readiness<br /><span style="color:#1b2a20">Mức sẵn sàng đang tăng</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Share the decision; support their confidence.<br /><span style="color:#1b2a20">Cùng ra quyết định; củng cố sự tự tin của họ.</span></td>
+</tr>
+<tr>
+<td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">4</td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Delegating</b> · Delegate<br /><span style="color:#1b2a20"><b>Uỷ quyền</b> · Giao việc</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a">High readiness<br /><span style="color:#1b2a20">Mức sẵn sàng cao</span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Hand over responsibility and authority.<br /><span style="color:#1b2a20">Chuyển giao cả trách nhiệm và quyền hạn.</span></td>
+</tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:10px">
+<div style="color:var(--en,#56665a)">Landsberg (1996) later repackaged this as the practical “skill/will matrix” used in coaching – the version you'll use on the next two slides.</div>
+<div>Landsberg (1996) sau đó đóng gói lại thành “ma trận năng lực/ý chí” (skill/will matrix) thực dụng dùng trong coaching – phiên bản sẽ được sử dụng ở hai slide tiếp theo.</div>
+</div>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Hersey, P., &amp; Blanchard, K. H. (1969). Life cycle theory of leadership. <i>Training and Development Journal, 23</i>, 26–35; Landsberg, M. (1996). <i>The Tao of coaching</i>. HarperCollins Business.</p>
+</section>
+
+<section id="s14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 15</span>
+<span style="color:#86958a">Readiness-based delegation</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Let Skill and Will, Not Seniority, Decide How Much You Delegate.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Để năng lực và ý chí, không phải thâm niên, quyết định mức giao việc.</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px"><b>Skill</b> — Can they actually do this task – do they have the technical ability and experience?</p><p style="margin:0 0 6px"><b>Will</b> — Are they motivated and confident enough to take it on right now?</p><p style="margin:0">Cross the two and you get the same four styles from the last slide, mapped onto a working tool: direct, coach, motivate, delegate.</p></div>
+<div><p style="margin:0 0 6px"><b>Năng lực (skill)</b> — Người đó có thực sự làm được việc này – có đủ khả năng kỹ thuật và kinh nghiệm?</p><p style="margin:0 0 6px"><b>Ý chí (will)</b> — Người đó có đủ động lực và tự tin để nhận việc ngay lúc này?</p><p style="margin:0">Giao hai trục này với nhau sẽ ra đúng bốn phong cách ở slide trước, dưới dạng một công cụ dùng được: direct, coach, motivate, delegate.</p></div>
+</div>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Adapted from Hersey, P., &amp; Blanchard, K. H. (1969). Life cycle theory of leadership. <i>Training and Development Journal, 23</i>, 26–35; and Landsberg, M. (1996). <i>The Tao of Coaching</i>. HarperCollins Business.</p>
+</section>
+
+<section id="s15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 16</span>
+<span style="color:#86958a">Readiness-based delegation</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">You Can't Guess Skill and Will – You Have to Go Find Out.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Không thể phỏng đoán năng lực và ý chí – phải đi tìm hiểu.</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Skill</p><ul style="margin:0 0 10px;padding-left:17px"><li style="margin:0 0 3px">Their track record on similar work – not tenure or job title.</li><li style="margin:0 0 3px">The quality of a small, real test assignment.</li><li style="margin:0">How they explain their approach when you ask “how would you tackle this?”</li></ul><p style="margin:0 0 4px;font-weight:600">Will</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">Whether they volunteer, or need asking twice.</li><li style="margin:0 0 3px">Follow-through over time – not just one instance.</li><li style="margin:0">A direct question: “How confident are you? How much do you want this?”</li></ul></div>
+<div><p style="margin:0 0 4px;font-weight:600">Năng lực</p><ul style="margin:0 0 10px;padding-left:17px"><li style="margin:0 0 3px">Thành tích thực tế ở những việc tương tự – không phải thâm niên hay chức danh.</li><li style="margin:0 0 3px">Chất lượng của một việc thử nhỏ nhưng thật.</li><li style="margin:0">Cách người đó trình bày phương án khi được hỏi “sẽ xử lý việc này thế nào?”</li></ul><p style="margin:0 0 4px;font-weight:600">Ý chí</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">Tự nguyện nhận việc, hay phải nhắc đến lần thứ hai.</li><li style="margin:0 0 3px">Sự theo đến cùng qua thời gian – không chỉ một lần.</li><li style="margin:0">Một câu hỏi trực tiếp: “Mức độ tự tin đến đâu? Mong muốn làm việc này đến đâu?”</li></ul></div>
+<div style="color:var(--en,#56665a)">Skill and will are per task, not a permanent label – and will drifts over time, so keep re-checking in your regular 1:1s.</div>
+<div>Năng lực và ý chí gắn với từng công việc, không phải một cái nhãn cố định – và ý chí thay đổi theo thời gian, nên cần kiểm tra lại thường xuyên trong các buổi 1:1.</div>
+</div>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Adapted from Blanchard, K., Zigarmi, P., &amp; Zigarmi, D. (2013). <i>Leadership and the one minute manager</i> (Updated ed.). William Morrow; Landsberg, M. (1996). <i>The Tao of coaching</i>. HarperCollins Business.</p>
+</section>
+
+<section id="s16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 17</span>
+<span style="color:#86958a">The readiness matrix</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Match Your Style to Their Skill and Will, Not to Your Comfort.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chọn phong cách theo năng lực và ý chí của người kia, không theo sự thoải mái của mình.</h3>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:24%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Skill / Will</th>
+<th style="text-align:left;padding:5px 6px;width:20%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Style</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;color:#56665a">Low skill / High will<br /><span style="color:#1b2a20">Năng lực thấp / Ý chí cao</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Coach</b><br /><span style="color:#1b2a20"><b>Kèm cặp</b></span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Give real work, check in often, build competence fast.<br /><span style="color:#1b2a20">Giao việc thật, theo sát thường xuyên, xây năng lực nhanh.</span></td>
+</tr>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;color:#56665a">High skill / High will<br /><span style="color:#1b2a20">Năng lực cao / Ý chí cao</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Delegate</b><br /><span style="color:#1b2a20"><b>Giao việc</b></span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Set the outcome, not the method – then get out of the way.<br /><span style="color:#1b2a20">Đặt ra kết quả, không đặt ra cách làm – rồi để họ tự chạy.</span></td>
+</tr>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 6px 7px 0;vertical-align:top;color:#56665a">Low skill / Low will<br /><span style="color:#1b2a20">Năng lực thấp / Ý chí thấp</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Direct</b><br /><span style="color:#1b2a20"><b>Chỉ đạo</b></span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Guide closely, set explicit checkpoints, teach the why.<br /><span style="color:#1b2a20">Hướng dẫn sát, đặt mốc kiểm tra rõ ràng, giải thích lý do phía sau.</span></td>
+</tr>
+<tr>
+<td style="padding:7px 6px 7px 0;vertical-align:top;color:#56665a">High skill / Low will<br /><span style="color:#1b2a20">Năng lực cao / Ý chí thấp</span></td>
+<td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Motivate</b><br /><span style="color:#1b2a20"><b>Tạo động lực</b></span></td>
+<td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Find out what's blocking motivation before assigning more.<br /><span style="color:#1b2a20">Tìm ra điều đang chặn động lực trước khi giao thêm việc.</span></td>
+</tr>
+</tbody>
+</table>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Hersey &amp; Blanchard (1969); Landsberg, M. (1996). <i>The Tao of Coaching</i>. HarperCollins Business.</p>
+</section>
+
+<section id="s17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">Group activity 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Now, Match a Delegation Style to a Real Person.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Ghép phong cách giao việc với một người thật.</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">How it works</p><ol style="margin:0 0 10px;padding-left:20px"><li style="margin:0 0 3px">Pair up with someone from a different team</li><li style="margin:0 0 3px">Describe one real team member's skill and will – without naming them</li><li style="margin:0 0 3px">Your partner recommends direct, coach, motivate, or delegate – using the matrix from the last slide – and why</li><li style="margin:0 0 3px">Swap roles and repeat</li><li style="margin:0">Note one delegation shift you'll make this week</li></ol><p style="margin:0 0 3px;font-weight:600">Debrief question</p><p style="margin:0">What's one delegation shift you'll make this week?</p></div>
+<div><p style="margin:0 0 4px;font-weight:600">Cách thực hiện</p><ol style="margin:0 0 10px;padding-left:20px"><li style="margin:0 0 3px">Ghép cặp với một người ở nhóm khác</li><li style="margin:0 0 3px">Mô tả năng lực và ý chí của một thành viên thật – không nêu tên</li><li style="margin:0 0 3px">Người còn lại đề xuất direct, coach, motivate hay delegate – dựa trên ma trận ở slide trước – kèm lý do</li><li style="margin:0 0 3px">Đổi vai và làm lại</li><li style="margin:0">Ghi lại một thay đổi về giao việc sẽ thực hiện trong tuần này</li></ol><p style="margin:0 0 3px;font-weight:600">Câu hỏi tổng kết</p><p style="margin:0">Thay đổi nào về giao việc sẽ được thực hiện trong tuần này?</p></div>
+</div>
+</section>
+
+<section id="s18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 19</span>
+<span style="color:#86958a">Reference framework · Watkins (2013)</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">A structured 90-day plan moves your break-even point weeks earlier.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Một kế hoạch 90 ngày có cấu trúc đưa điểm hoà vốn đến sớm hơn nhiều tuần.</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px">Watkins, M. D. (2013) adapts this classic HBR framework for any leadership transition, including your first management role.</p><p style="margin:0 0 6px;font-weight:600">The break-even point</p><p style="margin:0">The moment you've contributed as much value to the organization as you've consumed from it. Most failed transitions never reach it. A structured plan shifts the break-even point earlier.</p></div>
+<div><p style="margin:0 0 6px">Watkins, M. D. (2013) điều chỉnh khung HBR kinh điển này cho mọi bước chuyển vai trò lãnh đạo, kể cả vai trò quản lý đầu tiên.</p><p style="margin:0 0 6px;font-weight:600">Điểm hoà vốn (break-even point)</p><p style="margin:0">Thời điểm giá trị đã đóng góp cho tổ chức bằng đúng giá trị đã tiêu tốn của tổ chức. Phần lớn các bước chuyển thất bại không bao giờ đạt tới điểm này. Một kế hoạch có cấu trúc giúp điểm hoà vốn đến sớm hơn.</p></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 3fr;gap:18px;align-items:start;margin-top:12px;break-inside:avoid">
+<figure style="margin:0">
+<img src="assets/t1/book-first-90-days.png" alt="The First 90 Days book cover" style="display:block;width:100%;height:auto" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Watkins, M. D. (2013). <i>The First 90 Days</i>.</figcaption>
+</figure>
+<figure style="margin:0">
+<img src="assets/t1/chart-breakeven.png" alt="The Break-Even Point: Value Contributed vs. Value Consumed" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình trong slide gốc: <i>The Break-Even Point — Value Contributed vs. Value Consumed</i>. Đường liền: chuyển vai trò thông thường (hoà vốn ngày 156); đường đứt: có kế hoạch 90 ngày (hoà vốn ngày ~90).</figcaption>
+</figure>
+</div>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Watkins, M. D. (2013). <i>The first 90 days</i>. Harvard Business Review Press.</p>
+</section>
+
+<section id="s19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 20</span>
+<span style="color:#86958a">Reference framework · Watkins (2013) · STARS</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Diagnose the Situation You've Inherited Before You Choose a Style.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chẩn đoán tình huống được thừa hưởng trước khi chọn phong cách.</h3>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:6%;font-size:10px;color:#86958a;font-weight:600">&nbsp;</th>
+<th style="text-align:left;padding:5px 6px;width:30%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Situation</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">S</td><td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Start-up</b><br /><span style="color:#1b2a20"><b>Khởi tạo</b></span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Building a team or function that didn't exist before.<br /><span style="color:#1b2a20">Xây dựng một nhóm hoặc bộ phận trước đó chưa tồn tại.</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">T</td><td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Turnaround</b><br /><span style="color:#1b2a20"><b>Vực dậy</b></span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Fixing a team that is visibly struggling.<br /><span style="color:#1b2a20">Sửa một nhóm đang rõ ràng gặp khó.</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">A</td><td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Accelerated Growth</b><br /><span style="color:#1b2a20"><b>Tăng trưởng tăng tốc</b></span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">Scaling a team that's already working – fast.<br /><span style="color:#1b2a20">Mở rộng nhanh một nhóm đang hoạt động tốt.</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">R</td><td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Realignment</b><br /><span style="color:#1b2a20"><b>Tái định hướng</b></span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">A team that looks fine but is quietly drifting off track.<br /><span style="color:#1b2a20">Một nhóm trông ổn nhưng đang âm thầm lệch hướng.</span></td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">S</td><td style="padding:7px 6px;vertical-align:top;color:#56665a"><b>Sustaining Success</b><br /><span style="color:#1b2a20"><b>Duy trì thành công</b></span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:#56665a">A strong team that mainly needs you not to break it.<br /><span style="color:#1b2a20">Một nhóm mạnh, điều cần nhất là quản lý đừng làm nó hỏng.</span></td></tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:10px">
+<div style="color:var(--en,#56665a)">Your diagnosis changes everything downstream: turnarounds need fast, visible decisions; sustaining-success situations need you to listen before you touch anything.</div>
+<div>Chẩn đoán quyết định toàn bộ những gì diễn ra sau đó: tình huống vực dậy cần các quyết định nhanh và thấy được; tình huống duy trì thành công cần lắng nghe trước khi chạm vào bất cứ thứ gì.</div>
+</div>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Watkins, M. D. (2013). <i>The first 90 days</i>. Harvard Business Review Press.</p>
+</section>
+
+<section id="s20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 21</span>
+<span style="color:#86958a">Field manual · Full roadmap</span>
+</div>
+<img src="assets/t1/icon-compass.png" alt="" style="float:right;width:56px;height:56px;object-fit:contain;margin:2px 0 10px 18px" />
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Twelve concrete actions carry you from day one to full accountability.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Mười hai hành động cụ thể đưa quản lý từ ngày đầu đến khi nhận trọn trách nhiệm.</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Days 1–30 · Learn before you act</p><ol style="margin:0 0 10px;padding-left:20px"><li style="margin:0 0 3px">Declare the transition to yourself</li><li style="margin:0 0 3px">Diagnose the situation you're inheriting</li><li style="margin:0 0 3px">Run a structured 1:1 with every team member</li><li style="margin:0 0 3px">Build a 30-day learning agenda</li><li style="margin:0">Watch for the expertise trap</li></ol><p style="margin:0 0 4px;font-weight:600">Days 30–60 · Negotiate, then act</p><ol start="6" style="margin:0 0 10px;padding-left:20px"><li style="margin:0 0 3px">Have five explicit conversations with your manager</li><li style="margin:0 0 3px">Secure one early win that matters</li><li style="margin:0">Match delegation to readiness</li></ol><p style="margin:0 0 4px;font-weight:600">Days 60–90 · Build the team, lock in accountability</p><ol start="9" style="margin:0;padding-left:20px"><li style="margin:0 0 3px">Reset expectations explicitly, in writing</li><li style="margin:0 0 3px">Decide who stays, who grows, who moves</li><li style="margin:0 0 3px">Build your support network</li><li style="margin:0">Draft your leadership transition plan</li></ol></div>
+<div><p style="margin:0 0 4px;font-weight:600">Ngày 1–30 · Hiểu trước khi hành động</p><ol style="margin:0 0 10px;padding-left:20px"><li style="margin:0 0 3px">Tự tuyên bố bước chuyển với chính mình</li><li style="margin:0 0 3px">Chẩn đoán tình huống đang thừa hưởng</li><li style="margin:0 0 3px">Thực hiện 1:1 có cấu trúc với từng thành viên</li><li style="margin:0 0 3px">Xây dựng lịch trình học hỏi 30 ngày</li><li style="margin:0">Đề phòng cái bẫy chuyên môn</li></ol><p style="margin:0 0 4px;font-weight:600">Ngày 30–60 · Thương lượng, rồi hành động</p><ol start="6" style="margin:0 0 10px;padding-left:20px"><li style="margin:0 0 3px">Có năm cuộc trao đổi rõ ràng với cấp trên</li><li style="margin:0 0 3px">Giành một thắng lợi sớm có ý nghĩa</li><li style="margin:0">Ghép mức giao việc với mức độ sẵn sàng</li></ol><p style="margin:0 0 4px;font-weight:600">Ngày 60–90 · Xây dựng nhóm, chốt tinh thần trách nhiệm</p><ol start="9" style="margin:0;padding-left:20px"><li style="margin:0 0 3px">Thiết lập lại kỳ vọng một cách rõ ràng, bằng văn bản</li><li style="margin:0 0 3px">Quyết định ai ở lại, ai phát triển, ai chuyển đi</li><li style="margin:0 0 3px">Xây dựng mạng lưới hỗ trợ</li><li style="margin:0">Soạn kế hoạch chuyển đổi vai trò lãnh đạo</li></ol></div>
+</div>
+<p style="margin:8px 0 0;font-size:10.5px;line-height:1.5;color:#86958a">Source: Watkins, M. D. (2013). <i>The first 90 days</i>. Harvard Business Review Press.</p>
+</section>
+
+<section id="s21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 22</span>
+<span style="color:#86958a">Days 1–30 · Step 1 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Declare the Transition to Yourself</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tự tuyên bố bước chuyển với chính mình</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Old success was personal output; new success is team output – capability, accountability, results delivered by others.</p><p style="margin:0">Write down, in one sentence, what “success” meant in your old role and what it means now. Read it before every 1:1 this month.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Thành công cũ là kết quả cá nhân; thành công mới là kết quả của nhóm – năng lực, tinh thần trách nhiệm, kết quả do người khác tạo ra.</p><p style="margin:0">Viết ra trong một câu: “thành công” nghĩa là gì ở vai trò cũ và nghĩa là gì bây giờ. Đọc lại câu đó trước mỗi buổi 1:1 trong tháng này.</p></div>
+</div>
+</section>
+
+<section id="s22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 23</span>
+<span style="color:#86958a">Days 1–30 · Step 2 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Diagnose the Situation You're Inheriting</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chẩn đoán tình huống đang thừa hưởng</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Start-up, turnaround, accelerated growth, realignment, or sustaining success (STARS) – name it before you act.</p><p style="margin:0">Your diagnosis changes everything downstream: it determines how directive or how patient you need to be.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Khởi tạo, vực dậy, tăng trưởng tăng tốc, tái định hướng hay duy trì thành công (STARS) – gọi tên nó trước khi hành động.</p><p style="margin:0">Chẩn đoán quyết định toàn bộ những gì diễn ra sau đó: nó xác định mức độ chỉ đạo hay mức độ kiên nhẫn cần có.</p></div>
+</div>
+</section>
+
+<section id="s23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 24</span>
+<span style="color:#86958a">Days 1–30 · Step 3 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Run a Structured 1:1 With Every Team Member</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thực hiện 1:1 có cấu trúc với từng thành viên</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Build an early read on each person's skill and will – it drives how you delegate next month.</p><p style="margin:0">Ask: what does this role actually involve day to day? What would you change if it were up to you?</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Hình thành đánh giá ban đầu về năng lực và ý chí của từng người – đây là cơ sở cho cách giao việc trong tháng sau.</p><p style="margin:0">Câu hỏi nên dùng: công việc này thực tế gồm những gì mỗi ngày? Nếu được quyết, bạn sẽ thay đổi điều gì?</p></div>
+</div>
+</section>
+
+<section id="s24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 25</span>
+<span style="color:#86958a">Days 1–30 · Step 4 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Build a 30-Day Learning Agenda, Not an Action Plan</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xây dựng lịch trình học hỏi 30 ngày, không phải kế hoạch hành động</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Understand the work, the informal network, and the history before you start changing things.</p><p style="margin:0">A manager who acts confidently on a wrong diagnosis does more damage than one who takes three extra weeks to get it right.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Hiểu công việc, mạng lưới không chính thức và lịch sử của nhóm trước khi bắt đầu thay đổi.</p><p style="margin:0">Một quản lý hành động tự tin dựa trên chẩn đoán sai gây thiệt hại nhiều hơn một quản lý dành thêm ba tuần để chẩn đoán cho đúng.</p></div>
+</div>
+</section>
+
+<section id="s25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 26</span>
+<span style="color:#86958a">Days 1–30 · Step 5 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Watch Yourself for the Expertise Trap</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tự đề phòng cái bẫy chuyên môn</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Every time you're tempted to just do it yourself, ask: what does my team fail to learn today?</p><p style="margin:0">Name it out loud in your notes – this becomes evidence for the delegation section of your transition plan.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Mỗi lần muốn tự làm cho nhanh, hãy tự hỏi: hôm nay nhóm mình bỏ mất cơ hội học điều gì?</p><p style="margin:0">Ghi rõ điều đó vào sổ tay – đây sẽ là dữ liệu cho phần giao việc trong kế hoạch chuyển đổi.</p></div>
+</div>
+</section>
+
+<section id="s26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 27</span>
+<span style="color:#86958a">Days 30–60 · Step 6 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Have Five Explicit Conversations With Your Manager</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Có năm cuộc trao đổi rõ ràng với cấp trên</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Situation, expectations, style, resources, and your own development – don't assume alignment, negotiate it.</p><p style="margin:0">Unclear expectations at this level are the fastest way to lose credibility with your own team later.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Tình hình, kỳ vọng, phong cách làm việc, nguồn lực và sự phát triển của bản thân – không mặc định đã đồng thuận, hãy thương lượng.</p><p style="margin:0">Kỳ vọng không rõ ràng ở cấp này là cách nhanh nhất để mất uy tín với nhóm của mình về sau.</p></div>
+</div>
+</section>
+
+<section id="s27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 28</span>
+<span style="color:#86958a">Days 30–60 · Step 7 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Secure One Early Win That Matters</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Giành một thắng lợi sớm có ý nghĩa</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Pick a real, visible priority; deliver it with the team, not around them – and give them the credit.</p><p style="margin:0">A good early win proves two things at once: that you can lead, and that the team is capable under your leadership.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Chọn một ưu tiên thật và thấy được; thực hiện cùng nhóm, không phải vòng qua nhóm – và ghi nhận công cho họ.</p><p style="margin:0">Một thắng lợi sớm tốt chứng minh hai điều cùng lúc: quản lý có thể dẫn dắt, và nhóm có năng lực dưới sự dẫn dắt đó.</p></div>
+</div>
+</section>
+
+<section id="s28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 29</span>
+<span style="color:#86958a">Days 30–60 · Step 8 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Match Delegation to Each Person's Readiness</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Ghép mức giao việc với mức độ sẵn sàng của từng người</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Direct, coach, motivate, or delegate – based on the skill/will read you built in Step 3.</p><p style="margin:0">This is the same readiness matrix from earlier in the session: getting the match wrong in either direction is the fastest way to create resentment or failure.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Direct, coach, motivate hay delegate – dựa trên đánh giá năng lực/ý chí đã hình thành ở Bước 3.</p><p style="margin:0">Vẫn là ma trận mức độ sẵn sàng ở phần trước của phiên học: ghép sai theo bất kỳ hướng nào cũng là cách nhanh nhất tạo ra sự bất mãn hoặc thất bại.</p></div>
+</div>
+</section>
+
+<section id="s29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 30</span>
+<span style="color:#86958a">Days 60–90 · Step 9 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Reset Expectations Explicitly, in Writing</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thiết lập lại kỳ vọng một cách rõ ràng, bằng văn bản</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Confirm what “done” looks like, how you'll check in, and what to escalate versus decide.</p><p style="margin:0">Vague expectations are the root cause of most “accountability” problems.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Xác nhận thế nào là “hoàn thành”, sẽ theo dõi tiến độ ra sao, việc nào cần báo lên và việc nào tự quyết.</p><p style="margin:0">Kỳ vọng mơ hồ là nguyên nhân gốc của phần lớn vấn đề về “tinh thần trách nhiệm”.</p></div>
+</div>
+</section>
+
+<section id="s30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 31</span>
+<span style="color:#86958a">Days 60–90 · Step 10 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Decide Who Stays, Who Grows, Who Moves</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Quyết định ai ở lại, ai phát triển, ai chuyển đi</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">You inherited this team – honestly assess whether you have the right capability in the right seats.</p><p style="margin:0">You don't need to act on every gap immediately, but naming them now is part of the job.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Nhóm này là nhóm được thừa hưởng – hãy đánh giá trung thực xem đúng năng lực đã ở đúng vị trí hay chưa.</p><p style="margin:0">Không cần xử lý ngay mọi khoảng trống, nhưng gọi tên chúng ngay từ giờ là một phần của công việc.</p></div>
+</div>
+</section>
+
+<section id="s31" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 32</span>
+<span style="color:#86958a">Days 60–90 · Step 11 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Build Your Support Network</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xây dựng mạng lưới hỗ trợ</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Three to five people who'll give you honest, outside perspective on how you're really doing.</p><p style="margin:0">New managers who go quiet under pressure take longer to correct course and burn out faster.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Ba đến năm người có thể đưa ra góc nhìn trung thực từ bên ngoài về tình hình thực tế của mình.</p><p style="margin:0">Quản lý mới im lặng khi chịu áp lực sẽ mất nhiều thời gian hơn để điều chỉnh và kiệt sức nhanh hơn.</p></div>
+</div>
+</section>
+
+<section id="s32" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 33</span>
+<span style="color:#86958a">Days 60–90 · Step 12 of 12</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Draft Your Leadership Transition Plan</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Soạn kế hoạch chuyển đổi vai trò lãnh đạo</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px;font-weight:600">Pull Steps 1–11 together into the practical plan this program asks you to produce.</p><p style="margin:0">This is exactly what you'll start building in the final activity of today's session.</p></div>
+<div><p style="margin:0 0 6px;font-weight:600">Tổng hợp Bước 1–11 thành bản kế hoạch thực tế mà chương trình yêu cầu.</p><p style="margin:0">Đây chính là phần sẽ bắt đầu xây dựng trong hoạt động cuối của phiên học hôm nay.</p></div>
+</div>
+</section>
+
+<section id="s33" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 34</span>
+<span style="color:#86958a">Your turn</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Now It's Your Turn to Draft the Plan.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Đến lượt soạn kế hoạch.</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:17px"><li style="margin:0 0 4px">What situation am I actually in – and what does that demand of my style?</li><li style="margin:0 0 4px">What is each team member's current readiness, and what does that mean for how I delegate to them?</li><li style="margin:0 0 4px">Where have I been over-relying on my own expertise, and what will I hand off in the next 30 days?</li><li style="margin:0 0 4px">What expectations need to be made explicit – with my team, and with my own manager?</li><li style="margin:0">What early win will I pursue, and how will I make sure the team gets the credit?</li></ul></div>
+<div><ul style="margin:0;padding-left:17px"><li style="margin:0 0 4px">Mình đang thực sự ở tình huống nào – và tình huống đó đòi hỏi gì ở phong cách của mình?</li><li style="margin:0 0 4px">Mức độ sẵn sàng hiện tại của từng thành viên là gì, và điều đó nghĩa là gì với cách giao việc cho họ?</li><li style="margin:0 0 4px">Mình đang phụ thuộc quá mức vào chuyên môn của bản thân ở đâu, và sẽ chuyển giao việc gì trong 30 ngày tới?</li><li style="margin:0 0 4px">Những kỳ vọng nào cần được nói rõ – với nhóm, và với cấp trên của mình?</li><li style="margin:0">Thắng lợi sớm nào mình sẽ theo đuổi, và làm sao để nhóm được ghi nhận?</li></ul></div>
+</div>
+</section>
+
+<section id="s34" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 35</span>
+<span style="color:#86958a">Wrap-up</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Remember These Four Things Before You Go.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bốn điều cần ghi nhớ trước khi rời phòng học.</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:17px"><li style="margin:0 0 4px">Success now means results through others – not personal output.</li><li style="margin:0 0 4px">Match your delegation style to each person's skill and will, not your comfort.</li><li style="margin:0 0 4px">Watch for the three traps: over-relying on expertise, avoiding delegation, and leaving expectations unclear.</li><li style="margin:0">Use the First 90 Days structure – learn, then negotiate and act, then build and lock in accountability – to pace your own transition.</li></ul></div>
+<div><ul style="margin:0;padding-left:17px"><li style="margin:0 0 4px">Thành công giờ đây là kết quả thông qua người khác – không phải kết quả cá nhân.</li><li style="margin:0 0 4px">Ghép phong cách giao việc với năng lực và ý chí của từng người, không theo sự thoải mái của mình.</li><li style="margin:0 0 4px">Đề phòng ba cái bẫy: phụ thuộc quá mức vào chuyên môn, né giao việc, và để kỳ vọng mơ hồ.</li><li style="margin:0">Dùng cấu trúc First 90 Days – hiểu, rồi thương lượng và hành động, rồi xây dựng và chốt tinh thần trách nhiệm – để định nhịp cho bước chuyển của chính mình.</li></ul></div>
+</div>
+</section>
+
+<section id="s35" style="margin:0 0 10px">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 36</span>
+<span style="color:#86958a">Academic sources cited in this deck</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">These Are the Sources Behind Today's Session.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Các nguồn phía sau phiên học hôm nay.</h3>
+</div>
+<ul style="margin:10px 0 0;padding-left:17px;font-size:11.5px;line-height:1.55;color:#34423a">
+<li style="margin:0 0 5px">Blanchard, K., Zigarmi, P., &amp; Zigarmi, D. (2013). <i>Leadership and the one minute manager: Increasing effectiveness through situational leadership II</i> (Updated ed.). William Morrow.</li>
+<li style="margin:0 0 5px">Dalton, G. W., Thompson, P. H., &amp; Price, R. L. (1977). The four stages of professional careers: A new look at performance by professionals. <i>Organizational Dynamics, 6</i>(1), 19–42.</li>
+<li style="margin:0 0 5px">De Smet, A., D'Auria, G., Meijknecht, L., &amp; Albaharna, M. (2024). <i>Go, teams: When teams get healthier, the whole organization benefits</i>. McKinsey &amp; Company.</li>
+<li style="margin:0 0 5px">Gentry, W. A., Logan, P., &amp; Tonidandel, S. (2014). <i>Understanding the leadership challenges of first-time managers: Strengthening your leadership pipeline</i> [White paper]. Center for Creative Leadership. https://doi.org/10.35613/ccl.2014.1021</li>
+<li style="margin:0 0 5px">Hersey, P., &amp; Blanchard, K. H. (1969). Life cycle theory of leadership. <i>Training and Development Journal, 23</i>, 26–35.</li>
+<li style="margin:0 0 5px">Hill, L. A. (2007). Becoming the boss. <i>Harvard Business Review, 85</i>(1), 48–56.</li>
+<li style="margin:0 0 5px">Landsberg, M. (1996). <i>The Tao of coaching: Boost your effectiveness at work by inspiring and developing those around you</i>. HarperCollins Business.</li>
+<li style="margin:0 0 5px">Smith, D. D. (2023, May 17). 5 mistakes new managers make. <i>Harvard Business Review</i>. https://hbr.org/2023/05/5-mistakes-new-managers-make</li>
+<li style="margin:0">Watkins, M. D. (2013). <i>The first 90 days: Proven strategies for getting up to speed faster and smarter</i> (Updated and expanded ed.). Harvard Business Review Press.</li>
+</ul>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 1 · Navigating the Leadership Transition</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t1.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Chủ đề 1: Điều hướng bước chuyển sang vai trò quản lý","lv":0,"en":"Topic 1: Navigating the Leadership Transition","vi":"Chủ đề 1: Điều hướng bước chuyển sang vai trò quản lý"},
+  {"id":"s02","num":"02","label":"Ba giờ tới sẽ diễn ra như thế nào","lv":0,"en":"Here's How We'll Spend the Next Three Hours","vi":"Ba giờ tới sẽ diễn ra như thế nào"},
+  {"id":"s03","num":"03","label":"Học viên sẽ có thể…","lv":0,"en":"You Will Be Able To…","vi":"Học viên sẽ có thể…"},
+  {"id":"s04","num":"04","label":"Công việc đã thay đổi – người làm cũng phải thay đổi theo.","lv":0,"en":"Your Job Has Changed – Now You Have to Change With It.","vi":"Công việc đã thay đổi – người làm cũng phải thay đổi theo."},
+  {"id":"s05","num":"05","label":"Sự nghiệp là một hành trình, không phải một công việc","lv":0,"en":"A Career Is a Journey, Not a Job","vi":"Sự nghiệp là một hành trình, không phải một công việc"},
+  {"id":"s06","num":"","label":"Năm ngộ nhận phổ biến giải thích vì sao quản lý mới chưa hiểu đúng vai trò.","lv":0,"en":"Five Common Myths Explain Why New Managers Don't Get It.","vi":"Năm ngộ nhận phổ biến giải thích vì sao quản lý mới chưa hiểu đúng vai trò."},
+  {"id":"s07","num":"08","label":"Không chỉ một mình – gần một nửa quản lý mới chưa đạt kỳ vọng.","lv":0,"en":"You're Not Alone – Nearly Half of New Managers Underperform.","vi":"Không chỉ một mình – gần một nửa quản lý mới chưa đạt kỳ vọng."},
+  {"id":"s08","num":"09","label":"Nếu quản lý cứ tự làm, nhóm sẽ không bao giờ học được cách làm.","lv":0,"en":"If You Keep Doing the Work Yourself, Your Team Never Learns To.","vi":"Nếu quản lý cứ tự làm, nhóm sẽ không bao giờ học được cách làm."},
+  {"id":"s09","num":"10","label":"Né giao việc vì cảm giác như đang mất kiểm soát.","lv":0,"en":"You Avoid Delegating Because It Feels Like Losing Control.","vi":"Né giao việc vì cảm giác như đang mất kiểm soát."},
+  {"id":"s10","num":"11","label":"Vấn đề về tinh thần trách nhiệm bắt đầu từ những kỳ vọng chưa bao giờ được nói rõ.","lv":0,"en":"Your Accountability Problems Start With Expectations You Never Made Explicit.","vi":"Vấn đề về tinh thần trách nhiệm bắt đầu từ những kỳ vọng chưa bao giờ được nói rõ."},
+  {"id":"s11","num":"12","label":"Nhận diện cái bẫy trong chính nhóm của mình.","lv":0,"en":"Now, Spot the Trap in Your Own Team.","vi":"Nhận diện cái bẫy trong chính nhóm của mình."},
+  {"id":"s12","num":"13","label":"Nghỉ 15 phút.","lv":0,"en":"Take a 15-Minute Break – You've Earned It.","vi":"Nghỉ 15 phút."},
+  {"id":"s13","num":"14","label":"Không thể dùng một phong cách cho tất cả – cần điều chỉnh theo mức độ sẵn sàng.","lv":0,"en":"You Can't Use One Style on Everyone – Adapt to Their Readiness.","vi":"Không thể dùng một phong cách cho tất cả – cần điều chỉnh theo mức độ sẵn sàng."},
+  {"id":"s14","num":"15","label":"Để năng lực và ý chí, không phải thâm niên, quyết định mức giao việc.","lv":0,"en":"Let Skill and Will, Not Seniority, Decide How Much You Delegate.","vi":"Để năng lực và ý chí, không phải thâm niên, quyết định mức giao việc."},
+  {"id":"s15","num":"16","label":"Không thể phỏng đoán năng lực và ý chí – phải đi tìm hiểu.","lv":0,"en":"You Can't Guess Skill and Will – You Have to Go Find Out.","vi":"Không thể phỏng đoán năng lực và ý chí – phải đi tìm hiểu."},
+  {"id":"s16","num":"17","label":"Chọn phong cách theo năng lực và ý chí của người kia, không theo sự thoải mái của mình.","lv":0,"en":"Match Your Style to Their Skill and Will, Not to Your Comfort.","vi":"Chọn phong cách theo năng lực và ý chí của người kia, không theo sự thoải mái của mình."},
+  {"id":"s17","num":"18","label":"Ghép phong cách giao việc với một người thật.","lv":0,"en":"Now, Match a Delegation Style to a Real Person.","vi":"Ghép phong cách giao việc với một người thật."},
+  {"id":"s18","num":"19","label":"Một kế hoạch 90 ngày có cấu trúc đưa điểm hoà vốn đến sớm hơn nhiều tuần.","lv":0,"en":"A structured 90-day plan moves your break-even point weeks earlier.","vi":"Một kế hoạch 90 ngày có cấu trúc đưa điểm hoà vốn đến sớm hơn nhiều tuần."},
+  {"id":"s19","num":"20","label":"Chẩn đoán tình huống được thừa hưởng trước khi chọn phong cách.","lv":0,"en":"Diagnose the Situation You've Inherited Before You Choose a Style.","vi":"Chẩn đoán tình huống được thừa hưởng trước khi chọn phong cách."},
+  {"id":"s20","num":"21","label":"Mười hai hành động cụ thể đưa quản lý từ ngày đầu đến khi nhận trọn trách nhiệm.","lv":0,"en":"Twelve concrete actions carry you from day one to full accountability.","vi":"Mười hai hành động cụ thể đưa quản lý từ ngày đầu đến khi nhận trọn trách nhiệm."},
+  {"id":"s21","num":"22","label":"Tự tuyên bố bước chuyển với chính mình","lv":0,"en":"Declare the Transition to Yourself","vi":"Tự tuyên bố bước chuyển với chính mình"},
+  {"id":"s22","num":"23","label":"Chẩn đoán tình huống đang thừa hưởng","lv":0,"en":"Diagnose the Situation You're Inheriting","vi":"Chẩn đoán tình huống đang thừa hưởng"},
+  {"id":"s23","num":"24","label":"Thực hiện 1:1 có cấu trúc với từng thành viên","lv":0,"en":"Run a Structured 1:1 With Every Team Member","vi":"Thực hiện 1:1 có cấu trúc với từng thành viên"},
+  {"id":"s24","num":"25","label":"Xây dựng lịch trình học hỏi 30 ngày, không phải kế hoạch hành động","lv":0,"en":"Build a 30-Day Learning Agenda, Not an Action Plan","vi":"Xây dựng lịch trình học hỏi 30 ngày, không phải kế hoạch hành động"},
+  {"id":"s25","num":"26","label":"Tự đề phòng cái bẫy chuyên môn","lv":0,"en":"Watch Yourself for the Expertise Trap","vi":"Tự đề phòng cái bẫy chuyên môn"},
+  {"id":"s26","num":"27","label":"Có năm cuộc trao đổi rõ ràng với cấp trên","lv":0,"en":"Have Five Explicit Conversations With Your Manager","vi":"Có năm cuộc trao đổi rõ ràng với cấp trên"},
+  {"id":"s27","num":"28","label":"Giành một thắng lợi sớm có ý nghĩa","lv":0,"en":"Secure One Early Win That Matters","vi":"Giành một thắng lợi sớm có ý nghĩa"},
+  {"id":"s28","num":"29","label":"Ghép mức giao việc với mức độ sẵn sàng của từng người","lv":0,"en":"Match Delegation to Each Person's Readiness","vi":"Ghép mức giao việc với mức độ sẵn sàng của từng người"},
+  {"id":"s29","num":"30","label":"Thiết lập lại kỳ vọng một cách rõ ràng, bằng văn bản","lv":0,"en":"Reset Expectations Explicitly, in Writing","vi":"Thiết lập lại kỳ vọng một cách rõ ràng, bằng văn bản"},
+  {"id":"s30","num":"31","label":"Quyết định ai ở lại, ai phát triển, ai chuyển đi","lv":0,"en":"Decide Who Stays, Who Grows, Who Moves","vi":"Quyết định ai ở lại, ai phát triển, ai chuyển đi"},
+  {"id":"s31","num":"32","label":"Xây dựng mạng lưới hỗ trợ","lv":0,"en":"Build Your Support Network","vi":"Xây dựng mạng lưới hỗ trợ"},
+  {"id":"s32","num":"33","label":"Soạn kế hoạch chuyển đổi vai trò lãnh đạo","lv":0,"en":"Draft Your Leadership Transition Plan","vi":"Soạn kế hoạch chuyển đổi vai trò lãnh đạo"},
+  {"id":"s33","num":"34","label":"Đến lượt soạn kế hoạch.","lv":0,"en":"Now It's Your Turn to Draft the Plan.","vi":"Đến lượt soạn kế hoạch."},
+  {"id":"s34","num":"35","label":"Bốn điều cần ghi nhớ trước khi rời phòng học.","lv":0,"en":"Remember These Four Things Before You Go.","vi":"Bốn điều cần ghi nhớ trước khi rời phòng học."},
+  {"id":"s35","num":"36","label":"Các nguồn phía sau phiên học hôm nay.","lv":0,"en":"These Are the Sources Behind Today's Session.","vi":"Các nguồn phía sau phiên học hôm nay."}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t1.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t1.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t1.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t1.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

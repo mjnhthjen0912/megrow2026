@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 2 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Driving Operational Execution</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Thúc đẩy triển khai vận hành</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 2: Thúc đẩy triển khai vận hành</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Topic 2: Driving Operational Execution — bản đối chiếu Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae"><span>TS. Phương (Emmy) Hoàng</span> · 35 slide</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide là một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ.</p>
+<p style="margin:0">Thuật ngữ chuyên môn được dịch sang tiếng Việt kèm nguyên bản tiếng Anh trong ngoặc ở lần xuất hiện đầu tiên. Tên sản phẩm và tên bộ phận (Zalo, Zing MP3, Adtima, Báo Mới, Zalo AI, Product, Technology, Marketing, People, Operations) giữ nguyên.</p>
+</div>
+
+<section id="s01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Topic 2: Driving Operational Execution</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chủ đề 2: Thúc đẩy triển khai vận hành</h3>
+<div style="color:var(--en,#56665a)">Dr Phuong (Emmy) Hoang</div>
+<div>TS. Phương (Emmy) Hoàng</div>
+</div>
+</section>
+
+<section id="s02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">Ready for what's next</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Learning Outcomes</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Kết quả học tập</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:17px"><li style="margin:0 0 4px">Formulate clear outcomes, KPIs and measurement criteria for assigned team work.</li><li style="margin:0 0 4px">Design a progress-monitoring and quality-assurance rhythm appropriate to their team's delivery context.</li><li style="margin:0 0 4px">Diagnose execution bottlenecks and prioritise resolution actions based on impact.</li><li style="margin:0">Adjust execution plans in response to performance data and feedback.</li></ul></div>
+<div><ul style="margin:0;padding-left:17px"><li style="margin:0 0 4px">Xây dựng kết quả kỳ vọng (outcome), KPI và tiêu chí đo lường rõ ràng cho phần việc được giao cho nhóm.</li><li style="margin:0 0 4px">Thiết kế nhịp theo dõi tiến độ và bảo đảm chất lượng phù hợp với bối cảnh triển khai của nhóm.</li><li style="margin:0 0 4px">Chẩn đoán điểm nghẽn (bottleneck) trong triển khai và ưu tiên các hành động xử lý dựa trên mức tác động.</li><li style="margin:0">Điều chỉnh kế hoạch triển khai dựa trên dữ liệu hiệu quả và phản hồi.</li></ul></div>
+</div>
+</section>
+
+<section id="s03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">Today's learning path</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Today's learning path</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lộ trình học hôm nay</h3>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;width:5%;color:var(--ac,#2f6b45);font-weight:700">1</td><td style="padding:6px 8px;vertical-align:top;width:44%;color:var(--en,#56665a)">Setting the Context</td><td style="padding:6px 0 6px 8px;vertical-align:top">Đặt bối cảnh</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">2</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">From Strategy to Managerial Execution</td><td style="padding:6px 0 6px 8px;vertical-align:top">Từ chiến lược đến triển khai của quản lý</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">3</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">From Direction to Measurable Results</td><td style="padding:6px 0 6px 8px;vertical-align:top">Từ định hướng đến kết quả đo lường được</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">4</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">From Measures to Management Signals</td><td style="padding:6px 0 6px 8px;vertical-align:top">Từ thước đo đến tín hiệu quản trị</td></tr>
+<tr><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">5</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">Build and Run the Execution System</td><td style="padding:6px 0 6px 8px;vertical-align:top">Xây dựng và vận hành hệ thống triển khai</td></tr>
+</tbody>
+</table>
+<p style="margin:8px 0 0;font-size:11px;color:#86958a">Slide 05, 12, 20 và 28 lặp lại chính sơ đồ lộ trình này, mỗi lần đánh dấu chặng kế tiếp (“Next”).</p>
+</section>
+
+<section id="s04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">Setting the context</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Amazon's journey: From One Business to an Ecosystem</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hành trình của Amazon: Từ một mảng kinh doanh đến một hệ sinh thái</h3>
+</div>
+<figure style="margin:12px 0 0;break-inside:avoid">
+<img src="assets/t2/amazon-timeline.png" alt="Amazon: Timeline of Business Expansion" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình trong slide gốc: <i>Amazon — Timeline of Business Expansion</i>. Slide không có nội dung chữ nào khác ngoài tiêu đề.</figcaption>
+</figure>
+</section>
+
+<section id="s05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06</span>
+<span style="color:#86958a">From Strategy to Managerial Execution</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">From Insight to Impact: The Strategic Management Cycle</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Từ hiểu biết đến tác động: Vòng quản trị chiến lược</h3>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:24%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Stage</th>
+<th style="text-align:left;padding:5px 6px;width:26%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Question</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Focus</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Research &amp; Analysis</b><br /><span style="color:#1b2a20"><b>Nghiên cứu &amp; phân tích</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Where are we now?<br /><span style="color:#1b2a20">Hiện tại đang ở đâu?</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:#86958a">—</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Strategy Formulation</b><br /><span style="color:#1b2a20"><b>Hoạch định chiến lược</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Where will we go?<br /><span style="color:#1b2a20">Sẽ đi đến đâu?</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Objectives • options • priorities • trade-offs<br /><span style="color:#1b2a20">Mục tiêu • phương án • ưu tiên • đánh đổi</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Translation &amp; Planning</b><br /><span style="color:#1b2a20"><b>Chuyển hoá &amp; lập kế hoạch</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">How will it become action?<br /><span style="color:#1b2a20">Làm sao để thành hành động?</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Initiatives • KPIs • owners • milestones<br /><span style="color:#1b2a20">Sáng kiến • KPI • người chủ trì • mốc tiến độ</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Execution</b><br /><span style="color:#1b2a20"><b>Triển khai</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">How will we deliver?<br /><span style="color:#1b2a20">Sẽ thực hiện thế nào?</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Coordination • blockers • quality • accountability<br /><span style="color:#1b2a20">Phối hợp • vướng mắc • chất lượng • trách nhiệm giải trình</span></td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Evaluation &amp; Adaptation</b><br /><span style="color:#1b2a20"><b>Đánh giá &amp; điều chỉnh</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Are outcomes achieved?<br /><span style="color:#1b2a20">Kết quả có đạt được?</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Results • gaps • learning • adjustment<br /><span style="color:#1b2a20">Kết quả • khoảng trống • bài học • điều chỉnh</span></td></tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:12px">
+<div style="color:var(--en,#56665a)">Business decisions rarely move in a straight line. Evidence, execution data and learning continually reshape the next decision cycle.</div>
+<div>Quyết định kinh doanh ít khi đi theo đường thẳng. Bằng chứng, dữ liệu triển khai và bài học liên tục định hình lại vòng quyết định tiếp theo.</div>
+<div style="color:var(--en,#56665a)"><b>Feedback loop</b> — Evaluation produces new evidence, allowing leaders to revise assumptions, priorities and execution choices.</div>
+<div><b>Vòng phản hồi</b> — Đánh giá tạo ra bằng chứng mới, cho phép người lãnh đạo xem lại các giả định, ưu tiên và lựa chọn triển khai.</div>
+<div style="color:var(--en,#56665a)"><b>Management implication</b> — Good execution begins before execution: clarify the problem, define success, translate priorities into KPIs, then adjust when evidence changes.</div>
+<div><b>Hàm ý quản trị</b> — Triển khai tốt bắt đầu từ trước khi triển khai: làm rõ vấn đề, định nghĩa thành công, chuyển ưu tiên thành KPI, rồi điều chỉnh khi bằng chứng thay đổi.</div>
+</div>
+</section>
+
+<section id="s06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 07</span>
+<span style="color:#86958a">From Strategy to Managerial Execution</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">From Organisational Direction to Team Delivery</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Từ định hướng của tổ chức đến kết quả của nhóm</h3>
+<div style="color:var(--en,#56665a)">Each level translates broader organisational direction into increasingly specific choices and team action.</div>
+<div>Mỗi cấp chuyển định hướng chung của tổ chức thành những lựa chọn và hành động ngày càng cụ thể.</div>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:26%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Level</th>
+<th style="text-align:left;padding:5px 6px;width:36%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Question</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>1. Corporate Strategy</b><br /><span style="color:#1b2a20"><b>Chiến lược tập đoàn</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Where will the organisation compete?<br /><span style="color:#1b2a20">Tổ chức sẽ cạnh tranh ở đâu?</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Portfolio • markets • ecosystems • resource allocation<br /><span style="color:#1b2a20">Danh mục • thị trường • hệ sinh thái • phân bổ nguồn lực</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>2. Business Strategy</b><br /><span style="color:#1b2a20"><b>Chiến lược đơn vị kinh doanh</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">How will the business compete and succeed?<br /><span style="color:#1b2a20">Đơn vị sẽ cạnh tranh và thắng bằng cách nào?</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Target customers • value proposition • positioning • growth<br /><span style="color:#1b2a20">Khách hàng mục tiêu • giá trị đề xuất • định vị • tăng trưởng</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>3. Functional Strategy</b><br /><span style="color:#1b2a20"><b>Chiến lược chức năng</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">How will each function support the business strategy?<br /><span style="color:#1b2a20">Mỗi bộ phận hỗ trợ chiến lược kinh doanh thế nào?</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Product • tech • marketing • people • operations<br /><span style="color:#1b2a20">Product • tech • marketing • people • operations</span></td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>4. Operational Execution</b><br /><span style="color:#1b2a20"><b>Triển khai vận hành</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">What must teams deliver, by when and how?<br /><span style="color:#1b2a20">Các nhóm phải tạo ra kết quả gì, khi nào và bằng cách nào?</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">OKRs • KPIs • owners • milestones • risk controls<br /><span style="color:#1b2a20">OKR • KPI • người chủ trì • mốc tiến độ • kiểm soát rủi ro</span></td></tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:12px">
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Manager translation lens</p><p style="margin:0">Translate priorities into: team outcomes · success measures · resource choices · adaptive execution. This is the bridge between Think Strategically and Drive Impact.</p></div>
+<div><p style="margin:0 0 4px;font-weight:600">Góc nhìn chuyển hoá của quản lý</p><p style="margin:0">Chuyển các ưu tiên thành: kết quả kỳ vọng của nhóm · thước đo thành công · lựa chọn nguồn lực · triển khai linh hoạt. Đây là cây cầu giữa Think Strategically và Drive Impact.</p></div>
+</div>
+</section>
+
+<section id="s07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 08</span>
+<span style="color:#86958a">From Strategy to Managerial Execution</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">From Zalo Direction to Team Execution</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Từ định hướng của Zalo đến triển khai của nhóm</h3>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:14%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Level</th>
+<th style="text-align:left;padding:5px 6px;width:43%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Illustrative Zalo question</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Câu hỏi minh hoạ</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Corporate<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Tập đoàn</span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Which businesses and platforms should form the Zalo ecosystem, and how should resources be allocated across messaging, media, advertising, life utilities and AI?</td><td style="padding:7px 0 7px 6px;vertical-align:top">Những mảng kinh doanh và nền tảng nào nên hợp thành hệ sinh thái Zalo, và nguồn lực nên được phân bổ ra sao giữa nhắn tin, truyền thông, quảng cáo, tiện ích đời sống và AI?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Business<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Đơn vị kinh doanh</span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">How should Zalo Messaging, Zing MP3, Adtima, Báo Mới or Zalo AI create distinctive value and succeed in their respective markets?</td><td style="padding:7px 0 7px 6px;vertical-align:top">Zalo Messaging, Zing MP3, Adtima, Báo Mới hay Zalo AI nên tạo ra giá trị khác biệt và thành công trong thị trường của mình bằng cách nào?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Functional<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Chức năng</span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">What must Product, Technology, Marketing, People and Operations contribute to support each platform's strategy?</td><td style="padding:7px 0 7px 6px;vertical-align:top">Product, Technology, Marketing, People và Operations phải đóng góp gì để hỗ trợ chiến lược của từng nền tảng?</td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;font-weight:600">Operational<br /><span style="color:var(--ac,#2f6b45);font-weight:500">Vận hành</span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">What outcomes, OKRs, releases, projects, responsibilities, timelines and KPIs must each team deliver this quarter?</td><td style="padding:7px 0 7px 6px;vertical-align:top">Mỗi nhóm phải tạo ra những kết quả, OKR, bản phát hành, dự án, phần trách nhiệm, tiến độ và KPI nào trong quý này?</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 09</span>
+<span style="color:#86958a">From Strategy to Managerial Execution</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Operational Execution Turns Direction into Results</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Triển khai vận hành biến định hướng thành kết quả</h3>
+<div style="color:var(--en,#56665a)">Execution is not just effort. It is a system for turning effort into results.</div>
+<div>Triển khai không chỉ là nỗ lực. Đó là một hệ thống biến nỗ lực thành kết quả.</div>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Definition</p><p style="margin:0">Operational execution is the process of translating goals into coordinated actions, monitoring whether actions create intended results, and correcting the plan when evidence shows delivery is moving off track.</p></div>
+<div><p style="margin:0 0 4px;font-weight:600">Định nghĩa</p><p style="margin:0">Triển khai vận hành là quá trình chuyển mục tiêu thành các hành động được phối hợp, theo dõi xem hành động có tạo ra kết quả mong muốn hay không, và hiệu chỉnh kế hoạch khi bằng chứng cho thấy việc thực hiện đang lệch hướng.</p></div>
+<div style="color:var(--en,#56665a)">Goal → Coordinated action → Evidence → Correction → Result</div>
+<div>Mục tiêu → Hành động phối hợp → Bằng chứng → Hiệu chỉnh → Kết quả</div>
+</div>
+</section>
+
+<section id="s09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">From Strategy to Managerial Execution</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Execution Fails When Activity Replaces Results</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Triển khai thất bại khi hoạt động thay thế cho kết quả</h3>
+<div style="color:var(--en,#56665a)">Leadership transition in practice: your value comes from how the system performs, not only from what you personally solve.</div>
+<div>Bước chuyển vai trò lãnh đạo trong thực tế: giá trị của quản lý đến từ việc hệ thống vận hành thế nào, không chỉ từ những việc bản thân tự giải quyết.</div>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:50%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Individual contributor<span> · Nhân sự chuyên môn</span></th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Manager<span> · Quản lý</span></th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)">Delivers own work<br /><span style="color:#1b2a20">Tự tạo ra kết quả công việc của mình</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Creates the team delivery system<br /><span style="color:#1b2a20">Tạo ra hệ thống triển khai của nhóm</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)">Solves assigned problems<br /><span style="color:#1b2a20">Giải quyết các vấn đề được giao</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Clarifies outcomes and priorities<br /><span style="color:#1b2a20">Làm rõ kết quả kỳ vọng và ưu tiên</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)">Reports progress<br /><span style="color:#1b2a20">Báo cáo tiến độ</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Creates visibility and decision rhythm<br /><span style="color:#1b2a20">Tạo ra sự minh bạch và nhịp ra quyết định</span></td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)">Escalates blockers<br /><span style="color:#1b2a20">Báo lên các vướng mắc</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Removes constraints and adjusts execution<br /><span style="color:#1b2a20">Loại bỏ các ràng buộc và điều chỉnh việc triển khai</span></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">Break</span>
+</div>
+<div style="float:right;width:56px;height:56px;margin:2px 0 10px 18px;background:#1b2a20;display:flex;align-items:center;justify-content:center"><img src="assets/t2/icon-break.png" alt="" style="width:34px;height:34px;object-fit:contain" /></div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Take a 15-Minute Break</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nghỉ 15 phút</h3>
+<div style="color:var(--en,#56665a)">After the break: From Direction to Measurable Results</div>
+<div>Sau giờ nghỉ: Từ định hướng đến kết quả đo lường được</div>
+</div>
+</section>
+
+<section id="s11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 13</span>
+<span style="color:#86958a">From Direction to Measurable Results</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Three Manager Moves That Drive Execution</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Ba nước đi của quản lý giúp thúc đẩy triển khai</h3>
+<div style="color:var(--en,#56665a)">We need a shared vocabulary for turning direction into team results.</div>
+<div>Cần một hệ thuật ngữ chung để biến định hướng thành kết quả của nhóm.</div>
+<div style="color:var(--en,#56665a)"><b>First-line manager shift</b> — from completing assigned work to connecting direction, people and results.</div>
+<div><b>Bước chuyển của quản lý trực tiếp</b> — từ hoàn thành công việc được giao sang kết nối định hướng, con người và kết quả.</div>
+<div style="color:var(--en,#56665a)"><b>1 Translate</b> — turn broad direction into team outcomes<br /><b>2 Coordinate</b> — align people, work and resources<br /><b>3 Adjust</b> — use evidence to correct and improve execution</div>
+<div><b>1 Chuyển hoá</b><span> — biến định hướng rộng thành kết quả của nhóm</span><br /><b>2 Phối hợp</b><span> — sắp xếp con người, công việc và nguồn lực</span><br /><b>3 Điều chỉnh</b> — dùng bằng chứng để hiệu chỉnh và cải thiện việc triển khai</div>
+</div>
+<p style="margin:12px 0 0;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#86958a">Six term families used in operational execution<span> · Sáu nhóm thuật ngữ dùng trong triển khai vận hành</span></p>
+<table style="margin-top:6px;font-size:11.5px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;width:22%;color:var(--en,#56665a)"><b>Direction</b><br /><span style="color:#1b2a20"><b>Định hướng</b></span></td><td style="padding:7px 6px;vertical-align:top;width:39%;color:var(--en,#56665a)">Goal • objective • outcome • impact</td><td style="padding:7px 0 7px 6px;vertical-align:top">Mục tiêu chung • mục tiêu cụ thể • kết quả kỳ vọng • tác động</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Measurement</b><br /><span style="color:#1b2a20"><b>Đo lường</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Metric • KPI • target • baseline</td><td style="padding:7px 0 7px 6px;vertical-align:top">Thước đo • KPI • mức mục tiêu • mức nền</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Planning</b><br /><span style="color:#1b2a20"><b>Lập kế hoạch</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">OKR • initiative • milestone • dependency</td><td style="padding:7px 0 7px 6px;vertical-align:top">OKR • sáng kiến • mốc tiến độ • quan hệ phụ thuộc</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Ownership</b><br /><span style="color:#1b2a20"><b>Trách nhiệm</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Owner • RACI • resources • capacity</td><td style="padding:7px 0 7px 6px;vertical-align:top">Người chủ trì • RACI • nguồn lực • năng lực đáp ứng</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Coordination</b><br /><span style="color:#1b2a20"><b>Phối hợp</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Cadence • status • blocker • escalation</td><td style="padding:7px 0 7px 6px;vertical-align:top">Nhịp rà soát • trạng thái • vướng mắc • báo lên</td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Adaptation</b><br /><span style="color:#1b2a20"><b>Thích ứng</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Risk • issue • mitigation • learning</td><td style="padding:7px 0 7px 6px;vertical-align:top">Rủi ro • sự cố • giảm thiểu • bài học</td></tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:12px">
+<div style="color:var(--en,#56665a)"><b>Core idea</b> — A goal provides direction. A KPI measures progress. A target defines the required level. An initiative creates change. An owner drives delivery. Execution turns these into results.</div>
+<div><b>Ý tưởng cốt lõi</b> — Mục tiêu chung tạo định hướng. KPI đo tiến độ. Mức mục tiêu xác định ngưỡng cần đạt. Sáng kiến tạo ra thay đổi. Người chủ trì dẫn dắt việc thực hiện. Triển khai biến tất cả thành kết quả.</div>
+</div>
+</section>
+
+<section id="s12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 14</span>
+<span style="color:#86958a">From Direction to Measurable Results</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Direction: What result are we trying to create?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Định hướng: Chúng ta đang cố tạo ra kết quả gì?</h3>
+<div style="color:var(--en,#56665a)">The first execution mistake is confusing activity with impact.</div>
+<div>Sai lầm đầu tiên trong triển khai là lẫn lộn giữa hoạt động và tác động.</div>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:26%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">From broad direction to value</th>
+<th style="text-align:left;padding:5px 6px;width:34%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">EN</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">VI</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Goal</b>: broad destination<br /><span style="color:#1b2a20"><b>Mục tiêu chung</b>: đích đến rộng</span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">What are we trying to achieve?</td><td style="padding:7px 0 7px 6px;vertical-align:top">Chúng ta muốn đạt được điều gì?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Objective</b>: specific result<br /><span style="color:#1b2a20"><b>Mục tiêu cụ thể</b>: kết quả xác định</span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">What specifically must be achieved?</td><td style="padding:7px 0 7px 6px;vertical-align:top">Cụ thể phải đạt được điều gì?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Output</b>: thing produced<br /><span style="color:#1b2a20"><b>Đầu ra</b>: thứ được tạo ra</span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">What will we produce?</td><td style="padding:7px 0 7px 6px;vertical-align:top">Chúng ta sẽ tạo ra cái gì?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Outcome</b>: change created<br /><span style="color:#1b2a20"><b>Kết quả kỳ vọng</b>: thay đổi được tạo ra</span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">What change or value should result?</td><td style="padding:7px 0 7px 6px;vertical-align:top">Thay đổi hay giá trị nào sẽ xuất hiện?</td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Impact</b>: broader value<br /><span style="color:#1b2a20"><b>Tác động</b>: giá trị rộng hơn</span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Why does this result matter?</td><td style="padding:7px 0 7px 6px;vertical-align:top">Vì sao kết quả này quan trọng?</td></tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:12px">
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Three terms learners often confuse</p><p style="margin:0"><b>Output</b> — Launch a new onboarding feature → <b>Outcome</b> — New users complete onboarding faster → <b>Impact</b> — Higher activation and retention</p></div>
+<div><p style="margin:0 0 4px;font-weight:600">Ba thuật ngữ thường bị lẫn</p><p style="margin:0"><b>Đầu ra</b> — Ra mắt một tính năng onboarding mới → <b>Kết quả kỳ vọng</b> — Người dùng mới hoàn tất onboarding nhanh hơn → <b>Tác động</b> — Tỷ lệ kích hoạt và giữ chân cao hơn</p></div>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Execution boundaries</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>Success criteria</b> — What does “done well” look like?</li><li style="margin:0 0 3px"><b>Scope</b> — What is included and excluded?</li><li style="margin:0 0 3px"><b>Requirement</b> — What must the solution provide?</li><li style="margin:0 0 3px"><b>Constraint</b> — What limits our options?</li><li style="margin:0"><b>Assumption</b> — What are we taking for granted?</li></ul></div>
+<div><p style="margin:0 0 4px;font-weight:600">Ranh giới triển khai</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>Tiêu chí thành công</b> — Thế nào là “làm tốt”?</li><li style="margin:0 0 3px"><b>Phạm vi</b> — Cái gì được tính vào và cái gì bị loại ra?</li><li style="margin:0 0 3px"><b>Yêu cầu</b> — Giải pháp bắt buộc phải có gì?</li><li style="margin:0 0 3px"><b>Ràng buộc</b> — Điều gì giới hạn các phương án?</li><li style="margin:0"><b>Giả định</b> — Chúng ta đang mặc định điều gì?</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Manager check</b> — Before assigning work, clarify the expected change, the deliverable, the boundaries and the assumptions.</div>
+<div><b>Kiểm tra dành cho quản lý</b> — Trước khi giao việc, hãy làm rõ thay đổi kỳ vọng, sản phẩm bàn giao, các ranh giới và các giả định.</div>
+</div>
+</section>
+
+<section id="s13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 15</span>
+<span style="color:#86958a">From Direction to Measurable Results</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">From goal to execution-ready objective</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Từ mục tiêu chung đến mục tiêu sẵn sàng triển khai</h3>
+<div style="color:var(--en,#56665a)">If the objective is vague, measurement and coordination become vague too.</div>
+<div>Nếu mục tiêu cụ thể còn mơ hồ, việc đo lường và phối hợp cũng sẽ mơ hồ.</div>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:22%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Concept</th>
+<th style="text-align:left;padding:5px 6px;width:26%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Meaning</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Goal</b><br /><span style="color:#1b2a20"><b>Mục tiêu chung</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Broad direction<br /><span style="color:#1b2a20">Định hướng rộng</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Improve onboarding<br /><span style="color:#1b2a20">Cải thiện onboarding</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Objective</b><br /><span style="color:#1b2a20"><b>Mục tiêu cụ thể</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Specific result<br /><span style="color:#1b2a20">Kết quả xác định</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Reduce onboarding completion time by 20% by Q4<br /><span style="color:#1b2a20">Giảm 20% thời gian hoàn tất onboarding trước Q4</span></td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Task</b><br /><span style="color:#1b2a20"><b>Nhiệm vụ</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Work to be done<br /><span style="color:#1b2a20">Công việc cần làm</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Redesign tutorial screens<br /><span style="color:#1b2a20">Thiết kế lại các màn hình hướng dẫn</span></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 16</span>
+<span style="color:#86958a">From Direction to Measurable Results</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">SMART Creates Minimum Execution Clarity</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">SMART tạo ra mức rõ ràng tối thiểu để triển khai</h3>
+<div style="color:var(--en,#56665a)">Use SMART to create minimum clarity before discussing KPIs, monitoring or course correction.</div>
+<div>Dùng SMART để tạo mức rõ ràng tối thiểu trước khi bàn về KPI, việc theo dõi hay việc hiệu chỉnh.</div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>S · Specific</b> — Who, what and how are clear</li><li style="margin:0 0 3px"><b>M · Measurable</b> — Progress or success can be assessed</li><li style="margin:0 0 3px"><b>A · Achievable</b> — Realistic with available resources</li><li style="margin:0 0 3px"><b>R · Relevant</b> — Connected to business or team goals</li><li style="margin:0"><b>T · Time-bound</b> — Has a defined timeframe</li></ul></div>
+<div><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>S<span> · Cụ thể</span></b> — Rõ ai, việc gì, làm thế nào</li><li style="margin:0 0 3px"><b>M<span> · Đo lường được</span></b> — Tiến độ hoặc thành công có thể đánh giá được</li><li style="margin:0 0 3px"><b>A<span> · Khả thi</span></b> — Thực tế với nguồn lực hiện có</li><li style="margin:0 0 3px"><b>R<span> · Liên quan</span></b> — Gắn với mục tiêu kinh doanh hoặc mục tiêu nhóm</li><li style="margin:0"><b>T<span> · Có thời hạn</span></b> — Có khung thời gian xác định</li></ul></div>
+</div>
+</section>
+
+<section id="s15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 17</span>
+<span style="color:#86958a">From Direction to Measurable Results</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Turning a vague goal into a SMART objective</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Biến một mục tiêu mơ hồ thành mục tiêu SMART</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px"><b>Weak</b> — Improve team responsiveness.</p><p style="margin:0 0 6px"><b>SMART</b> — Reduce average internal response time for priority support requests from 24 hours to 12 hours by 30 September.</p><p style="margin:0"><b>What changed?</b> The objective now has a defined measure, baseline, target and timeframe.</p></div>
+<div><p style="margin:0 0 6px"><b>Yếu</b> — Cải thiện độ phản hồi của nhóm.</p><p style="margin:0 0 6px"><b>SMART</b> — Giảm thời gian phản hồi nội bộ trung bình cho các yêu cầu hỗ trợ ưu tiên từ 24 giờ xuống 12 giờ trước ngày 30 tháng 9.</p><p style="margin:0"><b>Điều gì đã thay đổi?</b> Mục tiêu giờ đã có thước đo, mức nền, mức mục tiêu và khung thời gian xác định.</p></div>
+</div>
+</section>
+
+<section id="s16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">From Direction to Measurable Results</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">SMART can still measure the wrong result</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">SMART vẫn có thể đo sai kết quả</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px"><b>Example objective</b> — Launch Smart Assist by Friday. This is specific, measurable and time-bound.</p><ul style="margin:0 0 6px;padding-left:17px"><li style="margin:0 0 3px">What user outcome should improve?</li><li style="margin:0 0 3px">What quality boundary matters?</li><li style="margin:0 0 3px">What risk should be protected?</li><li style="margin:0 0 3px">What adoption signal matters?</li><li style="margin:0">What threshold triggers a change?</li></ul><p style="margin:0">SMART helps with clarity. It does not guarantee the team is measuring the right result.</p></div>
+<div><p style="margin:0 0 6px"><b>Ví dụ mục tiêu</b> — Ra mắt Smart Assist trước thứ Sáu. Mục tiêu này cụ thể, đo lường được và có thời hạn.</p><ul style="margin:0 0 6px;padding-left:17px"><li style="margin:0 0 3px">Kết quả nào của người dùng cần được cải thiện?</li><li style="margin:0 0 3px">Ranh giới chất lượng nào là quan trọng?</li><li style="margin:0 0 3px">Rủi ro nào cần được phòng ngừa?</li><li style="margin:0 0 3px">Tín hiệu sử dụng nào là quan trọng?</li><li style="margin:0">Ngưỡng nào kích hoạt việc thay đổi?</li></ul><p style="margin:0">SMART giúp làm rõ, nhưng không bảo đảm nhóm đang đo đúng kết quả.</p></div>
+</div>
+</section>
+
+<section id="s17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 19</span>
+<span style="color:#86958a">From Direction to Measurable Results</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Add the outcome, evidence and guardrails</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bổ sung kết quả kỳ vọng, bằng chứng và lằn ranh bảo vệ</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">When the path is substantially known</p><p style="margin:0 0 8px">By [date], [beneficiary] will experience [observable change] from [baseline] to [target], while [quality/risk boundary] remains protected.</p><p style="margin:0 0 4px;font-weight:600">When the work is uncertain</p><p style="margin:0 0 8px">By [date], we will test [critical assumption] using [specified evidence], enabling a decision about [next action].</p><p style="margin:0">Known path → performance objective. Uncertain path → learning or validation objective.</p></div>
+<div><p style="margin:0 0 4px;font-weight:600">Khi con đường đã tương đối rõ</p><p style="margin:0 0 8px">Trước [ngày], [đối tượng hưởng lợi] sẽ có [thay đổi quan sát được] từ [mức nền] lên [mức mục tiêu], trong khi [ranh giới chất lượng/rủi ro] vẫn được giữ.</p><p style="margin:0 0 4px;font-weight:600">Khi công việc còn nhiều bất định</p><p style="margin:0 0 8px">Trước [ngày], chúng ta sẽ kiểm chứng [giả định then chốt] bằng [bằng chứng xác định], để có thể ra quyết định về [hành động tiếp theo].</p><p style="margin:0">Đường đi đã rõ → mục tiêu về hiệu quả. Đường đi bất định → mục tiêu học hỏi hoặc kiểm chứng.</p></div>
+</div>
+</section>
+
+<section id="s18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 21</span>
+<span style="color:#86958a">From Measures to Management Signals</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Measurement: How will we know we are on track?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Đo lường: Làm sao biết chúng ta đang đi đúng hướng?</h3>
+<div style="color:var(--en,#56665a)">Metrics create visibility; KPIs show whether the most important results are moving.</div>
+<div>Thước đo tạo ra sự minh bạch; KPI cho thấy những kết quả quan trọng nhất có đang dịch chuyển hay không.</div>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:22%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Term</th>
+<th style="text-align:left;padding:5px 6px;width:30%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Meaning</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Metric</b><br /><span style="color:#1b2a20"><b>Thước đo</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Any measure we can track<br /><span style="color:#1b2a20">Bất kỳ chỉ số nào có thể theo dõi</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Number of users completing onboarding<br /><span style="color:#1b2a20">Số người dùng hoàn tất onboarding</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>KPI</b><br /><span style="color:#1b2a20"><b>KPI</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">The key measure of success<br /><span style="color:#1b2a20">Thước đo then chốt của thành công</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Onboarding completion rate<br /><span style="color:#1b2a20">Tỷ lệ hoàn tất onboarding</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Baseline</b><br /><span style="color:#1b2a20"><b>Mức nền</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Where we start<br /><span style="color:#1b2a20">Điểm khởi đầu</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Current completion rate: 65%<br /><span style="color:#1b2a20">Tỷ lệ hoàn tất hiện tại: 65%</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Target</b><br /><span style="color:#1b2a20"><b>Mức mục tiêu</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">The required level<br /><span style="color:#1b2a20">Ngưỡng cần đạt</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Increase to 80% by Q4<br /><span style="color:#1b2a20">Tăng lên 80% trước Q4</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Leading indicator</b><br /><span style="color:#1b2a20"><b>Chỉ báo dẫn dắt</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Early signal that the result may happen<br /><span style="color:#1b2a20">Tín hiệu sớm cho thấy kết quả có thể xảy ra</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">% users reaching step 2<br /><span style="color:#1b2a20">% người dùng đến được bước 2</span></td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Lagging indicator</b><br /><span style="color:#1b2a20"><b>Chỉ báo kết quả</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Final result after work has happened<br /><span style="color:#1b2a20">Kết quả cuối cùng sau khi công việc đã diễn ra</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Completion rate at quarter end<br /><span style="color:#1b2a20">Tỷ lệ hoàn tất vào cuối quý</span></td></tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:12px">
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Performance control terms</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>Quality standard</b> — How good must the output be?</li><li style="margin:0 0 3px"><b>Variance</b> — How far are we from plan?</li><li style="margin:0 0 3px"><b>Benchmark</b> — What standard do we compare with?</li><li style="margin:0"><b>Dashboard</b> — What is the current performance picture?</li></ul></div>
+<div><p style="margin:0 0 4px;font-weight:600">Thuật ngữ kiểm soát hiệu quả</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>Chuẩn chất lượng</b> — Đầu ra phải tốt đến mức nào?</li><li style="margin:0 0 3px"><b>Sai lệch</b> — Đang cách kế hoạch bao xa?</li><li style="margin:0 0 3px"><b>Chuẩn so sánh</b> — So với chuẩn nào?</li><li style="margin:0"><b>Bảng theo dõi</b> — Bức tranh hiệu quả hiện tại thế nào?</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Manager check</b> — Ask which KPI truly shows success, what is the starting point, and what target must be reached by when?</div>
+<div><b>Kiểm tra dành cho quản lý</b> — Hãy hỏi: KPI nào thực sự thể hiện thành công, điểm khởi đầu là gì, và mức mục tiêu nào phải đạt vào thời điểm nào?</div>
+</div>
+<figure style="margin:12px 0 0;break-inside:avoid">
+<img src="assets/t2/chart-performance.png" alt="Performance versus baseline and target" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình trong slide gốc: biểu đồ hiệu quả theo mức nền, các mốc kiểm tra và mức mục tiêu.</figcaption>
+</figure>
+</section>
+
+<section id="s19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 22</span>
+<span style="color:#86958a">From Measures to Management Signals</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Common mistake: Treating every metric as a KPI</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Sai lầm phổ biến: Coi mọi thước đo đều là KPI</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px">A useful KPI should answer: <b>What decision could this measure change?</b></p><p style="margin:0 0 4px;font-weight:600">Weak KPI candidates</p><ul style="margin:0 0 6px;padding-left:17px"><li style="margin:0 0 3px">number of meetings held</li><li style="margin:0 0 3px">number of tasks opened</li><li style="margin:0">number of reports sent</li></ul><p style="margin:0 0 4px;font-weight:600">Stronger KPI candidates</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">decision cycle time</li><li style="margin:0 0 3px">issue resolution rate</li><li style="margin:0">adoption with quality guardrail</li></ul></div>
+<div><p style="margin:0 0 6px">Một KPI hữu ích phải trả lời được: <b>Chỉ số này có thể làm thay đổi quyết định nào?</b></p><p style="margin:0 0 4px;font-weight:600">Những KPI kém</p><ul style="margin:0 0 6px;padding-left:17px"><li style="margin:0 0 3px">số cuộc họp đã tổ chức</li><li style="margin:0 0 3px">số việc đã mở</li><li style="margin:0">số báo cáo đã gửi</li></ul><p style="margin:0 0 4px;font-weight:600">Những KPI tốt hơn</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">thời gian một vòng ra quyết định</li><li style="margin:0 0 3px">tỷ lệ xử lý sự cố</li><li style="margin:0">mức sử dụng kèm lằn ranh chất lượng</li></ul></div>
+</div>
+</section>
+
+<section id="s20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 23</span>
+<span style="color:#86958a">From Measures to Management Signals</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Baseline and target make progress visible</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Mức nền và mức mục tiêu làm cho tiến độ trở nên thấy được</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Example KPI structure</p><ul style="margin:0 0 6px;padding-left:17px"><li style="margin:0 0 3px">KPI: weekly active use</li><li style="margin:0 0 3px">Baseline: 18%</li><li style="margin:0 0 3px">Target: 35%</li><li style="margin:0 0 3px">Deadline: 30 September</li><li style="margin:0">Guardrail: correction rate below 5%</li></ul><p style="margin:0">Without a baseline, the team cannot see how far it has moved. Without a target, the team cannot see what “enough” means.</p></div>
+<div><p style="margin:0 0 4px;font-weight:600">Ví dụ cấu trúc một KPI</p><ul style="margin:0 0 6px;padding-left:17px"><li style="margin:0 0 3px">KPI: mức sử dụng hoạt động hằng tuần</li><li style="margin:0 0 3px">Mức nền: 18%</li><li style="margin:0 0 3px">Mức mục tiêu: 35%</li><li style="margin:0 0 3px">Hạn: 30 tháng 9</li><li style="margin:0">Lằn ranh: tỷ lệ phải chỉnh sửa dưới 5%</li></ul><p style="margin:0">Không có mức nền, nhóm không thấy mình đã đi được bao xa. Không có mức mục tiêu, nhóm không biết thế nào là “đủ”.</p></div>
+</div>
+</section>
+
+<section id="s21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 24</span>
+<span style="color:#86958a">From Measures to Management Signals</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Leading indicators help managers act early</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chỉ báo dẫn dắt giúp quản lý hành động sớm</h3>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:20%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Type</th>
+<th style="text-align:left;padding:5px 6px;width:32%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Question</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Leading</b><br /><span style="color:#1b2a20"><b>Dẫn dắt</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Are we moving in the right direction?<br /><span style="color:#1b2a20">Chúng ta có đang đi đúng hướng?</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Trial activation, repeat use, unresolved dependency<br /><span style="color:#1b2a20">Kích hoạt dùng thử, sử dụng lặp lại, phụ thuộc chưa được xử lý</span></td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Lagging</b><br /><span style="color:#1b2a20"><b>Kết quả</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Did we achieve the outcome?<br /><span style="color:#1b2a20">Chúng ta có đạt được kết quả kỳ vọng?</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Adoption, revenue, retention, satisfaction<br /><span style="color:#1b2a20">Mức sử dụng, doanh thu, tỷ lệ giữ chân, mức độ hài lòng</span></td></tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:12px">
+<div style="color:var(--en,#56665a)">Earlier signal → later result. Managers need both: early movement and final value.</div>
+<div>Tín hiệu sớm → kết quả muộn. Quản lý cần cả hai: chuyển động sớm và giá trị cuối cùng.</div>
+</div>
+</section>
+
+<section id="s22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 25</span>
+<span style="color:#86958a">From Measures to Management Signals</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Know what you are measuring: Input to outcome</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Biết rõ mình đang đo gì: từ đầu vào đến kết quả</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>Input</b> — hours, budget, headcount</li><li style="margin:0 0 3px"><b>Process</b> — review time, cycle time, rework</li><li style="margin:0 0 3px"><b>Output</b> — feature launched, tickets closed</li><li style="margin:0"><b>Outcome</b> — user success, retention, reduced effort</li></ul></div>
+<div><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>Đầu vào</b> — giờ làm, ngân sách, nhân sự</li><li style="margin:0 0 3px"><b>Quá trình</b> — thời gian rà soát, thời gian chu kỳ, làm lại</li><li style="margin:0 0 3px"><b>Đầu ra</b> — tính năng đã ra mắt, ticket đã đóng</li><li style="margin:0"><b>Kết quả</b> — người dùng thành công, tỷ lệ giữ chân, giảm công sức</li></ul></div>
+<div style="color:var(--en,#56665a)">Execution quality improves when teams stop confusing outputs with outcomes.</div>
+<div>Chất lượng triển khai được cải thiện khi nhóm không còn lẫn lộn giữa đầu ra và kết quả.</div>
+</div>
+</section>
+
+<section id="s23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 26</span>
+<span style="color:#86958a">From Measures to Management Signals</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Build a balanced execution signal stack</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xây dựng bộ tín hiệu triển khai cân bằng</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>Outcome</b> — Did value occur?</li><li style="margin:0 0 3px"><b>Driver</b> — Are we moving?</li><li style="margin:0 0 3px"><b>Guardrail</b> — What must stay healthy?</li><li style="margin:0"><b>Flow</b> — Where is work waiting or accumulating?</li></ul></div>
+<div><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>Kết quả</b> — Giá trị có xuất hiện?</li><li style="margin:0 0 3px"><b>Yếu tố dẫn dắt</b> — Chúng ta có đang dịch chuyển?</li><li style="margin:0 0 3px"><b>Lằn ranh</b> — Điều gì phải được giữ ở mức lành mạnh?</li><li style="margin:0"><b>Luồng việc</b> — Công việc đang chờ hoặc dồn lại ở đâu?</li></ul></div>
+<div style="color:var(--en,#56665a)">A single KPI rarely gives enough visibility for execution decisions.</div>
+<div>Một KPI đơn lẻ hiếm khi đủ để nhìn rõ và ra quyết định triển khai.</div>
+</div>
+</section>
+
+<section id="s24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 27</span>
+<span style="color:#86958a">From Measures to Management Signals</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Stress-test the KPI before you use it</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thử phá KPI trước khi dùng</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 6px">Before adopting a KPI, try to break it.</p><ol style="margin:0 0 6px;padding-left:20px"><li style="margin:0 0 3px">Can this number improve while the outcome worsens?</li><li style="margin:0 0 3px">Can the team game it?</li><li style="margin:0 0 3px">What quality or risk guardrail is needed?</li><li style="margin:0">What decision will this measure change?</li></ol><p style="margin:0"><b>Provocation:</b> the most dangerous KPI is one the team can improve while the outcome worsens.</p></div>
+<div><p style="margin:0 0 6px">Trước khi áp dụng một KPI, hãy thử phá nó.</p><ol style="margin:0 0 6px;padding-left:20px"><li style="margin:0 0 3px">Con số này có thể tốt lên trong khi kết quả xấu đi không?</li><li style="margin:0 0 3px">Nhóm có thể lách nó không?</li><li style="margin:0 0 3px">Cần lằn ranh nào về chất lượng hoặc rủi ro?</li><li style="margin:0">Chỉ số này sẽ làm thay đổi quyết định nào?</li></ol><p style="margin:0"><b>Câu hỏi gợi mở:</b> KPI nguy hiểm nhất là KPI mà nhóm có thể làm tốt lên trong khi kết quả xấu đi.</p></div>
+</div>
+</section>
+
+<section id="s25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 29</span>
+<span style="color:#86958a">Build and Run the Execution System</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Planning: How will the goal become coordinated work?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lập kế hoạch: Làm sao mục tiêu trở thành công việc được phối hợp?</h3>
+<div style="color:var(--en,#56665a)">Translation and planning turn objectives into choices, initiatives, milestones and dependencies.</div>
+<div>Chuyển hoá và lập kế hoạch biến mục tiêu thành các lựa chọn, sáng kiến, mốc tiến độ và quan hệ phụ thuộc.</div>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">OKR logic</p><p style="margin:0">Objective — What do we want to achieve? + Key Results — How will we know?</p></div>
+<div><p style="margin:0 0 4px;font-weight:600">Logic OKR</p><p style="margin:0">Objective — Muốn đạt được điều gì? + Key Results — Làm sao biết là đã đạt?</p></div>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Work breakdown</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>Initiative</b> — major effort to achieve objective</li><li style="margin:0 0 3px"><b>Project</b> — temporary effort with deliverables</li><li style="margin:0 0 3px"><b>Workstream</b> — related activities within a larger effort</li><li style="margin:0"><b>Action / Task</b> — specific unit of work</li></ul></div>
+<div><p style="margin:0 0 4px;font-weight:600">Phân rã công việc</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px"><b>Sáng kiến</b> — nỗ lực lớn để đạt mục tiêu</li><li style="margin:0 0 3px"><b>Dự án</b> — nỗ lực có thời hạn kèm sản phẩm bàn giao</li><li style="margin:0 0 3px"><b>Luồng công việc</b> — các hoạt động liên quan trong một nỗ lực lớn hơn</li><li style="margin:0"><b>Hành động / Nhiệm vụ</b> — đơn vị công việc cụ thể</li></ul></div>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Priorities and trade-offs</p><p style="margin:0 0 6px"><b>Priority</b> — What should receive attention first? · <b>Trade-off</b> — What are we willing to give up?</p><p style="margin:0">Roadmap · Work plan · Timeline · Deadline · Milestone · Dependency · Critical path</p></div>
+<div><p style="margin:0 0 4px;font-weight:600">Ưu tiên và đánh đổi</p><p style="margin:0 0 6px"><b>Ưu tiên</b> — Việc gì cần được chú ý trước? · <b>Đánh đổi</b> — Chúng ta sẵn sàng từ bỏ điều gì?</p><p style="margin:0">Lộ trình · Kế hoạch công việc · Tiến độ · Hạn chót · Mốc tiến độ · Quan hệ phụ thuộc · Đường tới hạn</p></div>
+<div style="color:var(--en,#56665a)"><b>Roadmap to delivery</b> — M1 Design · M2 Build · M3 Beta · M4 Launch</div>
+<div><b>Lộ trình đến khi bàn giao</b><span> — M1 Thiết kế</span><span> · M2 Xây dựng</span> · M3 Beta · M4 Ra mắt</div>
+<div style="color:var(--en,#56665a)"><b>Manager check</b> — A good plan shows what will be done, what comes first, what depends on what, and where trade-offs are being made.</div>
+<div><b>Kiểm tra dành cho quản lý</b> — Một kế hoạch tốt cho thấy việc gì sẽ được làm, việc gì đến trước, việc gì phụ thuộc việc gì, và những đánh đổi đang được thực hiện ở đâu.</div>
+<div style="color:var(--en,#56665a)"><b>Zalo Drive Impact</b> — clarify outcomes, prioritise work, monitor progress, remove bottlenecks and adjust based on evidence.</div>
+<div><b>Zalo Drive Impact</b> — làm rõ kết quả kỳ vọng, ưu tiên công việc, theo dõi tiến độ, tháo điểm nghẽn và điều chỉnh dựa trên bằng chứng.</div>
+</div>
+</section>
+
+<section id="s26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 30</span>
+<span style="color:#86958a">Build and Run the Execution System</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Create the Team Delivery System</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tạo ra hệ thống triển khai của nhóm</h3>
+<div style="color:var(--en,#56665a)">Operational execution is a management system, not a task list.</div>
+<div>Triển khai vận hành là một hệ thống quản trị, không phải một danh sách việc cần làm.</div>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Ownership essentials</p><ul style="margin:0 0 6px;padding-left:17px"><li style="margin:0 0 3px"><b>Owner</b> — Who owns this?</li><li style="margin:0 0 3px"><b>Responsibility</b> — Who must do the work?</li><li style="margin:0 0 3px"><b>Accountability</b> — Who answers for the outcome?</li><li style="margin:0 0 3px"><b>RACI</b> — Responsible, Accountable, Consulted, Informed</li><li style="margin:0"><b>Resource / Capacity</b> — What do we need, and how much can we handle?</li></ul><p style="margin:0"><b>Rule of thumb:</b> Many people can be responsible; one person should be accountable.</p></div>
+<div><p style="margin:0 0 4px;font-weight:600">Nền tảng về trách nhiệm</p><ul style="margin:0 0 6px;padding-left:17px"><li style="margin:0 0 3px"><b>Người chủ trì (owner)</b> — Ai chịu trách nhiệm chính về việc này?</li><li style="margin:0 0 3px"><b>Trách nhiệm thực hiện</b> — Ai phải làm công việc?</li><li style="margin:0 0 3px"><b>Trách nhiệm giải trình</b> — Ai trả lời về kết quả?</li><li style="margin:0 0 3px"><b>RACI</b> — Người thực hiện, người giải trình, người được hỏi ý kiến, người được thông báo</li><li style="margin:0"><b>Nguồn lực / Năng lực đáp ứng</b> — Cần gì, và có thể gánh đến đâu?</li></ul><p style="margin:0"><b>Nguyên tắc thực dụng:</b> Nhiều người có thể cùng thực hiện; chỉ nên một người chịu trách nhiệm giải trình.</p></div>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Operational execution loop</p><p style="margin:0">OWN (owner · accountability · decision rights) → COORDINATE (cadence · status · blockers) → CONTROL (risk · issue · mitigation) → ADAPT (corrective action · course correction · lessons learned). Deliver results, then learn and adjust.</p></div>
+<div><p style="margin:0 0 4px;font-weight:600">Vòng triển khai vận hành</p><p style="margin:0">SỞ HỮU (người chủ trì · trách nhiệm giải trình · quyền quyết định) → PHỐI HỢP (nhịp rà soát · trạng thái · vướng mắc) → KIỂM SOÁT (rủi ro · sự cố · giảm thiểu) → THÍCH ỨNG (hành động khắc phục · hiệu chỉnh hướng đi · bài học). Tạo ra kết quả, rồi học và điều chỉnh.</p></div>
+</div>
+<p style="margin:12px 0 0;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#86958a">Coordination + adaptation terms<span> · Thuật ngữ phối hợp và thích ứng</span></p>
+<table style="margin-top:6px;font-size:11.5px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 6px 6px 0;vertical-align:top;width:20%;color:var(--en,#56665a)"><b>Cadence</b><br /><span style="color:#1b2a20"><b>Nhịp rà soát</b></span></td><td style="padding:6px 6px;vertical-align:top;width:40%;color:var(--en,#56665a)">How often do we review?</td><td style="padding:6px 0 6px 6px;vertical-align:top">Bao lâu rà soát một lần?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 6px 6px 0;vertical-align:top;color:var(--en,#56665a)"><b>Status</b><br /><span style="color:#1b2a20"><b>Trạng thái</b></span></td><td style="padding:6px 6px;vertical-align:top;color:var(--en,#56665a)">Where does work stand?</td><td style="padding:6px 0 6px 6px;vertical-align:top">Công việc đang ở đâu?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 6px 6px 0;vertical-align:top;color:var(--en,#56665a)"><b>Blocker</b><br /><span style="color:#1b2a20"><b>Vướng mắc</b></span></td><td style="padding:6px 6px;vertical-align:top;color:var(--en,#56665a)">What stops progress now?</td><td style="padding:6px 0 6px 6px;vertical-align:top">Điều gì đang chặn tiến độ?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 6px 6px 0;vertical-align:top;color:var(--en,#56665a)"><b>Bottleneck</b><br /><span style="color:#1b2a20"><b>Điểm nghẽn</b></span></td><td style="padding:6px 6px;vertical-align:top;color:var(--en,#56665a)">Where is the system slowing?</td><td style="padding:6px 0 6px 6px;vertical-align:top">Hệ thống đang chậm ở đâu?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 6px 6px 0;vertical-align:top;color:var(--en,#56665a)"><b>Escalation</b><br /><span style="color:#1b2a20"><b>Báo lên</b></span></td><td style="padding:6px 6px;vertical-align:top;color:var(--en,#56665a)">When should this be raised?</td><td style="padding:6px 0 6px 6px;vertical-align:top">Khi nào cần báo lên cấp trên?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 6px 6px 0;vertical-align:top;color:var(--en,#56665a)"><b>Risk</b><br /><span style="color:#1b2a20"><b>Rủi ro</b></span></td><td style="padding:6px 6px;vertical-align:top;color:var(--en,#56665a)">What might happen?</td><td style="padding:6px 0 6px 6px;vertical-align:top">Điều gì có thể xảy ra?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 6px 6px 0;vertical-align:top;color:var(--en,#56665a)"><b>Issue</b><br /><span style="color:#1b2a20"><b>Sự cố</b></span></td><td style="padding:6px 6px;vertical-align:top;color:var(--en,#56665a)">What has already gone wrong?</td><td style="padding:6px 0 6px 6px;vertical-align:top">Điều gì đã xảy ra sai?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 6px 6px 0;vertical-align:top;color:var(--en,#56665a)"><b>Mitigation</b><br /><span style="color:#1b2a20"><b>Giảm thiểu</b></span></td><td style="padding:6px 6px;vertical-align:top;color:var(--en,#56665a)">How can risk be reduced?</td><td style="padding:6px 0 6px 6px;vertical-align:top">Làm sao giảm rủi ro?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 6px 6px 0;vertical-align:top;color:var(--en,#56665a)"><b>Course correction</b><br /><span style="color:#1b2a20"><b>Hiệu chỉnh hướng đi</b></span></td><td style="padding:6px 6px;vertical-align:top;color:var(--en,#56665a)">What must change now?</td><td style="padding:6px 0 6px 6px;vertical-align:top">Điều gì phải thay đổi ngay?</td></tr>
+<tr><td style="padding:6px 6px 6px 0;vertical-align:top;color:var(--en,#56665a)"><b>Feedback loop</b><br /><span style="color:#1b2a20"><b>Vòng phản hồi</b></span></td><td style="padding:6px 6px;vertical-align:top;color:var(--en,#56665a)">How does learning improve action?</td><td style="padding:6px 0 6px 6px;vertical-align:top">Bài học cải thiện hành động thế nào?</td></tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:12px">
+<div style="color:var(--en,#56665a)"><b>Example thread</b> — Objective: Reduce onboarding friction → KPI: completion rate → Target: 80% → Initiative: redesign journey → Owner: PM → Risk: engineering capacity → Adjustment: reduce scope or add resources.</div>
+<div><b>Ví dụ một mạch</b> — Mục tiêu: Giảm ma sát trong onboarding → KPI: tỷ lệ hoàn tất → Mức mục tiêu: 80% → Sáng kiến: thiết kế lại hành trình → Người chủ trì: PM → Rủi ro: năng lực của đội kỹ thuật → Điều chỉnh: thu hẹp phạm vi hoặc bổ sung nguồn lực.</div>
+<div style="color:var(--en,#56665a)"><b>Manager check</b> — Execution fails when ownership is unclear, coordination is weak, risks are unmanaged, or learning is ignored.</div>
+<div><b>Kiểm tra dành cho quản lý</b> — Triển khai thất bại khi trách nhiệm không rõ, phối hợp yếu, rủi ro không được quản lý, hoặc bài học bị bỏ qua.</div>
+</div>
+</section>
+
+<section id="s27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 31</span>
+<span style="color:#86958a">Build and Run the Execution System</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Design a Review Rhythm with Purpose and Authority</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thiết kế nhịp rà soát có mục đích và có quyền quyết định</h3>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:24%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Review type</th>
+<th style="text-align:left;padding:5px 6px;width:34%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Purpose</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Example cadence</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Daily check</b><br /><span style="color:#1b2a20"><b>Kiểm tra hằng ngày</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Unblock urgent issues<br /><span style="color:#1b2a20">Tháo các vướng mắc gấp</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">10–15 minutes<br /><span style="color:#1b2a20">10–15 phút</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Weekly review</b><br /><span style="color:#1b2a20"><b>Rà soát hằng tuần</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Trend, quality, dependency<br /><span style="color:#1b2a20">Xu hướng, chất lượng, quan hệ phụ thuộc</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">30–45 minutes<br /><span style="color:#1b2a20">30–45 phút</span></td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Milestone gate</b><br /><span style="color:#1b2a20"><b>Cửa kiểm mốc</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Continue, adjust, pause<br /><span style="color:#1b2a20">Tiếp tục, điều chỉnh, tạm dừng</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Before launch or handoff<br /><span style="color:#1b2a20">Trước khi ra mắt hoặc bàn giao</span></td></tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:12px">
+<div style="color:var(--en,#56665a)">The cadence should match the speed and risk of the work.</div>
+<div>Nhịp rà soát phải tương xứng với tốc độ và mức rủi ro của công việc.</div>
+</div>
+</section>
+
+<section id="s28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 32</span>
+<span style="color:#86958a">Build and Run the Execution System</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Define Response Thresholds Before Problems Escalate</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xác định ngưỡng phản ứng trước khi vấn đề leo thang</h3>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:26%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Signal class</th>
+<th style="text-align:left;padding:5px 6px;width:34%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Meaning</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Response</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Act now</b><br /><span style="color:#1b2a20"><b>Hành động ngay</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Serious threshold crossed<br /><span style="color:#1b2a20">Đã vượt ngưỡng nghiêm trọng</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Pause, contain, escalate<br /><span style="color:#1b2a20">Tạm dừng, khoanh vùng, báo lên</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Act this cycle</b><br /><span style="color:#1b2a20"><b>Hành động trong chu kỳ này</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Trend weakening<br /><span style="color:#1b2a20">Xu hướng đang yếu đi</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Diagnose and adjust<br /><span style="color:#1b2a20">Chẩn đoán và điều chỉnh</span></td></tr>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--en,#56665a)"><b>Observe and learn</b><br /><span style="color:#1b2a20"><b>Quan sát và học</b></span></td><td style="padding:7px 6px;vertical-align:top;color:var(--en,#56665a)">Within tolerance<br /><span style="color:#1b2a20">Vẫn trong ngưỡng cho phép</span></td><td style="padding:7px 0 7px 6px;vertical-align:top;color:var(--en,#56665a)">Continue monitoring<br /><span style="color:#1b2a20">Tiếp tục theo dõi</span></td></tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:12px">
+<div style="color:var(--en,#56665a)">The best time to decide how to respond to a warning is before the warning appears.</div>
+<div>Thời điểm tốt nhất để quyết định cách phản ứng với một cảnh báo là trước khi cảnh báo xuất hiện.</div>
+</div>
+</section>
+
+<section id="s29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 33</span>
+<span style="color:#86958a">Build and Run the Execution System</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Monitor the Work System, Not the Person</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Theo dõi hệ thống công việc, không theo dõi con người</h3>
+<div style="color:var(--en,#56665a)"><p style="margin:0 0 4px;font-weight:600">Good visibility</p><ul style="margin:0 0 8px;padding-left:17px"><li style="margin:0 0 3px">helps the team see work state</li><li style="margin:0 0 3px">reveals dependencies</li><li style="margin:0 0 3px">surfaces risk early</li><li style="margin:0">supports decisions</li></ul><p style="margin:0 0 4px;font-weight:600">Poor visibility</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">watches people</li><li style="margin:0 0 3px">creates fear</li><li style="margin:0 0 3px">encourages hiding</li><li style="margin:0">increases reporting burden</li></ul></div>
+<div><p style="margin:0 0 4px;font-weight:600">Minh bạch tốt</p><ul style="margin:0 0 8px;padding-left:17px"><li style="margin:0 0 3px">giúp nhóm thấy được trạng thái công việc</li><li style="margin:0 0 3px">làm rõ các quan hệ phụ thuộc</li><li style="margin:0 0 3px">phát hiện rủi ro sớm</li><li style="margin:0">hỗ trợ việc ra quyết định</li></ul><p style="margin:0 0 4px;font-weight:600">Minh bạch kém</p><ul style="margin:0;padding-left:17px"><li style="margin:0 0 3px">giám sát con người</li><li style="margin:0 0 3px">tạo ra sự lo sợ</li><li style="margin:0 0 3px">khuyến khích che giấu</li><li style="margin:0">tăng gánh nặng báo cáo</li></ul></div>
+<div style="color:var(--en,#56665a)">Bad news travels at the speed permitted by the team climate.</div>
+<div>Tin xấu đi nhanh hay chậm tuỳ vào mức độ mà không khí trong nhóm cho phép.</div>
+</div>
+</section>
+
+<section id="s30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 34</span>
+<span style="color:#86958a">Case in point</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Improving New-Account Activation</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Cải thiện tỷ lệ kích hoạt tài khoản mới</h3>
+</div>
+<p style="margin:8px 0 0;font-size:11px;color:#86958a">Slide chuyển sang phần tình huống thực hành; bản gốc chỉ có tiêu đề.</p>
+</section>
+
+<section id="s31" style="margin:0 0 10px">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 35</span>
+<span style="color:#86958a">Close</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Thank you!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xin cảm ơn!</h3>
+</div>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 2 · Driving Operational Execution</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t2.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Chủ đề 2: Thúc đẩy triển khai vận hành","lv":0,"en":"Topic 2: Driving Operational Execution","vi":"Chủ đề 2: Thúc đẩy triển khai vận hành"},
+  {"id":"s02","num":"02","label":"Kết quả học tập","lv":0,"en":"Learning Outcomes","vi":"Kết quả học tập"},
+  {"id":"s03","num":"03","label":"Lộ trình học hôm nay","lv":0,"en":"Today's learning path","vi":"Lộ trình học hôm nay"},
+  {"id":"s04","num":"04","label":"Hành trình của Amazon: Từ một mảng kinh doanh đến một hệ sinh thái","lv":0,"en":"Amazon's journey: From One Business to an Ecosystem","vi":"Hành trình của Amazon: Từ một mảng kinh doanh đến một hệ sinh thái"},
+  {"id":"s05","num":"06","label":"Từ hiểu biết đến tác động: Vòng quản trị chiến lược","lv":0,"en":"From Insight to Impact: The Strategic Management Cycle","vi":"Từ hiểu biết đến tác động: Vòng quản trị chiến lược"},
+  {"id":"s06","num":"07","label":"Từ định hướng của tổ chức đến kết quả của nhóm","lv":0,"en":"From Organisational Direction to Team Delivery","vi":"Từ định hướng của tổ chức đến kết quả của nhóm"},
+  {"id":"s07","num":"08","label":"Từ định hướng của Zalo đến triển khai của nhóm","lv":0,"en":"From Zalo Direction to Team Execution","vi":"Từ định hướng của Zalo đến triển khai của nhóm"},
+  {"id":"s08","num":"09","label":"Triển khai vận hành biến định hướng thành kết quả","lv":0,"en":"Operational Execution Turns Direction into Results","vi":"Triển khai vận hành biến định hướng thành kết quả"},
+  {"id":"s09","num":"10","label":"Triển khai thất bại khi hoạt động thay thế cho kết quả","lv":0,"en":"Execution Fails When Activity Replaces Results","vi":"Triển khai thất bại khi hoạt động thay thế cho kết quả"},
+  {"id":"s10","num":"11","label":"Nghỉ 15 phút","lv":0,"en":"Take a 15-Minute Break","vi":"Nghỉ 15 phút"},
+  {"id":"s11","num":"13","label":"Ba nước đi của quản lý giúp thúc đẩy triển khai","lv":0,"en":"Three Manager Moves That Drive Execution","vi":"Ba nước đi của quản lý giúp thúc đẩy triển khai"},
+  {"id":"s12","num":"14","label":"Định hướng: Chúng ta đang cố tạo ra kết quả gì?","lv":0,"en":"Direction: What result are we trying to create?","vi":"Định hướng: Chúng ta đang cố tạo ra kết quả gì?"},
+  {"id":"s13","num":"15","label":"Từ mục tiêu chung đến mục tiêu sẵn sàng triển khai","lv":0,"en":"From goal to execution-ready objective","vi":"Từ mục tiêu chung đến mục tiêu sẵn sàng triển khai"},
+  {"id":"s14","num":"16","label":"SMART tạo ra mức rõ ràng tối thiểu để triển khai","lv":0,"en":"SMART Creates Minimum Execution Clarity","vi":"SMART tạo ra mức rõ ràng tối thiểu để triển khai"},
+  {"id":"s15","num":"17","label":"Biến một mục tiêu mơ hồ thành mục tiêu SMART","lv":0,"en":"Turning a vague goal into a SMART objective","vi":"Biến một mục tiêu mơ hồ thành mục tiêu SMART"},
+  {"id":"s16","num":"18","label":"SMART vẫn có thể đo sai kết quả","lv":0,"en":"SMART can still measure the wrong result","vi":"SMART vẫn có thể đo sai kết quả"},
+  {"id":"s17","num":"19","label":"Bổ sung kết quả kỳ vọng, bằng chứng và lằn ranh bảo vệ","lv":0,"en":"Add the outcome, evidence and guardrails","vi":"Bổ sung kết quả kỳ vọng, bằng chứng và lằn ranh bảo vệ"},
+  {"id":"s18","num":"21","label":"Đo lường: Làm sao biết chúng ta đang đi đúng hướng?","lv":0,"en":"Measurement: How will we know we are on track?","vi":"Đo lường: Làm sao biết chúng ta đang đi đúng hướng?"},
+  {"id":"s19","num":"22","label":"Sai lầm phổ biến: Coi mọi thước đo đều là KPI","lv":0,"en":"Common mistake: Treating every metric as a KPI","vi":"Sai lầm phổ biến: Coi mọi thước đo đều là KPI"},
+  {"id":"s20","num":"23","label":"Mức nền và mức mục tiêu làm cho tiến độ trở nên thấy được","lv":0,"en":"Baseline and target make progress visible","vi":"Mức nền và mức mục tiêu làm cho tiến độ trở nên thấy được"},
+  {"id":"s21","num":"24","label":"Chỉ báo dẫn dắt giúp quản lý hành động sớm","lv":0,"en":"Leading indicators help managers act early","vi":"Chỉ báo dẫn dắt giúp quản lý hành động sớm"},
+  {"id":"s22","num":"25","label":"Biết rõ mình đang đo gì: từ đầu vào đến kết quả","lv":0,"en":"Know what you are measuring: Input to outcome","vi":"Biết rõ mình đang đo gì: từ đầu vào đến kết quả"},
+  {"id":"s23","num":"26","label":"Xây dựng bộ tín hiệu triển khai cân bằng","lv":0,"en":"Build a balanced execution signal stack","vi":"Xây dựng bộ tín hiệu triển khai cân bằng"},
+  {"id":"s24","num":"27","label":"Thử phá KPI trước khi dùng","lv":0,"en":"Stress-test the KPI before you use it","vi":"Thử phá KPI trước khi dùng"},
+  {"id":"s25","num":"29","label":"Lập kế hoạch: Làm sao mục tiêu trở thành công việc được phối hợp?","lv":0,"en":"Planning: How will the goal become coordinated work?","vi":"Lập kế hoạch: Làm sao mục tiêu trở thành công việc được phối hợp?"},
+  {"id":"s26","num":"30","label":"Tạo ra hệ thống triển khai của nhóm","lv":0,"en":"Create the Team Delivery System","vi":"Tạo ra hệ thống triển khai của nhóm"},
+  {"id":"s27","num":"31","label":"Thiết kế nhịp rà soát có mục đích và có quyền quyết định","lv":0,"en":"Design a Review Rhythm with Purpose and Authority","vi":"Thiết kế nhịp rà soát có mục đích và có quyền quyết định"},
+  {"id":"s28","num":"32","label":"Xác định ngưỡng phản ứng trước khi vấn đề leo thang","lv":0,"en":"Define Response Thresholds Before Problems Escalate","vi":"Xác định ngưỡng phản ứng trước khi vấn đề leo thang"},
+  {"id":"s29","num":"33","label":"Theo dõi hệ thống công việc, không theo dõi con người","lv":0,"en":"Monitor the Work System, Not the Person","vi":"Theo dõi hệ thống công việc, không theo dõi con người"},
+  {"id":"s30","num":"34","label":"Cải thiện tỷ lệ kích hoạt tài khoản mới","lv":0,"en":"Improving New-Account Activation","vi":"Cải thiện tỷ lệ kích hoạt tài khoản mới"},
+  {"id":"s31","num":"35","label":"Xin cảm ơn!","lv":0,"en":"Thank you!","vi":"Xin cảm ơn!"}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t2.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t2.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t2.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t2.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

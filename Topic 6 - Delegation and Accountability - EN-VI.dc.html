@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 6 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Delegation &amp; Accountability in Fast-Paced Teams</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Giao việc và trách nhiệm giải trình trong đội ngũ vận hành tốc độ cao</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 6: Giao việc và trách nhiệm giải trình trong đội ngũ vận hành tốc độ cao</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Topic 6: Delegation &amp; Accountability in Fast-Paced Teams — bản đối chiếu Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">PGS. Agnis Stibe · 69 slide</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide là một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ.</p>
+<p style="margin:0 0 8px">Đây là bài giảng dùng rất nhiều hình ảnh và video. Nhiều slide chỉ có một vài chữ lớn hoặc hoàn toàn không có chữ. Với những slide đó, phần mô tả hình ảnh được ghi bằng chữ nghiêng màu xám để người đọc hình dung được mạch trình bày; phần mô tả này là ghi chú của bản dịch, không phải nội dung gốc trên slide.</p>
+<p style="margin:0">Thuật ngữ chuyên môn được dịch sang tiếng Việt kèm nguyên bản tiếng Anh trong ngoặc ở lần xuất hiện đầu tiên. Tên riêng, tên tổ chức và địa chỉ liên hệ giữ nguyên. <i>Accountability</i> được dịch là “trách nhiệm giải trình”, <i>ownership</i> là “tinh thần làm chủ”, và <i>HAI</i> (Human Artificial Intelligence) là “Trí tuệ Nhân tạo mang tính Người”.</p>
+</div>
+
+<section id="s01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Topic 6: Delegation &amp; Accountability in Fast-Paced Teams</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chủ đề 6: Giao việc và trách nhiệm giải trình trong đội ngũ vận hành tốc độ cao</h3>
+<div style="color:var(--en,#56665a)">Assoc. Professor Agnis Stibe<br />RMIT University Vietnam, Saigon South Campus<br />me.grow — RMIT &amp; Zalo</div>
+<div><span>Phó Giáo sư Agnis Stibe</span><br /><span>Đại học RMIT Việt Nam, cơ sở Nam Sài Gòn</span><br />me.grow — RMIT &amp; Zalo</div>
+</div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p01a.png" alt="Slide tiêu đề me.grow" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Slide tiêu đề của chương trình me.grow.</figcaption>
+</figure>
+</section>
+
+<section id="s02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">Delegation challenges (1–5)</span>
+</div>
+<table style="font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1.5px solid #1b2a20">
+<td style="padding:0 8px 7px 0;vertical-align:bottom;width:22%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Challenge</span><br /><span>Thách thức</span></td>
+<td style="padding:0 8px 7px;vertical-align:bottom;width:40%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Typical management situation</span><br /><span>Tình huống quản lý thường gặp</span></td>
+<td style="padding:0 0 7px 8px;vertical-align:bottom;width:38%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Leadership question</span><br /><span>Câu hỏi dành cho người lãnh đạo</span></td>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">1. “It’s faster if I do it myself.”</span><br /><b style="font-weight:500">1. “Tự làm cho nhanh.”</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Under deadline pressure, the manager takes work back from the team.</span><br /><span>Dưới áp lực thời hạn, người quản lý lấy lại phần việc đã giao cho đội ngũ.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">What should I delegate even when delegation initially takes longer?</span><br /><span>Việc gì tôi vẫn nên giao, dù ban đầu giao việc mất nhiều thời gian hơn?</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">2. Delegation without real authority</span><br /><b style="font-weight:500">2. Giao việc mà không giao quyền</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">An employee owns a task but still needs the manager’s approval for every meaningful decision.</span><br /><span>Nhân viên phụ trách một đầu việc nhưng vẫn phải xin phê duyệt cho mọi quyết định đáng kể.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Am I delegating responsibility and decision rights?</span><br /><span>Tôi có đang giao cả trách nhiệm và quyền ra quyết định hay không?</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">3. Accountability is unclear</span><br /><b style="font-weight:500">3. Trách nhiệm giải trình không rõ ràng</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Product, tech, marketing and operations are involved, but nobody feels ultimately responsible.</span><br /><span>Sản phẩm, kỹ thuật, marketing và vận hành đều tham gia, nhưng không ai cảm thấy mình chịu trách nhiệm cuối cùng.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Who is the single accountable owner?</span><br /><span>Ai là người duy nhất chịu trách nhiệm về kết quả?</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">4. The best people get everything</span><br /><b style="font-weight:500">4. Người giỏi nhất gánh mọi việc</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">High performers repeatedly receive critical assignments until they become overloaded.</span><br /><span>Những nhân sự xuất sắc liên tục được giao các nhiệm vụ quan trọng cho đến khi họ quá tải.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Am I optimizing today’s delivery at the expense of tomorrow’s capability?</span><br /><span>Tôi có đang tối ưu kết quả hôm nay bằng cách đánh đổi năng lực của ngày mai?</span></td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">5. Everything becomes “urgent”</span><br /><b style="font-weight:500">5. Mọi việc đều thành “khẩn cấp”</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Multiple senior stakeholders request immediate action and the manager passes all priorities to the team.</span><br /><span>Nhiều lãnh đạo cấp cao cùng yêu cầu xử lý ngay, và người quản lý chuyển toàn bộ ưu tiên đó xuống đội ngũ.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">What should we stop, postpone or deprioritize?</span><br /><span>Chúng ta nên dừng, hoãn hay hạ ưu tiên việc gì?</span></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">Delegation challenges (6–10)</span>
+</div>
+<table style="font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1.5px solid #1b2a20">
+<td style="padding:0 8px 7px 0;vertical-align:bottom;width:22%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Challenge</span><br /><span>Thách thức</span></td>
+<td style="padding:0 8px 7px;vertical-align:bottom;width:40%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Typical management situation</span><br /><span>Tình huống quản lý thường gặp</span></td>
+<td style="padding:0 0 7px 8px;vertical-align:bottom;width:38%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Leadership question</span><br /><span>Câu hỏi dành cho người lãnh đạo</span></td>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">6. Manager becomes the decision bottleneck</span><br /><b style="font-weight:500">6. Người quản lý thành nút thắt ra quyết định</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Team members escalate even relatively small decisions upward.</span><br /><span>Thành viên đội ngũ đẩy lên cấp trên cả những quyết định khá nhỏ.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Which decisions could the team safely make without me?</span><br /><span>Những quyết định nào đội ngũ có thể tự đưa ra một cách an toàn mà không cần đến tôi?</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">7. Micromanagement vs. visibility</span><br /><b style="font-weight:500">7. Quản lý vi mô và nhu cầu nắm tình hình</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">The manager wants accountability and therefore asks for constant updates.</span><br /><span>Người quản lý muốn có trách nhiệm giải trình nên liên tục yêu cầu cập nhật.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">How can I maintain visibility without controlling execution?</span><br /><span>Làm sao để nắm được tình hình mà không kiểm soát cách thực thi?</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">8. Cross-functional dependency</span><br /><b style="font-weight:500">8. Phụ thuộc liên bộ phận</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Your team owns the result but needs another team to deliver something first.</span><br /><span>Đội của bạn chịu trách nhiệm về kết quả nhưng phải chờ một bộ phận khác hoàn thành phần việc của họ trước.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">How do we create accountability when authority is distributed?</span><br /><span>Làm sao tạo ra trách nhiệm giải trình khi quyền hạn bị phân tán?</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">9. AI makes ownership ambiguous</span><br /><b style="font-weight:500">9. AI làm mờ ranh giới trách nhiệm</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">AI produces analysis, content, code, summaries or recommendations that employees use.</span><br /><span>AI tạo ra phân tích, nội dung, mã nguồn, bản tóm tắt hoặc đề xuất mà nhân viên đem ra sử dụng.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Who remains accountable for an AI-assisted decision or output?</span><br /><span>Ai vẫn là người chịu trách nhiệm cho một quyết định hay sản phẩm có AI hỗ trợ?</span></td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top"><span style="color:var(--en,#56665a)">10. Wrong human–AI task allocation</span><br /><b style="font-weight:500">10. Phân bổ việc giữa người và AI sai chỗ</b></td><td style="padding:7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">People spend hours on work AI could handle, while AI is used for decisions requiring contextual human judgment.</span><br /><span>Con người dành hàng giờ cho việc AI có thể làm, còn AI lại được dùng cho những quyết định cần phán đoán theo bối cảnh của con người.</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Should this task be Human, AI, or HAI?</span><br /><span>Việc này nên do Con người, AI, hay HAI đảm nhận?</span></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">Examples</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">EXAMPLES</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">VÍ DỤ</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>“Everything needs my approval.” → delegation + empowerment</li><li>“Everyone is involved, but nobody owns the outcome.” → accountability + decision rights</li><li>“My best people are overloaded.” → capability-based delegation + cognitive load</li><li>“AI makes us faster, but who is responsible for what it produces?” → HAI + human accountability</li><li>“Everyone is busy, but important things are still late.” → prioritization + bottlenecks + team cognitive load</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>“Việc gì cũng phải qua tôi phê duyệt.” → giao việc + trao quyền</li><li>“Ai cũng tham gia, nhưng không ai làm chủ kết quả.” → trách nhiệm giải trình + quyền ra quyết định</li><li>“Những người giỏi nhất của tôi đang quá tải.” → giao việc theo năng lực + tải nhận thức</li><li>“AI giúp chúng ta nhanh hơn, nhưng ai chịu trách nhiệm cho những gì nó tạo ra?” → HAI + trách nhiệm của con người</li><li>“Ai cũng bận, nhưng những việc quan trọng vẫn trễ.” → sắp xếp ưu tiên + nút thắt + tải nhận thức của đội ngũ</li></ul></div>
+</div>
+</section>
+
+<section id="s05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 05</span>
+<span style="color:#86958a">Key question</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">KEY QUESTION</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">CÂU HỎI TRỌNG TÂM</h3>
+<div style="color:var(--en,#56665a)">How can you increase your team’s ownership and speed while reducing the number of decisions that need to come back to you?</div>
+<div>Làm thế nào để tăng tinh thần làm chủ và tốc độ của đội ngũ, đồng thời giảm số lượng quyết định phải quay về bàn của bạn?</div>
+</div>
+</section>
+
+<section id="s06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06</span>
+<span style="color:#86958a">Visual only</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide không có chữ. Hình minh hoạ một phòng họp đầy người làm việc trước màn hình, phía trên là đường biểu đồ màu đỏ đi xuống.</i></p>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p06a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 07</span>
+<span style="color:#86958a">Critical thinking</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">CRITICAL THINKING<br />THINKING<br /><br />Human <b>with</b> AI</div>
+<div><span>TƯ DUY PHẢN BIỆN</span><br /><span>TƯ DUY</span><br /><br /><span>Con người </span><b>cùng</b> AI</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide dùng video dọc quay trong một cửa hàng; chữ “CRITICAL” mờ dần để còn lại “THINKING”, rồi hiện dòng “Human with AI”.</i></p>
+<figure style="margin:10px 0 0;max-width:442px;break-inside:avoid">
+<img src="assets/t6/p07a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 08–09</span>
+<span style="color:#86958a">Visual only</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Hai slide không có chữ. Slide 08: hình minh hoạ một người thuyết trình trước bảng ghi các chữ TRAINING, PRACTICE, SKILLS, KNOWLEDGE (đào tạo, thực hành, kỹ năng, tri thức). Slide 09: một người ngồi trước máy tính, phía trên là các bong bóng suy nghĩ ghi BIASES, NEGATIVE THOUGHTS, PRODUCTIVE MINDSET (thiên kiến, suy nghĩ tiêu cực, lối nghĩ hiệu quả).</i></p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;max-width:100%;break-inside:avoid">
+<img src="assets/t6/p08a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p09a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">Three modes</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">INSTINCTIVE — INTELLIGENT<br />HUMANE — ARTIFICIAL<br /><br />TRANSFORMATION · TRANSITION · TRANSACTION</div>
+<div><span>BẢN NĂNG — THÔNG MINH</span><br /><span>NHÂN BẢN — NHÂN TẠO</span><br /><br /><span>CHUYỂN HOÁ · CHUYỂN TIẾP · GIAO DỊCH</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide dùng hình củ cà rốt và chiếc gậy — hai đòn thúc đẩy quen thuộc — để đặt ba mức độ tác động cạnh nhau: giao dịch, chuyển tiếp và chuyển hoá.</i></p>
+<div style="display:grid;grid-template-columns:190px 320px;gap:16px;align-items:center;margin-top:10px;break-inside:avoid">
+<img src="assets/t6/p10c.png" alt="" style="display:block;width:100%;height:auto" />
+<img src="assets/t6/p28b.png" alt="" style="display:block;width:100%;height:auto" />
+</div>
+</section>
+
+<section id="s10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">Social influence</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOCIAL INFLUENCE<br />SOURCE: ONLINE</div>
+<div><span>ẢNH HƯỞNG XÃ HỘI</span><br /><span>NGUỒN: TRỰC TUYẾN</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Đoạn phim trắng đen về thí nghiệm quay mặt trong thang máy: một người lạ dần làm theo hướng của cả nhóm.</i></p>
+<figure style="margin:10px 0 0;max-width:408px;break-inside:avoid">
+<img src="assets/t6/p11b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 12</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">TRANSFORMATION DESIGN FRAMEWORK</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">KHUNG THIẾT KẾ CHUYỂN HOÁ</h3>
+</div>
+</section>
+
+<section id="s12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 13–15</span>
+<span style="color:#86958a">Eight principles</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">1 TRIANGLE — attitude, behavior, environment<br />2 CURVE — attitude, environment, − +<br />3 METRIC<br />4 CIRCLES — self-contained, self-driven, January 1st<br />5 ARCHITECTURE<br />6 SOCIUM<br />7 MODERATION — amplify, others, decrease, reverse, dynamic design<br />8 ETHICS<br /><br />SOURCE: ONLINE</div>
+<div><span>1 TAM GIÁC — thái độ, hành vi, môi trường</span><br /><span>2 ĐƯỜNG CONG — thái độ, môi trường, − +</span><br /><span>3 THƯỚC ĐO</span><br /><span>4 VÒNG TRÒN — tự thân, tự thúc đẩy, ngày 1 tháng 1</span><br /><span>5 KIẾN TRÚC</span><br /><span>6 CỘNG ĐỒNG (socium)</span><br /><span>7 ĐIỀU ĐỘ — khuếch đại, người khác, giảm bớt, đảo chiều, thiết kế động</span><br /><span>8 ĐẠO ĐỨC</span><br /><br /><span>NGUỒN: TRỰC TUYẾN</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ba slide liên tiếp dựng dần sơ đồ khung: slide 13 hiện bốn nguyên tắc đầu, slide 14 chèn một đoạn video, slide 15 hiện đủ tám nguyên tắc xếp vòng quanh. Phần sau của bài giảng đi qua từng nguyên tắc một.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;font-size:11px"><div style="border:1px solid #d3dfd0;padding:8px 9px"><span style="font-weight:700;color:var(--ac,#2f6b45)">1</span><br /><span style="color:var(--en,#56665a)">TRIANGLE</span><br /><b style="font-weight:500">TAM GIÁC</b></div><div style="border:1px solid #d3dfd0;padding:8px 9px"><span style="font-weight:700;color:var(--ac,#2f6b45)">2</span><br /><span style="color:var(--en,#56665a)">CURVE</span><br /><b style="font-weight:500">ĐƯỜNG CONG</b></div><div style="border:1px solid #d3dfd0;padding:8px 9px"><span style="font-weight:700;color:var(--ac,#2f6b45)">3</span><br /><span style="color:var(--en,#56665a)">METRIC</span><br /><b style="font-weight:500">THƯỚC ĐO</b></div><div style="border:1px solid #d3dfd0;padding:8px 9px"><span style="font-weight:700;color:var(--ac,#2f6b45)">4</span><br /><span style="color:var(--en,#56665a)">CIRCLES</span><br /><b style="font-weight:500">VÒNG TRÒN</b></div><div style="border:1px solid #d3dfd0;padding:8px 9px"><span style="font-weight:700;color:var(--ac,#2f6b45)">5</span><br /><span style="color:var(--en,#56665a)">ARCHITECTURE</span><br /><b style="font-weight:500">KIẾN TRÚC</b></div><div style="border:1px solid #d3dfd0;padding:8px 9px"><span style="font-weight:700;color:var(--ac,#2f6b45)">6</span><br /><span style="color:var(--en,#56665a)">SOCIUM</span><br /><b style="font-weight:500">CỘNG ĐỒNG</b></div><div style="border:1px solid #d3dfd0;padding:8px 9px"><span style="font-weight:700;color:var(--ac,#2f6b45)">7</span><br /><span style="color:var(--en,#56665a)">MODERATION</span><br /><b style="font-weight:500">ĐIỀU ĐỘ</b></div><div style="border:1px solid #d3dfd0;padding:8px 9px"><span style="font-weight:700;color:var(--ac,#2f6b45)">8</span><br /><span style="color:var(--en,#56665a)">ETHICS</span><br /><b style="font-weight:500">ĐẠO ĐỨC</b></div></div></div>
+</section>
+
+<section id="s13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 16–17</span>
+<span style="color:#86958a">Principle 1 · Triangle</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">TRIANGLE (1)<br /><br />ATTITUDE · BEHAVIOR · ENVIRONMENT</div>
+<div><span>TAM GIÁC (1)</span><br /><br /><span>THÁI ĐỘ · HÀNH VI · MÔI TRƯỜNG</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ba đỉnh của một tam giác: muốn thay đổi hành vi, phải làm việc đồng thời với thái độ và môi trường.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><svg viewBox="0 0 400 180" width="100%" style="display:block;max-width:430px" role="img" aria-label="Tam giác thái độ, hành vi, môi trường"><polygon points="200,32 326,150 74,150" fill="none" stroke="var(--ac,#2f6b45)" stroke-width="2" /><circle cx="200" cy="32" r="4" fill="#1b2a20" /><circle cx="326" cy="150" r="4" fill="#1b2a20" /><circle cx="74" cy="150" r="4" fill="#1b2a20" /><text x="200" y="22" text-anchor="middle" font-size="10" fill="#1b2a20">ATTITUDE<span> · THÁI ĐỘ</span></text><text x="4" y="170" font-size="10" fill="#1b2a20">BEHAVIOR<span> · HÀNH VI</span></text><text x="396" y="170" text-anchor="end" font-size="10" fill="#1b2a20">ENVIRONMENT<span> · MÔI TRƯỜNG</span></text></svg></div>
+</section>
+
+<section id="s14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">Visual only</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide không có chữ. Ảnh một chiếc thùng giấy khổng lồ hình chiếc xe đạp dựng trên phố — môi trường được thiết kế để gợi ra hành vi.</i></p>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p18a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 19–21</span>
+<span style="color:#86958a">Principle 2 · Curve</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">CURVE (2)<br /><br />ATTITUDE · ENVIRONMENT · − +<br /><br />SOURCE: ONLINE</div>
+<div><span>ĐƯỜNG CONG (2)</span><br /><br /><span>THÁI ĐỘ · MÔI TRƯỜNG · − +</span><br /><br /><span>NGUỒN: TRỰC TUYẾN</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Quan hệ giữa thái độ và môi trường không phải đường thẳng: cùng một can thiệp có thể cho kết quả âm hoặc dương tuỳ mức độ. Slide 21 minh hoạ bằng đoạn phim đèn tín hiệu sang đường có hình người nhảy múa.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><svg viewBox="0 0 340 186" width="100%" style="display:block;max-width:420px" role="img" aria-label="Đường cong thái độ và môi trường"><line x1="40" y1="95" x2="310" y2="95" stroke="#bccbbb" stroke-width="1" /><line x1="40" y1="160" x2="40" y2="24" stroke="#1b2a20" stroke-width="1.5" /><path d="M40 140 C 110 138, 130 60, 180 56 C 235 52, 255 130, 310 132" fill="none" stroke="var(--ac,#2f6b45)" stroke-width="2" /><text x="34" y="30" text-anchor="end" font-size="10" fill="#68786b">+</text><text x="34" y="158" text-anchor="end" font-size="10" fill="#68786b">−</text><text x="40" y="18" font-size="9.5" fill="#68786b">ATTITUDE<span> · THÁI ĐỘ</span></text><text x="336" y="182" text-anchor="end" font-size="10" fill="#68786b">ENVIRONMENT<span> · MÔI TRƯỜNG</span></text></svg></div>
+<figure style="margin:10px 0 0;max-width:510px;break-inside:avoid">
+<img src="assets/t6/p21a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 22–23</span>
+<span style="color:#86958a">Principle 3 · Metric</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">METRIC (3)<br /><br />PEOPLE METRIC<br />BEHAVIOR — TODAY<br />TRANSFORMATION — FUTURE</div>
+<div><span>THƯỚC ĐO (3)</span><br /><br /><span>THƯỚC ĐO CON NGƯỜI</span><br /><span>HÀNH VI — HÔM NAY</span><br /><span>CHUYỂN HOÁ — TƯƠNG LAI</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Đo hành vi ở hiện tại để thấy mức chuyển hoá trong tương lai.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:11.5px"><div style="border:1px solid #d3dfd0;padding:6px 10px"><span style="color:var(--en,#56665a)">BEHAVIOR — TODAY</span><br /><b style="font-weight:500">HÀNH VI — HÔM NAY</b></div><span style="color:var(--ac,#2f6b45)">→</span><div style="border:1px solid #d3dfd0;padding:6px 10px"><span style="color:var(--en,#56665a)">PEOPLE METRIC</span><br /><b style="font-weight:500">THƯỚC ĐO CON NGƯỜI</b></div><span style="color:var(--ac,#2f6b45)">→</span><div style="border:1px solid #d3dfd0;padding:6px 10px"><span style="color:var(--en,#56665a)">TRANSFORMATION — FUTURE</span><br /><b style="font-weight:500">CHUYỂN HOÁ — TƯƠNG LAI</b></div></div></div>
+</section>
+
+<section id="s17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 24–26</span>
+<span style="color:#86958a">Stairs vs. elevator</span>
+</div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:#86958a"><i>Ba slide không có chữ ngoài hình. Chuỗi ví dụ đo hành vi tại chỗ: quảng cáo dán trên cửa thang máy so với lối cầu thang; cảm biến theo dõi người qua lại trong một sảnh lớn; bảng hiển thị “TODAY’S VISITORS — 47% cầu thang / 53% thang máy” (KHÁCH HÔM NAY) và biểu đồ tỷ lệ thay đổi theo ngày.</i></p>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px;break-inside:avoid">
+<img src="assets/t6/p24b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p25a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p26c.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p26e.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 27–29</span>
+<span style="color:#86958a">Principle 4 · Circles</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">CIRCLES (4)<br /><br />STAGES OF TRANSFORMATION<br />SELF-CONTAINED · JANUARY 1st · SELF-DRIVEN · IDENTITY CHANGE · SOCIAL PULL · INFLUENCING OTHERS<br /><br />SOURCE: ONLINE</div>
+<div><span>VÒNG TRÒN (4)</span><br /><br /><span>CÁC GIAI ĐOẠN CHUYỂN HOÁ</span><br /><span>TỰ THÂN · NGÀY 1 THÁNG 1 · TỰ THÚC ĐẨY · THAY ĐỔI BẢN SẮC · SỨC HÚT XÃ HỘI · ẢNH HƯỞNG NGƯỜI KHÁC</span><br /><br /><span>NGUỒN: TRỰC TUYẾN</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Các vòng tròn đồng tâm cho thấy chuyển hoá lan từ bản thân ra tới việc ảnh hưởng người khác. Slide 29 chiếu một đoạn trong chương trình </i>Brain Games<i> của National Geographic.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><svg viewBox="0 0 540 190" width="100%" style="display:block;max-width:470px" role="img" aria-label="Các vòng tròn chuyển hoá"><circle cx="110" cy="95" r="78" fill="none" stroke="#bccbbb" stroke-width="1.5" /><circle cx="110" cy="95" r="52" fill="none" stroke="#86958a" stroke-width="1.5" /><circle cx="110" cy="95" r="26" fill="none" stroke="var(--ac,#2f6b45)" stroke-width="2" /><text x="200" y="40" font-size="10" fill="#68786b">INFLUENCING OTHERS<span> · ẢNH HƯỞNG NGƯỜI KHÁC</span></text><text x="200" y="95" font-size="10" fill="#68786b">SOCIAL PULL<span> · SỨC HÚT XÃ HỘI</span></text><text x="200" y="150" font-size="10" fill="var(--ac,#2f6b45)">SELF-DRIVEN<span> · TỰ THÚC ĐẨY</span></text></svg></div>
+<figure style="margin:10px 0 0;max-width:510px;break-inside:avoid">
+<img src="assets/t6/p29a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 30–32</span>
+<span style="color:#86958a">Principle 5 · Architecture</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">ARCHITECTURE (5)<br /><br />DATA → INTELLIGENCE → TRANSFORMATION</div>
+<div><span>KIẾN TRÚC (5)</span><br /><br /><span>DỮ LIỆU → TRÍ TUỆ → CHUYỂN HOÁ</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide 32 minh hoạ bằng hình một quầy thanh toán trong siêu thị: dữ liệu thu được ngay tại điểm hành vi diễn ra.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:11.5px"><div style="border:1px solid #d3dfd0;padding:6px 10px"><span style="color:var(--en,#56665a)">DATA</span><br /><b style="font-weight:500">DỮ LIỆU</b></div><span style="color:var(--ac,#2f6b45)">→</span><div style="border:1px solid #d3dfd0;padding:6px 10px"><span style="color:var(--en,#56665a)">INTELLIGENCE</span><br /><b style="font-weight:500">TRÍ TUỆ</b></div><span style="color:var(--ac,#2f6b45)">→</span><div style="border:1px solid #d3dfd0;padding:6px 10px"><span style="color:var(--en,#56665a)">TRANSFORMATION</span><br /><b style="font-weight:500">CHUYỂN HOÁ</b></div></div></div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p32a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 33–34</span>
+<span style="color:#86958a">Principle 6 · Socium</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOCIUM (6)<br /><br />SOCIAL<br />COMPETITION · LEARNING · COMPARISON · COOPERATION · NORMS · FACILITATION · RECOGNITION</div>
+<div><span>CỘNG ĐỒNG (6)</span><br /><br /><span>YẾU TỐ XÃ HỘI</span><br /><span>CẠNH TRANH · HỌC HỎI · SO SÁNH · HỢP TÁC · CHUẨN MỰC · HỖ TRỢ · GHI NHẬN</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bảy đòn ảnh hưởng xã hội xếp quanh một vòng tròn — cũng chính là bảy cách để tạo tinh thần làm chủ trong một đội ngũ.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><div style="display:flex;flex-wrap:wrap;gap:8px"><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">COMPETITION</span><br /><b style="font-weight:500">CẠNH TRANH</b></div><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">LEARNING</span><br /><b style="font-weight:500">HỌC HỎI</b></div><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">COMPARISON</span><br /><b style="font-weight:500">SO SÁNH</b></div><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">COOPERATION</span><br /><b style="font-weight:500">HỢP TÁC</b></div><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">NORMS</span><br /><b style="font-weight:500">CHUẨN MỰC</b></div><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">FACILITATION</span><br /><b style="font-weight:500">HỖ TRỢ</b></div><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">RECOGNITION</span><br /><b style="font-weight:500">GHI NHẬN</b></div></div></div>
+</section>
+
+<section id="s21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 35–39</span>
+<span style="color:#86958a">Public displays</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Screenshots of rankings<br /><br />COMPETITION · LEARNING · COMPARISON · COOPERATION · NORMS · FACILITATION · RECOGNITION<br /><br />SOURCE: ONLINE<br />Nov-13 → Dec-05 · 65% → 100%</div>
+<div><span>Ảnh chụp các bảng xếp hạng</span><br /><br /><span>CẠNH TRANH · HỌC HỎI · SO SÁNH · HỢP TÁC · CHUẨN MỰC · HỖ TRỢ · GHI NHẬN</span><br /><br /><span>NGUỒN: TRỰC TUYẾN</span><br />13/11 → 05/12 · 65% → 100%</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Năm slide kể lại một nghiên cứu thực địa: bảng xếp hạng đội nhóm được chiếu trên màn hình công cộng tại nơi làm việc, kèm biểu đồ mức tham gia tăng từ 65% lên 100% sau vài tuần.</i></p>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px;break-inside:avoid">
+<img src="assets/t6/p35a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p36a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p36b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p38b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 40–43</span>
+<span style="color:#86958a">Principle 7 · Moderation</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">MODERATION (7)<br /><br />AMPLIFY · OTHERS · DECREASE · REVERSE · DYNAMIC DESIGN<br /><br />SOURCE: ONLINE<br />12 · 74 · 0 · 3</div>
+<div><span>ĐIỀU ĐỘ (7)</span><br /><br /><span>KHUẾCH ĐẠI · NGƯỜI KHÁC · GIẢM BỚT · ĐẢO CHIỀU · THIẾT KẾ ĐỘNG</span><br /><br /><span>NGUỒN: TRỰC TUYẾN</span><br />12 · 74 · 0 · 3</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Cùng một can thiệp cần được điều chỉnh liều lượng: khuếch đại, giảm bớt, đảo chiều hoặc để nó tự thay đổi theo bối cảnh. Slide 42 chiếu phóng sự “How Mumbai Police Is Telling You To Honk Responsibly” (Cảnh sát Mumbai dạy người dân bấm còi có trách nhiệm) — đèn đỏ kéo dài thêm mỗi khi tiếng còi quá ồn. Slide 43 đặt cạnh nhau các màn hình dự báo thời tiết với những con số khác nhau.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><div style="display:flex;flex-wrap:wrap;gap:8px"><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">AMPLIFY</span><br /><b style="font-weight:500">KHUẾCH ĐẠI</b></div><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">OTHERS</span><br /><b style="font-weight:500">NGƯỜI KHÁC</b></div><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">DECREASE</span><br /><b style="font-weight:500">GIẢM BỚT</b></div><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">REVERSE</span><br /><b style="font-weight:500">ĐẢO CHIỀU</b></div><div style="border:1px solid #d3dfd0;padding:6px 9px;font-size:11px;line-height:1.35"><span style="color:var(--en,#56665a)">DYNAMIC DESIGN</span><br /><b style="font-weight:500">THIẾT KẾ ĐỘNG</b></div></div></div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px;break-inside:avoid">
+<img src="assets/t6/p42a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p43a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p43b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p43c.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 44–46</span>
+<span style="color:#86958a">Principle 8 · Ethics</span>
+</div>
+<table style="font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1.5px solid #1b2a20">
+<td style="padding:0 8px 7px 0;vertical-align:bottom;width:16%"></td>
+<td style="padding:0 8px 7px;vertical-align:bottom;width:42%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Positive</span><br /><span>Tích cực</span></td>
+<td style="padding:0 0 7px 8px;vertical-align:bottom;width:42%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Negative</span><br /><span>Tiêu cực</span></td>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2">
+<td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Intended</span><br /><span>Chủ đích</span></td>
+<td style="padding:7px 8px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">TARGET</b><br /><span>ĐÚNG ĐÍCH — kết quả mong muốn và đã được tính trước.</span></td>
+<td style="padding:7px 0 7px 8px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">DARK</b><br /><span>MẶT TỐI — tác động xấu nhưng vẫn được chủ ý tạo ra.</span></td>
+</tr>
+<tr>
+<td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Unintended</span><br /><span>Ngoài ý muốn</span></td>
+<td style="padding:7px 8px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">SURPRISE</b><br /><span>BẤT NGỜ — lợi ích ngoài dự tính.</span></td>
+<td style="padding:7px 0 7px 8px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">BACKFIRING</b><br /><span>PHẢN TÁC DỤNG — can thiệp gây hại ngược lại.</span></td>
+</tr>
+</tbody>
+</table>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide 46 minh hoạ bằng ảnh chụp hệ thống đăng ký tiêm chủng COVID-19 tại Brazil — nơi một thiết kế tốt và một thiết kế gây nhầm lẫn dẫn tới hai kết quả rất khác nhau.</i></p>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p46a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 47</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">UNITED INTELLIGENCE</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">TRÍ TUỆ HỢP NHẤT</h3>
+</div>
+</section>
+
+<section id="s25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 48–49</span>
+<span style="color:#86958a">Four I’s</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">vimeo.com/287397858<br /><br />INSTINCTIVE · INSTANT · INSIGHT · INTELLIGENT</div>
+<div>vimeo.com/287397858<br /><br /><span>BẢN NĂNG · TỨC THÌ · THẤU HIỂU · THÔNG MINH</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide 48 dẫn một video trên Vimeo, quay trong đường hầm thử nghiệm xe. Slide 49 xếp bốn chữ cùng bắt đầu bằng “I” thành bốn tầng của trí tuệ.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px 16px;max-width:480px;break-inside:avoid"><div style="display:grid;gap:6px;font-size:11.5px"><div style="display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:baseline;border-bottom:1px solid #e6eee2;padding-bottom:5px"><span style="font-weight:700;color:var(--ac,#2f6b45)">I</span><span><span style="color:var(--en,#56665a)">INSTINCTIVE</span> · <b style="font-weight:500">BẢN NĂNG</b></span></div><div style="display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:baseline;border-bottom:1px solid #e6eee2;padding-bottom:5px"><span style="font-weight:700;color:var(--ac,#2f6b45)">I</span><span><span style="color:var(--en,#56665a)">INSTANT</span> · <b style="font-weight:500">TỨC THÌ</b></span></div><div style="display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:baseline;border-bottom:1px solid #e6eee2;padding-bottom:5px"><span style="font-weight:700;color:var(--ac,#2f6b45)">I</span><span><span style="color:var(--en,#56665a)">INSIGHT</span> · <b style="font-weight:500">THẤU HIỂU</b></span></div><div style="display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:baseline;border-bottom:1px solid #e6eee2;padding-bottom:5px"><span style="font-weight:700;color:var(--ac,#2f6b45)">I</span><span><span style="color:var(--en,#56665a)">INTELLIGENT</span> · <b style="font-weight:500">THÔNG MINH</b></span></div></div></div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p48a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 50–52</span>
+<span style="color:#86958a">Persuasive cities</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Advancing Wellbeing Seminar Series<br />Dr. Agnis Stibe, PhD — MIT Media Lab<br />“Persuasive Cities for Sustainable Wellbeing”<br />Tuesday, Dec. 8, 2015 · 4:00–5:30pm · MIT Media Lab, E14-633</div>
+<div><span>Chuỗi hội thảo Advancing Wellbeing</span><br /><span>TS. Agnis Stibe — MIT Media Lab</span><br /><span>“Những thành phố thuyết phục vì phúc lợi bền vững”</span><br /><span>Thứ Ba, ngày 8 tháng 12 năm 2015</span> · 16:00–17:30 · MIT Media Lab, E14-633</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide 51 là ảnh chân dung trắng đen của diễn giả khi trình bày. Slide 52 không có chữ: hình một con khỉ đang cầm chiếc điện thoại — công nghệ đã len vào cả những nơi không ngờ.</i></p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px;max-width:100%;break-inside:avoid">
+<img src="assets/t6/p50a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p51a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p52a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 53–54</span>
+<span style="color:#86958a">Man–machine symbiosis</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">MAN-MACHINE SYMBIOSIS</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">CỘNG SINH NGƯỜI – MÁY</h3>
+<div style="color:var(--en,#56665a)">SOURCE: ONLINE</div>
+<div>NGUỒN: TRỰC TUYẾN</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Video một con robot bốn chân đi lại trong nhà giữa hai người — máy làm phần việc của máy, người vẫn giữ vai trò dẫn dắt.</i></p>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p54a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 55–57</span>
+<span style="color:#86958a">Transforming sociotech design</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">TRANSFORMING SOCIOTECH DESIGN<br /><br />All PEVs · 0:20 · 59.6% pedal · 40.4% electric</div>
+<div><span>THIẾT KẾ CÔNG NGHỆ – XÃ HỘI CHUYỂN HOÁ</span><br /><br /><span>Tất cả xe điện cá nhân · 0:20 · 59,6% đạp chân · 40,4% chạy điện</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ba slide tư liệu về các dự án của diễn giả: một góc làm việc tại nhà, loạt ảnh xe điện cá nhân chạy thử ban đêm kèm số liệu tỷ lệ đạp chân và chạy điện, và bàn mô hình thành phố tương tác tại MIT Media Lab.</i></p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px;max-width:100%;break-inside:avoid">
+<img src="assets/t6/p56c.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p56e.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p57a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 58</span>
+<span style="color:#86958a">Quote</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">MEET THE LEADERS # ARTIFICIAL INTELLIGENCE<br /><br />“The CAIO has the responsibility to link all the core corporate processes to the ever-growing potential of AI.”<br /><br />Agnis Stibe — Artificial Intelligence Program Director</div>
+<div><span>GẶP GỠ CÁC NHÀ LÃNH ĐẠO # TRÍ TUỆ NHÂN TẠO</span><br /><br /><span>“Giám đốc AI (CAIO) có trách nhiệm kết nối toàn bộ các quy trình cốt lõi của doanh nghiệp với tiềm năng không ngừng lớn lên của AI.”</span><br /><br /><span>Agnis Stibe — Giám đốc Chương trình Trí tuệ Nhân tạo</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p58a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 59</span>
+<span style="color:#86958a">Psychological ownership</span>
+</div>
+<div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="text-align:center;line-height:1.35;margin-bottom:12px"><div style="font-weight:700;color:#1b2a20;letter-spacing:.02em">PSYCHOLOGICAL OWNERSHIP</div><div style="font-weight:700">TINH THẦN LÀM CHỦ VỀ TÂM LÝ</div><div style="line-height:1.4;font-size:12.5px;margin-top:2px"><div style="color:var(--en,#56665a)">Theory of Psychological Ownership</div><div>Lý thuyết về tinh thần làm chủ về tâm lý (psychological ownership)</div></div></div><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:center;max-width:620px;margin:0 auto">
+<div></div><div style="border:1px solid #dae4d6;border-top:3px solid #c7202a;padding:7px 10px;line-height:1.35;text-align:center"><div style="font-weight:700;color:#c7202a">05</div><div style="color:var(--en,#56665a)">Sense of responsibility</div><div style="font-weight:600">Cảm nhận về trách nhiệm</div></div><div></div>
+<div style="border:1px solid #dae4d6;border-top:3px solid #7b3f98;padding:7px 10px;line-height:1.35;text-align:center"><div style="font-weight:700;color:#7b3f98">04</div><div style="color:var(--en,#56665a)">Sense of belongingness</div><div style="font-weight:600">Cảm nhận về sự thuộc về</div></div><div style="justify-self:center;align-self:center;width:150px;height:150px;border-radius:50%;background:#3d4148;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.3;padding:12px;box-sizing:border-box;font-size:12.5px"><div style="font-weight:700">Psychological Ownership</div><div style="margin-top:3px">Tinh thần làm chủ về tâm lý</div></div><div style="border:1px solid #dae4d6;border-top:3px solid #e07a10;padding:7px 10px;line-height:1.35;text-align:center"><div style="font-weight:700;color:#e07a10">01</div><div style="color:var(--en,#56665a)">Sense of identity</div><div style="font-weight:600">Cảm nhận về bản sắc</div></div>
+<div style="border:1px solid #dae4d6;border-top:3px solid #1287a8;padding:7px 10px;line-height:1.35;text-align:center"><div style="font-weight:700;color:#1287a8">03</div><div style="color:var(--en,#56665a)">Sense of self-efficacy</div><div style="font-weight:600">Cảm nhận về năng lực bản thân</div></div><div></div><div style="border:1px solid #dae4d6;border-top:3px solid #14967a;padding:7px 10px;line-height:1.35;text-align:center"><div style="font-weight:700;color:#14967a">02</div><div style="color:var(--en,#56665a)">Sense of accountability</div><div style="font-weight:600">Cảm nhận về trách nhiệm giải trình</div></div>
+</div></div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p59a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s31" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 60</span>
+<span style="color:#86958a">Four leadership styles</span>
+</div>
+<div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin:14px 0 4px;break-inside:avoid;border:1.5px solid #9fb8a2;border-radius:10px;background:#fbfdf9;padding:14px 16px 12px 10px"><div style="display:grid;grid-template-rows:1fr 1fr;gap:8px"><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Hỗ trợ nhiều</span> · High Supportive</span></div><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Hỗ trợ ít</span> · Low Supportive</span></div></div><div style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:1fr;gap:8px"><div style="background:#dcebd3;border:1px solid #9fc49a;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">S3 HỖ TRỢ</b></div><div style="font-size:13px;line-height:1.55">Chỉ dẫn ít · Hỗ trợ nhiều</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #9fc49a;padding-top:6px"><b>S3 SUPPORTING</b> Low Directive · High Supportive</div></div><div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">S2 KÈM CẶP</b></div><div style="font-size:13px;line-height:1.55">Chỉ dẫn nhiều · Hỗ trợ nhiều</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>S2 COACHING</b> High Directive · High Supportive</div></div><div style="background:#f9eee3;border:1px solid #e6cdb3;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">S4 GIAO PHÓ</b></div><div style="font-size:13px;line-height:1.55">Chỉ dẫn ít · Hỗ trợ ít</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #e6cdb3;padding-top:6px"><b>S4 DELEGATING</b> Low Directive · Low Supportive</div></div><div style="background:#f2f2ee;border:1px solid #dcdcd4;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">S1 CHỈ ĐẠO</b></div><div style="font-size:13px;line-height:1.55">Chỉ dẫn nhiều · Hỗ trợ ít</div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #dcdcd4;padding-top:6px"><b>S1 DIRECTING</b> High Directive · Low Supportive</div></div></div><div></div><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;border-top:1.5px solid #86958a;padding-top:6px"><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Chỉ dẫn ít</span> · Low Directive</span><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Chỉ dẫn nhiều</span> · High Directive</span></div></div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p60a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Bốn phong cách nằm trên một đường cong: từ chỉ đạo, kèm cặp, hỗ trợ đến giao phó.</figcaption>
+</figure>
+</section>
+
+<section id="s32" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 61</span>
+<span style="color:#86958a">Five steps</span>
+</div>
+<div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,130px),1fr));gap:10px"><div style="border:1px solid #dae4d6;padding:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:34px;height:34px;border-radius:50%;background:#1aa59a;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center">1</div><div style="line-height:1.4;font-size:12.5px"><div style="color:var(--en,#56665a)">Define Company Goals</div><div>Xác định mục tiêu của công ty</div></div><div style="height:4px;align-self:stretch;background:#1aa59a"></div></div><div style="border:1px solid #dae4d6;padding:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:34px;height:34px;border-radius:50%;background:#e0a81c;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center">2</div><div style="line-height:1.4;font-size:12.5px"><div style="color:var(--en,#56665a)">Set Objectives</div><div>Đặt mục tiêu cụ thể</div></div><div style="height:4px;align-self:stretch;background:#e0a81c"></div></div><div style="border:1px solid #dae4d6;padding:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:34px;height:34px;border-radius:50%;background:#e0457b;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center">3</div><div style="line-height:1.4;font-size:12.5px"><div style="color:var(--en,#56665a)">Monitor Progress and Performance</div><div>Theo dõi tiến độ và hiệu suất</div></div><div style="height:4px;align-self:stretch;background:#e0457b"></div></div><div style="border:1px solid #dae4d6;padding:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:34px;height:34px;border-radius:50%;background:#6a3fd0;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center">4</div><div style="line-height:1.4;font-size:12.5px"><div style="color:var(--en,#56665a)">Provide Feedback and Motivate</div><div>Phản hồi và tạo động lực</div></div><div style="height:4px;align-self:stretch;background:#6a3fd0"></div></div><div style="border:1px solid #dae4d6;padding:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:34px;height:34px;border-radius:50%;background:#2a6fe0;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center">5</div><div style="line-height:1.4;font-size:12.5px"><div style="color:var(--en,#56665a)">Reward Success</div><div>Ghi nhận thành công</div></div><div style="height:4px;align-self:stretch;background:#2a6fe0"></div></div></div></div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p61a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</figure>
+</section>
+
+<section id="s33" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 62–63</span>
+<span style="color:#86958a">Perseverance</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">PERSEVERANCE<br />“Rover’s all waste in one place”</div>
+<div><span>PERSEVERANCE (bền gan — tên của tàu tự hành trên sao Hoả)</span><br /><span>“Toàn bộ phần thải của tàu được dồn về một chỗ”</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide 62: ảnh một người đi bộ trên con đường mòn trong rừng. Slide 63: ảnh bề mặt sao Hoả với dòng chữ PERSEVERANCE — sự bền bỉ là điều kiện của mọi chuyển hoá.</i></p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;max-width:100%;break-inside:avoid">
+<img src="assets/t6/p62a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<img src="assets/t6/p63a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s34" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 64</span>
+<span style="color:#86958a">Key takeaways (1)</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">KEY TAKEAWAYS</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">NHỮNG ĐIỀU CẦN NHỚ</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li><b>Delegate outcomes, not just tasks</b> – clarify the expected result, ownership, decision authority, and success criteria.</li><li><b>Match work to capability</b> – assign responsibilities based on strengths, readiness, priorities, and development opportunities.</li><li><b>Accountability is clarity + ownership + follow-through</b> – people perform better when they know what they own and how success will be measured.</li><li><b>Empower without micromanaging</b> – establish clear boundaries and checkpoints while giving people autonomy over execution.</li><li><b>Use HAI to amplify team performance</b> – combine human judgment, creativity, and contextual understanding with AI speed, analysis, and automation.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li><b>Giao kết quả, không chỉ giao đầu việc.</b> Hãy nói rõ kết quả kỳ vọng, ai làm chủ, quyền ra quyết định đến đâu và thành công được đo bằng gì.</li><li><b>Giao việc đúng năng lực.</b> Phân công dựa trên điểm mạnh, mức độ sẵn sàng, thứ tự ưu tiên và cơ hội phát triển của từng người.</li><li><b>Trách nhiệm giải trình = rõ ràng + làm chủ + theo đến cùng.</b> Người ta làm tốt hơn khi biết mình chịu trách nhiệm phần nào và thành công sẽ được đo thế nào.</li><li><b>Trao quyền mà không quản lý vi mô.</b> Đặt ranh giới và các mốc kiểm tra rõ ràng, còn cách thực thi thì để người làm tự quyết.</li><li><b>Dùng HAI để nhân hiệu suất của đội ngũ.</b> Kết hợp phán đoán, sáng tạo và hiểu biết bối cảnh của con người với tốc độ, năng lực phân tích và tự động hoá của AI.</li></ul></div>
+</div>
+</section>
+
+<section id="s35" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 65</span>
+<span style="color:#86958a">Key takeaways (2)</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">KEY TAKEAWAYS</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">NHỮNG ĐIỀU CẦN NHỚ</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li><b>Put the right intelligence on the right task</b> – consciously decide what should be done by humans, AI, or through human–AI collaboration.</li><li><b>Reduce cognitive load by designing clarity</b> – simplify roles, priorities, communication channels, workflows, and decision rights.</li><li><b>Remove bottlenecks, not just push harder</b> – identify dependencies, unnecessary approvals, unclear ownership, and overloaded team members.</li><li><b>Create psychological safety with accountability</b> – enable people to raise concerns, acknowledge mistakes, challenge assumptions, and learn without weakening responsibility for results.</li><li><b>Build continuous improvement into execution</b> – use feedback, reflection, behavioral learning, and AI-enabled insights to improve the team over time.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li><b>Đặt đúng loại trí tuệ vào đúng việc.</b> Hãy quyết định có ý thức: việc nào do con người làm, việc nào để AI, việc nào cần con người và AI cùng làm.</li><li><b>Giảm tải nhận thức bằng cách thiết kế sự rõ ràng.</b> Đơn giản hoá vai trò, thứ tự ưu tiên, kênh trao đổi, luồng công việc và quyền ra quyết định.</li><li><b>Tháo nút thắt thay vì chỉ thúc mạnh hơn.</b> Hãy nhận diện các mối phụ thuộc, những phê duyệt không cần thiết, phần trách nhiệm chưa rõ và những thành viên đang quá tải.</li><li><b>Tạo an toàn tâm lý song hành với trách nhiệm giải trình.</b> Để mọi người dám nêu lo ngại, thừa nhận sai sót, phản biện giả định và học hỏi, mà không làm nhẹ đi trách nhiệm với kết quả.</li><li><b>Đưa cải tiến liên tục vào chính việc thực thi.</b> Dùng phản hồi, suy ngẫm, học hỏi từ hành vi và các phát hiện do AI hỗ trợ để đội ngũ tốt lên theo thời gian.</li></ul></div>
+</div>
+</section>
+
+<section id="s36" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 66</span>
+<span style="color:#86958a">Core message</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">CORE MESSAGE</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">THÔNG ĐIỆP CỐT LÕI</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>High-performing teams emerge when leaders create clarity, ownership, autonomy, intelligent human–AI collaboration, and continuous learning.</li><li>Enabling faster execution without increasing unnecessary cognitive load.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Đội ngũ hiệu suất cao hình thành khi người lãnh đạo tạo ra sự rõ ràng, tinh thần làm chủ, quyền tự chủ, sự hợp tác thông minh giữa con người và AI, cùng việc học hỏi liên tục.</li><li>Nhờ đó việc thực thi nhanh hơn mà không làm tăng tải nhận thức một cách không cần thiết.</li></ul></div>
+</div>
+</section>
+
+<section id="s37" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slides 67–68</span>
+<span style="color:#86958a">Closing visuals</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">SOURCE: ONLINE<br /><br />AgnisStibe.com — hyper-performance</div>
+<div><span>NGUỒN: TRỰC TUYẾN</span><br /><br /><span>AgnisStibe.com — hiệu suất vượt trội</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide 67 chiếu một đoạn phỏng vấn Steve Jobs. Slide 68 quay lại hình âm dương, kèm ảnh chụp kênh YouTube của diễn giả.</i></p>
+<div style="display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:start;margin-top:10px;max-width:480px;break-inside:avoid">
+<img src="assets/t6/p68a.png" alt="" style="display:block;width:100%;height:auto" />
+<img src="assets/t6/p68b.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+</div>
+</section>
+
+<section id="s38" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 69</span>
+<span style="color:#86958a">Closing</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Topic 6: Delegation &amp; Accountability in Fast-Paced Teams<br />Assoc. Professor Agnis Stibe<br />RMIT University Vietnam, Saigon South Campus</div>
+<div><span>Chủ đề 6: Giao việc và trách nhiệm giải trình trong đội ngũ vận hành tốc độ cao</span><br /><span>Phó Giáo sư Agnis Stibe</span><br /><span>Đại học RMIT Việt Nam, cơ sở Nam Sài Gòn</span></div>
+</div>
+<figure style="margin:10px 0 0;max-width:560px;break-inside:avoid">
+<img src="assets/t6/p69a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Slide kết, dùng lại mẫu me.grow của slide mở đầu.</figcaption>
+</figure>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 6 · Delegation &amp; Accountability in Fast-Paced Teams</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t6.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Chủ đề 6: Giao việc và trách nhiệm giải trình trong đội ngũ vận hành tốc độ cao","lv":0,"en":"Topic 6: Delegation & Accountability in Fast-Paced Teams","vi":"Chủ đề 6: Giao việc và trách nhiệm giải trình trong đội ngũ vận hành tốc độ cao"},
+  {"id":"s02","num":"02","label":"Delegation challenges (1–5)","lv":0,"en":"Delegation challenges (1–5)","vi":""},
+  {"id":"s03","num":"03","label":"Delegation challenges (6–10)","lv":0,"en":"Delegation challenges (6–10)","vi":""},
+  {"id":"s04","num":"04","label":"VÍ DỤ","lv":0,"en":"EXAMPLES","vi":"VÍ DỤ"},
+  {"id":"s05","num":"05","label":"CÂU HỎI TRỌNG TÂM","lv":0,"en":"KEY QUESTION","vi":"CÂU HỎI TRỌNG TÂM"},
+  {"id":"s06","num":"06","label":"Visual only","lv":0,"en":"Visual only","vi":""},
+  {"id":"s07","num":"07","label":"Critical thinking","lv":0,"en":"Critical thinking","vi":""},
+  {"id":"s08","num":"","label":"Visual only","lv":0,"en":"Visual only","vi":""},
+  {"id":"s09","num":"10","label":"Three modes","lv":0,"en":"Three modes","vi":""},
+  {"id":"s10","num":"11","label":"Social influence","lv":0,"en":"Social influence","vi":""},
+  {"id":"s11","num":"12","label":"KHUNG THIẾT KẾ CHUYỂN HOÁ","lv":0,"en":"TRANSFORMATION DESIGN FRAMEWORK","vi":"KHUNG THIẾT KẾ CHUYỂN HOÁ"},
+  {"id":"s12","num":"","label":"Eight principles","lv":0,"en":"Eight principles","vi":""},
+  {"id":"s13","num":"","label":"Principle 1 · Triangle","lv":0,"en":"Principle 1 · Triangle","vi":""},
+  {"id":"s14","num":"18","label":"Visual only","lv":0,"en":"Visual only","vi":""},
+  {"id":"s15","num":"","label":"Principle 2 · Curve","lv":0,"en":"Principle 2 · Curve","vi":""},
+  {"id":"s16","num":"","label":"Principle 3 · Metric","lv":0,"en":"Principle 3 · Metric","vi":""},
+  {"id":"s17","num":"","label":"Stairs vs. elevator","lv":0,"en":"Stairs vs. elevator","vi":""},
+  {"id":"s18","num":"","label":"Principle 4 · Circles","lv":0,"en":"Principle 4 · Circles","vi":""},
+  {"id":"s19","num":"","label":"Principle 5 · Architecture","lv":0,"en":"Principle 5 · Architecture","vi":""},
+  {"id":"s20","num":"","label":"Principle 6 · Socium","lv":0,"en":"Principle 6 · Socium","vi":""},
+  {"id":"s21","num":"","label":"Public displays","lv":0,"en":"Public displays","vi":""},
+  {"id":"s22","num":"","label":"Principle 7 · Moderation","lv":0,"en":"Principle 7 · Moderation","vi":""},
+  {"id":"s23","num":"","label":"Principle 8 · Ethics","lv":0,"en":"Principle 8 · Ethics","vi":""},
+  {"id":"s24","num":"47","label":"TRÍ TUỆ HỢP NHẤT","lv":0,"en":"UNITED INTELLIGENCE","vi":"TRÍ TUỆ HỢP NHẤT"},
+  {"id":"s25","num":"","label":"Four I’s","lv":0,"en":"Four I’s","vi":""},
+  {"id":"s26","num":"","label":"Persuasive cities","lv":0,"en":"Persuasive cities","vi":""},
+  {"id":"s27","num":"","label":"CỘNG SINH NGƯỜI – MÁY","lv":0,"en":"MAN-MACHINE SYMBIOSIS","vi":"CỘNG SINH NGƯỜI – MÁY"},
+  {"id":"s28","num":"","label":"Transforming sociotech design","lv":0,"en":"Transforming sociotech design","vi":""},
+  {"id":"s29","num":"58","label":"Quote","lv":0,"en":"Quote","vi":""},
+  {"id":"s30","num":"59","label":"Psychological ownership","lv":0,"en":"Psychological ownership","vi":""},
+  {"id":"s31","num":"60","label":"Four leadership styles","lv":0,"en":"Four leadership styles","vi":""},
+  {"id":"s32","num":"61","label":"Five steps","lv":0,"en":"Five steps","vi":""},
+  {"id":"s33","num":"","label":"Perseverance","lv":0,"en":"Perseverance","vi":""},
+  {"id":"s34","num":"64","label":"NHỮNG ĐIỀU CẦN NHỚ","lv":0,"en":"KEY TAKEAWAYS","vi":"NHỮNG ĐIỀU CẦN NHỚ"},
+  {"id":"s35","num":"65","label":"NHỮNG ĐIỀU CẦN NHỚ","lv":0,"en":"KEY TAKEAWAYS","vi":"NHỮNG ĐIỀU CẦN NHỚ"},
+  {"id":"s36","num":"66","label":"THÔNG ĐIỆP CỐT LÕI","lv":0,"en":"CORE MESSAGE","vi":"THÔNG ĐIỆP CỐT LÕI"},
+  {"id":"s37","num":"","label":"Closing visuals","lv":0,"en":"Closing visuals","vi":""},
+  {"id":"s38","num":"69","label":"Closing","lv":0,"en":"Closing","vi":""}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t6.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t6.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t6.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t6.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 10 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Adapt Your Leadership Style</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Điều chỉnh phong cách lãnh đạo</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 10: Điều chỉnh phong cách lãnh đạo</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Topic 10: Adapt Your Leadership Style — bản đối chiếu Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">TS. Tony Nguyen · 38 slide</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide là một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ. Chữ nằm trong hình đồ hoạ của slide cũng được dịch. Các dòng lặp lại trên hầu hết slide (“RMIT | Zalo”, “me.grow”, “Ready for what’s next”, nhãn chủ đề nhỏ như “Sequence Challenge”, “Situational Leadership”, “Marshmallow Challenge”) không nhắc lại. Số slide theo thứ tự trang của file PDF; từ slide 19 trở đi, số in trên slide gốc lớn hơn thứ tự này 1 đơn vị.</p>
+<p style="margin:0 0 8px">Phần mô tả hình ảnh và các ghi chú về slide gốc được ghi bằng chữ nghiêng màu xám. Đó là ghi chú của bản dịch, không phải nội dung gốc trên slide.</p>
+<p style="margin:0">Tên riêng, tên tổ chức và trích dẫn nguồn giữ nguyên. <i>Leader</i> là “người lãnh đạo”, <i>follower</i> là “người đi theo”, <i>readiness</i> là “mức độ sẵn sàng”, <i>competence</i> là “năng lực”, <i>commitment</i> là “cam kết”. Trong hoạt động vẽ, <i>Director</i> là “Người chỉ dẫn”, <i>Drawer</i> là “Người vẽ”. Bốn cách phản hồi của Lãnh đạo theo tình huống: <i>Directing</i> – “Chỉ đạo”, <i>Coaching</i> – giữ nguyên, <i>Supporting</i> – “Hỗ trợ”, <i>Delegating</i> – “Uỷ quyền”. Tên mô hình (Blake Mouton, Vroom–Yetton–Jago), chữ viết tắt SLT và các ký hiệu S1–S4, D1–D4, AI/AII/CI/CII/GII giữ nguyên.</p>
+</div>
+
+<section id="s01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Adapt Your Leadership Style</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điều chỉnh phong cách lãnh đạo</h3>
+<div style="color:var(--en,#56665a)">Adapt leadership approaches to different situations<br /><br />Dr. Tony Nguyen</div>
+<div><span>Điều chỉnh cách lãnh đạo cho phù hợp với từng tình huống</span><br /><br />TS. Tony Nguyen</div>
+</div>
+
+</section>
+<section id="s02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">Session flow</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Session flow — Here’s How We’ll Spend the Next Three Hours</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tiến trình buổi học — Chúng ta sẽ dành ba giờ tới như thế này</h3>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:20%">Time · LO<br /><span>Thời gian</span> · MT</td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px">English</td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px">Tiếng Việt</td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">9:00–9:20</b><br />Kick-off</td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Welcome &amp; Frame</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Chào mừng &amp; Câu hỏi định hướng</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">9:20–9:30</b><br />LO1</td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">The Leadership Grid</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Lưới lãnh đạo</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">9:30–10:00</b><br />LO1</td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Activity #1: Blind Drawing &amp; Debrief</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Hoạt động 1: Vẽ không nhìn &amp; Tổng kết</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">10:00–11:00</b><br />LO1 &amp; LO2</td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Activity #2: Sequence Challenge</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Hoạt động 2: Thử thách sắp xếp thứ tự</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">11:00–11:10</b><br />LO2 &amp; LO3</td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Debrief: Adapting your leadership to your team</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Tổng kết: Điều chỉnh cách lãnh đạo theo đội của bạn</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">11:10–11:25</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Break</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Giải lao</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">11:25–11:40</b><br />LO3</td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Activity #3: Marshmallow Challenge &amp; Debrief</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Hoạt động 3: Thử thách marshmallow &amp; Tổng kết</td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">11:40–12:00</b><br />LO4</td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Activity #4: Lost at Sea, Debrief &amp; Takeaways</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Hoạt động 4: Lạc trên biển, Tổng kết &amp; Bài học rút ra</td></tr>
+</tbody>
+</table><p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>LO (Learning Outcome) – mục tiêu học tập, xem slide 03.</i></p>
+</section>
+<section id="s03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">Learning outcomes</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">By the end of the session — You Will Be Able To…</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Kết thúc buổi học — Bạn sẽ có thể…</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li>Identify and balance broad leadership behaviors.</li><li>Assess the fit between leadership approach and situational demands</li><li>Adapt your behaviors to your followers.</li><li>Select the appropriate level of employee participation in decision-making.</li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li>Nhận diện và cân bằng các nhóm hành vi lãnh đạo chính.</li><li>Đánh giá mức độ phù hợp giữa cách lãnh đạo và yêu cầu của tình huống</li><li>Điều chỉnh hành vi của bạn theo những người đi theo bạn.</li><li>Chọn mức độ tham gia phù hợp của nhân viên vào việc ra quyết định.</li></ol></div>
+</div>
+
+</section>
+<section id="s04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">About the speaker</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Welcome!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chào mừng!</h3>
+<div style="color:var(--en,#56665a)">A quick intro<ul style="margin:0;padding-left:18px"><li>Interim Senior Program Manager, Postgraduate Programs, The Business School, RMIT Vietnam</li><li>Ph.D., International Business Administration, Management, Texas A&amp;M International University</li><li>MBA, International Business, University of Houston, Clear Lake</li></ul></div>
+<div>Giới thiệu nhanh<ul style="margin:0;padding-left:18px"><li>Quyền Quản lý Chương trình Cấp cao (Interim Senior Program Manager), các Chương trình Sau đại học, Khoa Kinh doanh (The Business School), RMIT Việt Nam</li><li>Tiến sĩ Quản trị Kinh doanh Quốc tế, chuyên ngành Quản lý, Texas A&amp;M International University</li><li>MBA Kinh doanh Quốc tế, University of Houston, Clear Lake</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bên phải slide là ảnh chân dung của diễn giả.</i></p>
+</section>
+<section id="s05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 05</span>
+<span style="color:#86958a">Opening</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Very excited for this session</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Rất hào hứng với buổi học này</h3>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide gồm hai hình ảnh, không có chữ cần dịch: ảnh chụp một số bài viết/ấn phẩm của diễn giả và ảnh một giảng đường đang có buổi học.</i></p>
+</section>
+<section id="s06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06</span>
+<span style="color:#86958a">Frame</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Frame: Who do you credit professionally for your career development so far?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Câu hỏi định hướng: Trong công việc, bạn ghi nhận ai đã góp phần vào sự phát triển sự nghiệp của bạn cho đến nay?</h3>
+<div style="color:var(--en,#56665a)">Think of a leader who genuinely helped you grow. What did they do that made them effective for you? (1 minute)</div>
+<div>Hãy nghĩ về một người lãnh đạo đã thực sự giúp bạn trưởng thành. Họ đã làm gì khiến họ trở nên hiệu quả đối với bạn? (1 phút)</div>
+</div>
+
+</section>
+<section id="s07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 07</span>
+<span style="color:#86958a">Mini activity #1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Mini activity #1 (6 mins) — Pair Interviews</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động nhỏ 1 (6 phút) — Phỏng vấn theo cặp</h3>
+<div style="color:var(--en,#56665a)"><b>How it works</b><ol style="margin:0;padding-left:20px"><li>Each person share for about 3 minutes while the other listens and takes notes</li><li>The partner takes notes on the story</li><li>Then, switch</li><li>We will share some stories at the workshop level</li></ol></div>
+<div><b>Cách thực hiện</b><ol style="margin:0;padding-left:20px"><li>Mỗi người chia sẻ khoảng 3 phút trong khi người kia lắng nghe và ghi chép</li><li>Người cùng cặp ghi chép lại câu chuyện</li><li>Sau đó, đổi vai</li><li>Chúng ta sẽ chia sẻ một số câu chuyện với cả lớp</li></ol></div>
+<div style="color:var(--en,#56665a)"><b>Some interview questions</b><ol style="margin:0;padding-left:20px"><li>Who was the person?</li><li>What did the leader actually do?</li><li>How did this help you?</li><li>Why do you think this was needed at the time?</li></ol></div>
+<div><b>Một số câu hỏi phỏng vấn</b><ol style="margin:0;padding-left:20px"><li>Người đó là ai?</li><li>Người lãnh đạo đó đã thực sự làm gì?</li><li>Điều đó đã giúp bạn như thế nào?</li><li>Theo bạn, vì sao điều đó lại cần thiết vào thời điểm ấy?</li></ol></div>
+</div>
+
+</section>
+<section id="s08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 08</span>
+<span style="color:#86958a">Debrief</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Share your partner’s journey:</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chia sẻ hành trình của người cùng cặp:</h3>
+<div style="color:var(--en,#56665a)">What does “effective” leadership look like?<br />If we want to adapt our leadership, what can we adapt?</div>
+<div><span>Lãnh đạo “hiệu quả” trông như thế nào?</span><br /><span>Nếu muốn điều chỉnh cách lãnh đạo, chúng ta có thể điều chỉnh những gì?</span></div>
+</div>
+
+</section>
+<section id="s09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 09</span>
+<span style="color:#86958a">Leadership behaviors</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Adapt your leadership — Leadership behaviors: What is it that leaders actually do?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điều chỉnh cách lãnh đạo — Hành vi lãnh đạo: Người lãnh đạo thực sự làm gì?</h3>
+<div style="color:var(--en,#56665a)"><i>University of Michigan &amp; Ohio State University asked this question in two seminal studies</i></div>
+<div><i>Đại học Michigan và Đại học Bang Ohio đã đặt ra câu hỏi này trong hai nghiên cứu nền tảng</i></div>
+<div style="color:var(--en,#56665a)"><b>Task-Oriented</b><br />Behaviors that focus on structure, efficiency, and meeting specific goals</div>
+<div><b>Định hướng công việc</b><br /><span>Các hành vi tập trung vào cấu trúc, hiệu quả và việc đạt các mục tiêu cụ thể</span></div>
+<div style="color:var(--en,#56665a)"><b>People-Oriented</b><br />Behaviors that prioritize the follower’s well-being, satisfaction, growth &amp; development</div>
+<div><b>Định hướng con người</b><br /><span>Các hành vi ưu tiên sự khỏe mạnh về thể chất lẫn tinh thần (well-being), sự hài lòng, sự trưởng thành và phát triển của người đi theo</span></div>
+<div style="color:var(--en,#56665a)"><span style="font-size:11.5px;color:#86958a">Source: Michigan: Katz, Maccoby, &amp; Morse (1950); Katz et al. (1951); Ohio State: Hemphill &amp; Coons (1957); Fleishman (1953)</span></div>
+<div><span style="font-size:11.5px;color:#86958a">Nguồn: Michigan: Katz, Maccoby, &amp; Morse (1950); Katz và cộng sự (1951); Ohio State: Hemphill &amp; Coons (1957); Fleishman (1953)</span></div>
+</div>
+
+</section>
+<section id="s10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">Leadership Grid</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Leadership Grid</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lưới lãnh đạo</h3>
+<div style="color:var(--en,#56665a)"><b>Mini activity #2: Blake and Mouton</b><ul style="margin:0;padding-left:18px"><li>A tool to simply understand your natural leadership style</li><li>Identify yours (5 minutes)</li><li>Reflect and share with us:<ul style="margin:0;padding-left:18px"><li>Do you agree with your results?</li><li>In which situations could this style help/hurt you?</li></ul></li></ul></div>
+<div><b>Hoạt động nhỏ 2: Blake và Mouton</b><ul style="margin:0;padding-left:18px"><li>Một công cụ giúp hiểu một cách đơn giản phong cách lãnh đạo tự nhiên của bạn</li><li>Xác định phong cách của bạn (5 phút)</li><li>Suy ngẫm và chia sẻ với chúng tôi:<ul style="margin:0;padding-left:18px"><li>Bạn có đồng ý với kết quả của mình không?</li><li>Trong những tình huống nào phong cách này có thể giúp ích/gây hại cho bạn?</li></ul></li></ul></div>
+</div>
+<figure style="margin:12px 0 0;max-width:360px;break-inside:avoid">
+<img src="assets/t10/p10a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Blake Mouton Managerial Grid (Lưới quản lý Blake Mouton). Trục dọc: Concern for People (Quan tâm đến con người), từ 1 LOW (thấp) đến 9 HIGH (cao). Trục ngang: Concern for Results (Quan tâm đến kết quả), từ 1 LOW đến 9 HIGH. Năm kiểu quản lý: Country Club Management (Quản lý kiểu câu lạc bộ – con người cao, kết quả thấp), Team Management (Quản lý theo đội nhóm – cả hai cao), Middle-of-the-Road Management (Quản lý trung dung – ở giữa), Impoverished Management (Quản lý thờ ơ – cả hai thấp), Produce or Perish Management (Quản lý “ra kết quả hoặc bị loại” – kết quả cao, con người thấp).</figcaption>
+</figure>
+<div style="grid-column:1/-1;display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin:14px 0 4px;break-inside:avoid;border:1.5px solid #9fb8a2;border-radius:10px;background:#fbfdf9;padding:14px 16px 12px 10px">
+<div style="display:grid;grid-template-rows:1fr 1fr;gap:8px"><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center">Quan tâm con người cao · High people</span></div><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Quan tâm con người thấp</span> · Low people</span></div></div>
+<div style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:1fr;gap:8px">
+<div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px 46px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Quản lý kiểu câu lạc bộ</b><span style="font-size:10.5px;color:#56665a">con người cao · kết quả thấp</span></div>
+
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>Country Club Management</b></div>
+</div>
+<div style="background:#dcebd3;border:1px solid #9fc49a;padding:14px 16px 46px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Quản lý theo đội nhóm</b><span style="font-size:10.5px;color:#56665a">cả hai cao</span></div>
+
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #9fc49a;padding-top:6px"><b>Team Management</b></div>
+</div>
+<div style="background:#f2f2ee;border:1px solid #dcdcd4;padding:46px 16px 14px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Quản lý thờ ơ</b><span style="font-size:10.5px;color:#56665a">cả hai thấp</span></div>
+
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #dcdcd4;padding-top:6px"><b>Impoverished Management</b></div>
+</div>
+<div style="background:#f9eee3;border:1px solid #e6cdb3;padding:46px 16px 14px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Quản lý “ra kết quả hoặc bị loại”</b><span style="font-size:10.5px;color:#56665a">kết quả cao · con người thấp</span></div>
+
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #e6cdb3;padding-top:6px"><b>Produce or Perish Management</b></div>
+</div>
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:48%;background:#ffffff;border:1.5px solid #86958a;border-radius:999px;padding:7px 16px;text-align:center;font-size:12.5px;line-height:1.35;box-shadow:0 2px 8px rgba(0,0,0,.06)"><b>Quản lý trung dung</b><br /><span style="font-size:11.5px;color:var(--en,#56665a)">Middle-of-the-Road Management</span></div>
+</div>
+<div></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;border-top:1.5px solid #86958a;padding-top:6px"><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Quan tâm kết quả thấp</span> · Low results</span><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Quan tâm kết quả cao</span> · High results</span></div>
+</div>
+
+</section>
+<section id="s11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">Activity #1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity #1 — Blind drawing</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động 1 — Vẽ không nhìn</h3>
+<div style="color:var(--en,#56665a)">We have identified task behavior as one important part of leadership. Let’s test what task-focused leadership actually feels like.</div>
+<div>Chúng ta đã xác định hành vi định hướng công việc là một phần quan trọng của lãnh đạo. Hãy thử xem lãnh đạo tập trung vào công việc thực sự mang lại cảm giác như thế nào.</div>
+</div>
+
+</section>
+<section id="s12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 12</span>
+<span style="color:#86958a">Activity #1 · Round 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity #1 (6 mins) — Blind Drawing Round #1: Test your direction-giving skills</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động 1 (6 phút) — Vẽ không nhìn, Vòng 1: Kiểm tra kỹ năng đưa ra chỉ dẫn</h3>
+<div style="color:var(--en,#56665a)"><b>How it works</b><ol style="margin:0;padding-left:20px"><li>Work in pairs. One person is the Director and receives an image. The other is the Drawer and cannot see the image.</li><li>Sit back-to-back</li><li>Director start giving instructions. Drawer cannot speak!</li><li>Don’t reveal to each other yet. Please wait for Round #2</li></ol></div>
+<div><b>Cách thực hiện</b><ol style="margin:0;padding-left:20px"><li>Làm việc theo cặp. Một người là Người chỉ dẫn (Director) và nhận một hình ảnh. Người kia là Người vẽ (Drawer) và không được nhìn thấy hình.</li><li>Ngồi quay lưng vào nhau</li><li>Người chỉ dẫn bắt đầu đưa ra hướng dẫn. Người vẽ không được nói!</li><li>Chưa cho nhau xem kết quả. Hãy chờ đến Vòng 2</li></ol></div>
+<div style="color:var(--en,#56665a)"><b>IMPORTANT</b><ul style="margin:0;padding-left:18px"><li>Director may speak.</li><li>Drawer cannot see the image.</li><li>Drawer cannot ask questions.</li><li>Director cannot show the image or physically demonstrate.</li></ul>You have 3 minutes</div>
+<div><b>QUAN TRỌNG</b><ul style="margin:0;padding-left:18px"><li>Người chỉ dẫn được nói.</li><li>Người vẽ không được nhìn hình.</li><li>Người vẽ không được đặt câu hỏi.</li><li>Người chỉ dẫn không được cho xem hình hoặc minh hoạ bằng động tác.</li></ul>Bạn có 3 phút</div>
+</div>
+
+</section>
+<section id="s13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 13</span>
+<span style="color:#86958a">Activity #1 · Round 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity #1 (6 mins) — Blind Drawing Round #2: Test your direction-giving skills</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động 1 (6 phút) — Vẽ không nhìn, Vòng 2: Kiểm tra kỹ năng đưa ra chỉ dẫn</h3>
+<div style="color:var(--en,#56665a)"><b>How it works</b><ol style="margin:0;padding-left:20px"><li>Work in pairs. One person is the Director and receives an image. The other is the Drawer and cannot see the image.</li><li>Sit back-to-back</li><li>Director start giving instructions. Drawer CAN now speak!</li><li>Don’t reveal to each other yet.</li></ol></div>
+<div><b>Cách thực hiện</b><ol style="margin:0;padding-left:20px"><li>Làm việc theo cặp. Một người là Người chỉ dẫn (Director) và nhận một hình ảnh. Người kia là Người vẽ (Drawer) và không được nhìn thấy hình.</li><li>Ngồi quay lưng vào nhau</li><li>Người chỉ dẫn bắt đầu đưa ra hướng dẫn. Giờ Người vẽ ĐƯỢC nói!</li><li>Chưa cho nhau xem kết quả.</li></ol></div>
+<div style="color:var(--en,#56665a)"><b>IMPORTANT</b><ul style="margin:0;padding-left:18px"><li>Director may speak.</li><li>Drawer cannot see the image.</li><li>Drawer can ask questions.</li><li>Director cannot show the image or physically demonstrate.</li></ul>You have 3 minutes</div>
+<div><b>QUAN TRỌNG</b><ul style="margin:0;padding-left:18px"><li>Người chỉ dẫn được nói.</li><li>Người vẽ không được nhìn hình.</li><li>Người vẽ được đặt câu hỏi.</li><li>Người chỉ dẫn không được cho xem hình hoặc minh hoạ bằng động tác.</li></ul>Bạn có 3 phút</div>
+</div>
+
+</section>
+<section id="s14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 14</span>
+<span style="color:#86958a">Reveal · Round 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The Big Reveal: Round 1 — Discuss with your partners your results</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Công bố kết quả: Vòng 1 — Thảo luận kết quả với người cùng cặp</h3>
+<div style="color:var(--en,#56665a)"><i>Consider these questions:</i></div>
+<div><i>Hãy cân nhắc các câu hỏi sau:</i></div>
+<div style="color:var(--en,#56665a)"><b>As the Director – How clear were the directions, really?</b><ul style="margin:0;padding-left:18px"><li>Where did you assume your partner understood what you meant?</li><li>Which words or instructions seemed clear to you but may not have been clear to them?</li></ul></div>
+<div><b>Với vai Người chỉ dẫn – Chỉ dẫn của bạn thực sự rõ ràng đến mức nào?</b><ul style="margin:0;padding-left:18px"><li>Ở chỗ nào bạn đã mặc định rằng người cùng cặp hiểu ý bạn?</li><li>Những từ ngữ hoặc chỉ dẫn nào có vẻ rõ ràng với bạn nhưng có thể không rõ ràng với họ?</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>As the Drawer – What was it like receiving the direction?</b><ul style="margin:0;padding-left:18px"><li>Which instructions were easy to follow?</li><li>Which instructions could have meant different things?</li></ul></div>
+<div><b>Với vai Người vẽ – Việc nhận chỉ dẫn mang lại cảm giác thế nào?</b><ul style="margin:0;padding-left:18px"><li>Chỉ dẫn nào dễ làm theo?</li><li>Chỉ dẫn nào có thể được hiểu theo nhiều nghĩa khác nhau?</li></ul></div>
+</div>
+
+</section>
+<section id="s15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 15</span>
+<span style="color:#86958a">Reveal · Round 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The Big Reveal: Round 2 — Share the results</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Công bố kết quả: Vòng 2 — Chia sẻ kết quả</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>What changed when the Drawer could ask for clarification?</li><li>Which questions helped the Director realize that an instruction was unclear or based on an assumption?</li><li>Did the conversation make the task faster, more accurate, or both? Why?</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Điều gì thay đổi khi Người vẽ được hỏi để làm rõ?</li><li>Câu hỏi nào đã giúp Người chỉ dẫn nhận ra một chỉ dẫn chưa rõ ràng hoặc dựa trên giả định?</li><li>Cuộc trao đổi giúp nhiệm vụ nhanh hơn, chính xác hơn hay cả hai? Vì sao?</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Lớp chữ của file PDF ở slide này còn sót một đoạn từ slide 14 (“ns, really? Where did you assume…”), không hiển thị trên slide nên không dịch.</i></p>
+</section>
+<section id="s16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 16</span>
+<span style="color:#86958a">Key points</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Some key points</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Một số điểm chính</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>You may not be as clear as you believe you are.</li><li>Clear Direction improves when followers can test, question, and clarify what they have heard.</li><li>Sometimes, direction-giving alone may not be enough.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Bạn có thể không rõ ràng như bạn nghĩ.</li><li>Chỉ dẫn trở nên rõ ràng hơn khi người đi theo có thể kiểm chứng, đặt câu hỏi và làm rõ những gì họ đã nghe.</li><li>Đôi khi, chỉ đưa ra chỉ dẫn thôi là chưa đủ.</li></ul></div>
+</div>
+
+</section>
+<section id="s17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 17</span>
+<span style="color:#86958a">Activity #2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity #2 — Sequence Challenge</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động 2 — Thử thách sắp xếp thứ tự</h3>
+<div style="color:var(--en,#56665a)">A three-part group-level experiment.<br />Three rounds. Same structure.</div>
+<div><span>Một thí nghiệm theo nhóm gồm ba phần.</span><br /><span>Ba vòng. Cùng một cấu trúc.</span></div>
+</div>
+
+</section>
+<section id="s18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">Sequence · Round 1 setup</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Sequence Challenge — Setup for Round #1</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thử thách sắp xếp thứ tự — Thiết lập cho Vòng 1</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li>Select one person at your table to be the leader. The rest of you will be the followers.</li><li>Leaders, please follow me.</li><li>Followers, you will receive a hidden card.<ul style="margin:0;padding-left:18px"><li>DO NOT SHOW YOUR CARD.</li><li>Listen carefully to instructions.</li><li>You may talk, but do not move at this point.</li><li>Agree and commit to a final sequence amongst yourselves</li><li>You may respectfully disagree with the leader, but he/she makes the final decision</li></ul></li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li>Chọn một người trong bàn làm người lãnh đạo. Những người còn lại là người đi theo.</li><li>Người lãnh đạo, vui lòng đi theo tôi.</li><li>Người đi theo, các bạn sẽ nhận một lá bài bí mật.<ul style="margin:0;padding-left:18px"><li>KHÔNG CHO AI XEM LÁ BÀI CỦA BẠN.</li><li>Lắng nghe kỹ hướng dẫn.</li><li>Bạn được nói chuyện, nhưng lúc này chưa được di chuyển.</li><li>Thống nhất và cam kết với nhau về một thứ tự cuối cùng</li><li>Bạn có thể không đồng ý với người lãnh đạo một cách tôn trọng, nhưng người lãnh đạo là người quyết định cuối cùng</li></ul></li></ol></div>
+</div>
+
+</section>
+<section id="s19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 19</span>
+<span style="color:#86958a">Round 1 reflection</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Round 1 reflection — Two perspectives on the same communication breakdown.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Suy ngẫm Vòng 1 — Hai góc nhìn về cùng một sự cố giao tiếp.</h3>
+<div style="color:var(--en,#56665a)"><b>Leader</b><br />When your followers did not respond as expected, what did you assume was happening?</div>
+<div><b>Người lãnh đạo</b><br /><span>Khi người đi theo không phản hồi như bạn mong đợi, bạn đã cho rằng chuyện gì đang xảy ra?</span></div>
+<div style="color:var(--en,#56665a)"><b>Followers</b><br />How did the leader’s direction feel when it did not match your understanding of the task?</div>
+<div><b>Người đi theo</b><br /><span>Bạn cảm thấy thế nào về chỉ dẫn của người lãnh đạo khi nó không khớp với cách bạn hiểu nhiệm vụ?</span></div>
+</div>
+
+</section>
+<section id="s20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 20</span>
+<span style="color:#86958a">Sequence · Round 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Sequence Round 2 — You know the process now, but can you trust the situation?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Vòng 2 — Giờ bạn đã biết quy trình, nhưng bạn có thể tin vào tình huống không?</h3>
+<div style="color:var(--en,#56665a)"><b>I may have changed something.<br />I may have given someone misleading information.<br />Or I may have done nothing.</b><br /><br />Work with your group. Do not show your card.</div>
+<div><b><span>Có thể tôi đã thay đổi điều gì đó.</span><br /><span>Có thể tôi đã đưa cho ai đó thông tin gây hiểu lầm.</span><br /><span>Hoặc có thể tôi chẳng làm gì cả.</span></b><br /><br /><span>Làm việc cùng nhóm. Không cho ai xem lá bài của bạn.</span></div>
+</div>
+
+</section>
+<section id="s21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 21</span>
+<span style="color:#86958a">Round 2 reflection</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Round 2 reflection — What did the group need when confidence was lower?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Suy ngẫm Vòng 2 — Nhóm cần gì khi sự tự tin thấp hơn?</h3>
+<div style="color:var(--en,#56665a)"><b>Leader</b><br />How did you help the group move forward when they had the knowledge, but you did not have the answer?</div>
+<div><b>Người lãnh đạo</b><br /><span>Bạn đã giúp nhóm tiến lên như thế nào khi họ có kiến thức nhưng bạn lại không có câu trả lời?</span></div>
+<div style="color:var(--en,#56665a)"><b>Followers</b><br />When you knew enough to solve the task but were not fully confident, what did you need from your leader?</div>
+<div><b>Người đi theo</b><br /><span>Khi bạn biết đủ để giải quyết nhiệm vụ nhưng chưa hoàn toàn tự tin, bạn cần gì từ người lãnh đạo?</span></div>
+</div>
+
+</section>
+<section id="s22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 22</span>
+<span style="color:#86958a">Sequence · Round 3</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Sequence Round 3</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Vòng 3</h3>
+<div style="color:var(--en,#56665a)">Work through the sequence using only the rules you receive.</div>
+<div>Hoàn thành việc sắp xếp thứ tự chỉ dựa vào các quy tắc bạn nhận được.</div>
+</div>
+
+</section>
+<section id="s23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 23</span>
+<span style="color:#86958a">Round 3 reflection</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Round 3 reflection — What happened when the leader stopped solving?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Suy ngẫm Vòng 3 — Điều gì xảy ra khi người lãnh đạo ngừng tự giải quyết?</h3>
+<div style="color:var(--en,#56665a)"><b>Leader</b><br />What changed when you stopped trying to solve the problem yourself?</div>
+<div><b>Người lãnh đạo</b><br /><span>Điều gì thay đổi khi bạn ngừng cố tự mình giải quyết vấn đề?</span></div>
+<div style="color:var(--en,#56665a)"><b>Followers</b><br />What was it like knowing exactly what to do while your leader continued directing you?</div>
+<div><b>Người đi theo</b><br /><span>Cảm giác thế nào khi bạn biết chính xác phải làm gì trong khi người lãnh đạo vẫn tiếp tục chỉ đạo bạn?</span></div>
+</div>
+
+</section>
+<section id="s24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 24</span>
+<span style="color:#86958a">Across the rounds</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">What changed across the three rounds?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điều gì đã thay đổi qua ba vòng?</h3>
+<div style="color:var(--en,#56665a)">Compare the followers and what they needed from the leader.</div>
+<div>So sánh người đi theo và điều họ cần từ người lãnh đạo.</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:12%"><span>Round</span><br /><span>Vòng</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px">English</td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px">Tiếng Việt</td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">1</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><b>Follower condition:</b> Confident, but unable to complete the real task<br /><b>What they needed:</b> Direction and clarity</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b>Tình trạng của người đi theo:</b><span> Tự tin, nhưng không thể hoàn thành nhiệm vụ thực sự</span><br /><b>Điều họ cần:</b> Chỉ dẫn và sự rõ ràng</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">2</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><b>Follower condition:</b> Capable, but less confident<br /><b>What they needed:</b> Support and reassurance</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b>Tình trạng của người đi theo:</b><span> Có năng lực, nhưng kém tự tin hơn</span><br /><b>Điều họ cần:</b> Hỗ trợ và trấn an</td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">3</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><b>Follower condition:</b> Capable and confident<br /><b>What they needed:</b> Autonomy and space to act</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b>Tình trạng của người đi theo:</b><span> Có năng lực và tự tin</span><br /><b>Điều họ cần:</b> Quyền tự chủ và không gian để hành động</td></tr>
+</tbody>
+</table><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;margin-top:10px;font-size:var(--fs,13.5px);line-height:var(--lh,1.6)"><div style="color:var(--en,#56665a)"><b>Would one leadership style have worked equally well in all three rounds?</b></div><div><b>Liệu chỉ một phong cách lãnh đạo có hiệu quả như nhau ở cả ba vòng không?</b></div></div>
+</section>
+<section id="s25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 25</span>
+<span style="color:#86958a">Situational Leadership</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Situational Leadership: diagnose first</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lãnh đạo theo tình huống: chẩn đoán trước</h3>
+<div style="color:var(--en,#56665a)">Before deciding how to lead, understand the follower’s readiness for this task.</div>
+<div>Trước khi quyết định cách lãnh đạo, hãy hiểu mức độ sẵn sàng của người đi theo đối với nhiệm vụ này.</div>
+<div style="color:var(--en,#56665a)"><b>Can they do it?</b> — Competence<br /><b>Will they do it?</b> — Commitment and confidence</div>
+<div><b>Họ có làm được không?</b><span> — Năng lực</span><br /><b>Họ có sẵn lòng làm không?</b> — Cam kết và sự tự tin</div>
+<div style="color:var(--en,#56665a)">Competence and Commitment are per task, not a permanent label – and will drifts over time, so keep re-checking in your regular 1:1s.</div>
+<div>Năng lực và Cam kết được xét theo từng nhiệm vụ, không phải một nhãn dán cố định – và mức độ sẵn lòng thay đổi theo thời gian, vì vậy hãy tiếp tục kiểm tra lại trong các buổi 1:1 định kỳ.</div>
+</div>
+
+</section>
+<section id="s26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 26</span>
+<span style="color:#86958a">Map the rounds</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Map the rounds together</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Đặt các vòng lên cùng một bản đồ</h3>
+<div style="color:var(--en,#56665a)">Follower need determines leadership response.</div>
+<div>Nhu cầu của người đi theo quyết định cách phản hồi của người lãnh đạo.</div>
+</div>
+<figure style="margin:12px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t10/p26a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a"><span>Ma trận hai trục. Trục ngang: Low competence → High competence (Năng lực thấp → Năng lực cao). Trục dọc: Low confidence</span> / commitment → High confidence / commitment (Tự tin<span> / cam kết thấp → cao). Round 1 – D1: Directing (Vòng 1 – D1: Chỉ đạo) ở góc trên bên trái; Round 3 – D4: Delegating (Vòng 3 – D4: Uỷ quyền) ở góc trên bên phải; Round 2 – D3: Supporting (Vòng 2 – D3: Hỗ trợ) ở góc dưới bên phải.</span></figcaption>
+</figure>
+<div style="grid-column:1/-1;display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin:14px 0 4px;break-inside:avoid;border:1.5px solid #9fb8a2;border-radius:10px;background:#fbfdf9;padding:14px 16px 12px 10px">
+<div style="display:grid;grid-template-rows:1fr 1fr;gap:8px"><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center">Tự tin / cam kết cao · High confidence</span></div><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Tự tin / cam kết thấp</span> · Low confidence</span></div></div>
+<div style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:1fr;gap:8px">
+<div style="background:#f9eee3;border:1px solid #e6cdb3;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Vòng 1 – D1: Chỉ đạo</b></div>
+
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #e6cdb3;padding-top:6px"><b>Round 1 – D1: Directing</b></div>
+</div>
+<div style="background:#dcebd3;border:1px solid #9fc49a;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Vòng 3 – D4: Uỷ quyền</b></div>
+
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #9fc49a;padding-top:6px"><b>Round 3 – D4: Delegating</b></div>
+</div>
+<div style="border:1px dashed #d3dfd0;padding:14px 16px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#86958a;text-align:center">Slide gốc để trống ô này</div>
+<div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">Vòng 2 – D3: Hỗ trợ</b></div>
+
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>Round 2 – D3: Supporting</b></div>
+</div>
+
+</div>
+<div></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;border-top:1.5px solid #86958a;padding-top:6px"><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Năng lực thấp</span> · Low competence</span><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Năng lực cao</span> · High competence</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide này ghi D1, D3, D4; slide 27 dùng ký hiệu S1–S4 cho cùng các cách phản hồi. Bản dịch giữ nguyên ký hiệu như trên slide gốc.</i></p>
+</section>
+<section id="s27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 27</span>
+<span style="color:#86958a">Four responses</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The four leadership responses</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bốn cách phản hồi của người lãnh đạo</h3>
+<div style="color:var(--en,#56665a)">Adapt direction and support to follower readiness.</div>
+<div>Điều chỉnh mức chỉ dẫn và hỗ trợ theo mức độ sẵn sàng của người đi theo.</div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li><b>S1 Directing</b> — High direction, lower support</li><li><b>S2 Coaching</b> — High direction, high support</li><li><b>S3 Supporting</b> — Lower direction, high support</li><li><b>S4 Delegating</b> — Lower direction, lower support</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li><b>S1 Chỉ đạo</b> — Chỉ dẫn cao, hỗ trợ thấp hơn</li><li><b>S2 Coaching</b> — Chỉ dẫn cao, hỗ trợ cao</li><li><b>S3 Hỗ trợ</b> — Chỉ dẫn thấp hơn, hỗ trợ cao</li><li><b>S4 Uỷ quyền</b> — Chỉ dẫn thấp hơn, hỗ trợ thấp hơn</li></ul></div>
+<div style="color:var(--en,#56665a)">Your preferred style matters less than the follower’s need for this specific task.</div>
+<div>Phong cách bạn ưa thích ít quan trọng hơn nhu cầu của người đi theo đối với nhiệm vụ cụ thể này.</div>
+</div>
+
+</section>
+<section id="s28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 28</span>
+<span style="color:#86958a">Discussion</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">What was unrealistic about the sequence activity?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điều gì trong hoạt động sắp xếp thứ tự là không thực tế?</h3>
+</div>
+
+</section>
+<section id="s29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 29</span>
+<span style="color:#86958a">Break</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Whew – Take a 15-Minute Break</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Phù – Nghỉ giải lao 15 phút</h3>
+<div style="color:var(--en,#56665a)">When you come back, you will experience the challenges of adapting to different members within a team</div>
+<div>Khi quay lại, bạn sẽ trải nghiệm những thách thức khi phải điều chỉnh cách lãnh đạo cho từng thành viên khác nhau trong một đội</div>
+</div>
+
+</section>
+<section id="s30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 30</span>
+<span style="color:#86958a">Activity #3</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity #3 — Marshmallow Challenge</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động 3 — Thử thách marshmallow</h3>
+<div style="color:var(--en,#56665a)">So how do you lead when teams are made up by people of different readiness levels?</div>
+<div>Vậy bạn lãnh đạo thế nào khi đội gồm những người có mức độ sẵn sàng khác nhau?</div>
+</div>
+
+</section>
+<section id="s31" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 31</span>
+<span style="color:#86958a">The challenge</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The challenge</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thử thách</h3>
+<div style="color:var(--en,#56665a)">Build the tallest freestanding structure with the entire marshmallow on top.</div>
+<div>Dựng công trình tự đứng cao nhất, với nguyên viên marshmallow nằm trên đỉnh.</div>
+<div style="color:var(--en,#56665a)"><b>The Kit</b><ul style="margin:0;padding-left:18px"><li>20 sticks of uncooked spaghetti</li><li>1 yard of masking tape</li><li>1 yard of string</li><li>1 standard-size marshmallow</li></ul></div>
+<div><b>Bộ dụng cụ</b><ul style="margin:0;padding-left:18px"><li>20 sợi mì spaghetti khô</li><li>1 yard (khoảng 0,9 m) băng dính giấy</li><li>1 yard dây</li><li>1 viên marshmallow cỡ tiêu chuẩn</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>The Goal</b><ul style="margin:0;padding-left:18px"><li>Tallest structure</li><li>Freestanding</li><li>Entire marshmallow on top</li></ul></div>
+<div><b>Mục tiêu</b><ul style="margin:0;padding-left:18px"><li>Công trình cao nhất</li><li>Tự đứng</li><li>Nguyên viên marshmallow trên đỉnh</li></ul></div>
+<div style="color:var(--en,#56665a)">No hanging, no taping to walls, no external support.</div>
+<div>Không treo, không dán vào tường, không có điểm tựa bên ngoài.</div>
+</div>
+
+</section>
+<section id="s32" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 32</span>
+<span style="color:#86958a">Team roles</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Teams of 3 or 4</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Đội 3 hoặc 4 người</h3>
+<div style="color:var(--en,#56665a)">Each team has one leader and followers with different limitations.</div>
+<div>Mỗi đội có một người lãnh đạo và những người đi theo với các giới hạn khác nhau.</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:8%">Role<br />Vai</td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px">English</td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px">Tiếng Việt</td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">1</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><b>Leader</b><br />Can see and talk<br />Cannot touch materials</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b>Người lãnh đạo</b><br /><span>Được nhìn và nói</span><br /><span>Không được chạm vào vật liệu</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">2</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><b>Restricted follower</b><br />Can touch and talk<br />Cannot look</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b>Người đi theo bị hạn chế</b><br /><span>Được chạm và nói</span><br /><span>Không được nhìn</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">3</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><b>Advisor follower</b><br />Can see and talk<br />Cannot touch</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b>Người đi theo cố vấn</b><br /><span>Được nhìn và nói</span><br /><span>Không được chạm</span></td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">4</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><b>Builder follower</b><br />Can see, talk, and touch<br />Relatively unrestricted</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b>Người đi theo thi công</b><br /><span>Được nhìn, nói và chạm</span><br /><span>Gần như không bị hạn chế</span></td></tr>
+</tbody>
+</table><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;margin-top:10px;font-size:var(--fs,13.5px);line-height:var(--lh,1.6)"><div style="color:var(--en,#56665a)">You will be assigned the exact role mix for each team size.</div><div>Bạn sẽ được phân công tổ hợp vai cụ thể tuỳ theo quy mô của đội.</div></div>
+</section>
+<section id="s33" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 33</span>
+<span style="color:#86958a">Hidden challenge</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The hidden leadership challenge</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thử thách lãnh đạo ẩn giấu</h3>
+<div style="color:var(--en,#56665a)">The tallest tower is not the only test.</div>
+<div>Toà tháp cao nhất không phải là phép thử duy nhất.</div>
+<div style="color:var(--en,#56665a)"><b>Can you help everyone contribute productively and feel included?</b></div>
+<div><b>Bạn có thể giúp mọi người đóng góp hiệu quả và cảm thấy mình được tham gia không?</b></div>
+<div style="color:var(--en,#56665a)">Some people will be easier to involve.<br />Some will require more effort, communication, and adaptation.</div>
+<div><span>Một số người sẽ dễ thu hút tham gia hơn.</span><br /><span>Một số người sẽ đòi hỏi nhiều nỗ lực, giao tiếp và điều chỉnh hơn.</span></div>
+<div style="color:var(--en,#56665a)">A leader’s job is not only to adapt. It is to create contribution despite limitations.</div>
+<div>Việc của người lãnh đạo không chỉ là điều chỉnh. Đó là tạo ra sự đóng góp bất chấp các giới hạn.</div>
+</div>
+
+</section>
+<section id="s34" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 34</span>
+<span style="color:#86958a">Marshmallow debrief</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Marshmallow debrief</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tổng kết thử thách marshmallow</h3>
+<div style="color:var(--en,#56665a)">Different people can need different leadership at the same time.</div>
+<div>Cùng một lúc, những người khác nhau có thể cần những cách lãnh đạo khác nhau.</div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li><b>Did everyone need the same type or amount of leadership?</b></li><li>Who became easiest to rely on?</li><li>Who became easiest to ignore?</li><li>What helped everyone contribute?</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li><b>Mọi người có cần cùng một kiểu hoặc cùng một mức độ lãnh đạo không?</b></li><li>Ai trở thành người dễ dựa vào nhất?</li><li>Ai trở thành người dễ bị bỏ qua nhất?</li><li>Điều gì đã giúp mọi người cùng đóng góp?</li></ul></div>
+<div style="color:var(--en,#56665a)">Real teams have mixed readiness, different constraints, and different contribution needs.</div>
+<div>Các đội trong thực tế có mức độ sẵn sàng đan xen, những ràng buộc khác nhau và nhu cầu đóng góp khác nhau.</div>
+</div>
+
+</section>
+<section id="s35" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 35</span>
+<span style="color:#86958a">Activity #4</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity #4 — Lost at Sea</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động 4 — Lạc trên biển</h3>
+<div style="color:var(--en,#56665a)">SLT gives us a structured way to adjust our behaviors to match our employees<br /><br />A relevant question is: How much involvement should employees have in decision-making?</div>
+<div><span>SLT (Situational Leadership Theory – Lý thuyết lãnh đạo theo tình huống) cho chúng ta một cách có cấu trúc để điều chỉnh hành vi cho phù hợp với nhân viên</span><br /><br /><span>Một câu hỏi liên quan là: Nhân viên nên tham gia vào việc ra quyết định ở mức độ nào?</span></div>
+</div>
+
+</section>
+<section id="s36" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 36</span>
+<span style="color:#86958a">Vroom–Yetton–Jago</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Vroom–Yetton–Jago Model — Five decision styles available to a leader</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Mô hình Vroom–Yetton–Jago — Năm phong cách ra quyết định mà người lãnh đạo có thể dùng</h3>
+<div style="color:var(--en,#56665a)">The Vroom–Yetton–Jago model suggests that the best way to make a decision depends on the situation, including the importance of the decision and the value of input from others.</div>
+<div>Mô hình Vroom–Yetton–Jago cho rằng cách ra quyết định tốt nhất phụ thuộc vào tình huống, bao gồm tầm quan trọng của quyết định và giá trị của ý kiến đóng góp từ người khác.</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Toàn bộ slide là một hình đồ hoạ; chữ trong hình được dịch theo cấu trúc hình ở khung dưới. Mỗi dòng gồm: phong cách ra quyết định (Decision style), định nghĩa (Definition) và biểu hiện thực tế (What it looks like).</i></p><div style="margin-top:10px"></div><div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="text-align:center;line-height:1.35;margin-bottom:12px"><div style="font-weight:700;color:#1b2a20;letter-spacing:.02em">Vroom–Yetton–Jago Model</div><div style="font-weight:700">Mô hình Vroom–Yetton–Jago</div><div style="line-height:1.4;font-size:12.5px;margin-top:2px"><div style="color:var(--en,#56665a)">Five decision styles available to a leader</div><div>Năm phong cách ra quyết định mà người lãnh đạo có thể dùng</div></div></div><div style="display:grid;grid-template-columns:minmax(80px,.6fr) minmax(0,1.5fr) minmax(0,1.3fr);gap:0 6px"><div style="background:#1d2b5c;color:#fff;padding:5px 8px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;line-height:1.3">Decision style<span> · Phong cách</span></div><div style="background:#1d2b5c;color:#fff;padding:5px 8px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;line-height:1.3">Definition<span> · Định nghĩa</span></div><div style="background:#1d2b5c;color:#fff;padding:5px 8px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;line-height:1.3">What it looks like<span> · Biểu hiện thực tế</span></div><div style="background:#fbeaea;padding:8px;text-align:center;line-height:1.3"><div style="font-weight:700;font-size:16px;color:#d62b2b">AI</div><div style="font-size:11px;color:var(--en,#56665a)">Autocratic I</div><div style="font-size:11px">Độc đoán I.</div></div><div style="padding:8px;font-size:12px;line-height:1.4;border-bottom:1px solid #dae4d6"><div style="color:var(--en,#56665a)">Manager makes the decision alone.</div><div style="margin-top:3px">Người quản lý tự mình ra quyết định.</div></div><div style="padding:8px;font-size:12px;line-height:1.4;border-bottom:1px solid #dae4d6"><div style="color:var(--en,#56665a)"><b>“I will decide.”</b> You make the decision using the information you have.</div><div style="margin-top:3px"><b>“Tôi sẽ quyết định.”</b> Bạn ra quyết định dựa trên thông tin mình đang có.</div></div><div style="background:#fdf6e0;padding:8px;text-align:center;line-height:1.3"><div style="font-weight:700;font-size:16px;color:#e0a400">AII</div><div style="font-size:11px;color:var(--en,#56665a)">Autocratic II</div><div style="font-size:11px">Độc đoán II.</div></div><div style="padding:8px;font-size:12px;line-height:1.4;border-bottom:1px solid #dae4d6"><div style="color:var(--en,#56665a)">Manager asks for information from subordinates but makes the decision alone. Subordinates may or may not be informed about what the situation is.</div><div style="margin-top:3px">Người quản lý hỏi thông tin từ cấp dưới nhưng tự mình ra quyết định. Cấp dưới có thể được hoặc không được cho biết tình huống là gì.</div></div><div style="padding:8px;font-size:12px;line-height:1.4;border-bottom:1px solid #dae4d6"><div style="color:var(--en,#56665a)"><b>“Give me your input, I will decide.”</b> You seek individual input, then decide.</div><div style="margin-top:3px"><b>“Hãy cho tôi ý kiến, tôi sẽ quyết định.”</b> Bạn thu thập ý kiến của từng người, rồi quyết định.</div></div><div style="background:#e8f4ea;padding:8px;text-align:center;line-height:1.3"><div style="font-weight:700;font-size:16px;color:#2f8a3a">CI</div><div style="font-size:11px;color:var(--en,#56665a)">Consultative I</div><div style="font-size:11px">Tham vấn I.</div></div><div style="padding:8px;font-size:12px;line-height:1.4;border-bottom:1px solid #dae4d6"><div style="color:var(--en,#56665a)">Manager shares the situation with individual subordinates and asks for information and evaluation. Subordinates do not meet as a group, and the manager alone makes the decision.</div><div style="margin-top:3px">Người quản lý chia sẻ tình huống với từng cấp dưới và hỏi thông tin cũng như đánh giá của họ. Cấp dưới không họp chung thành nhóm, và người quản lý tự mình ra quyết định.</div></div><div style="padding:8px;font-size:12px;line-height:1.4;border-bottom:1px solid #dae4d6"><div style="color:var(--en,#56665a)"><b>“Let’s discuss (one-to-one), I will decide.”</b> You consult individuals, then decide.</div><div style="margin-top:3px"><b>“Hãy thảo luận (từng người một), tôi sẽ quyết định.”</b> Bạn tham vấn từng cá nhân, rồi quyết định.</div></div><div style="background:#e6eefb;padding:8px;text-align:center;line-height:1.3"><div style="font-weight:700;font-size:16px;color:#2a6fd6">CII</div><div style="font-size:11px;color:var(--en,#56665a)">Consultative II</div><div style="font-size:11px">Tham vấn II.</div></div><div style="padding:8px;font-size:12px;line-height:1.4;border-bottom:1px solid #dae4d6"><div style="color:var(--en,#56665a)">Manager and subordinates meet as a group to discuss the situation, but the manager makes the decision.</div><div style="margin-top:3px">Người quản lý và cấp dưới họp thành nhóm để thảo luận tình huống, nhưng người quản lý là người ra quyết định.</div></div><div style="padding:8px;font-size:12px;line-height:1.4;border-bottom:1px solid #dae4d6"><div style="color:var(--en,#56665a)"><b>“Let’s discuss as a group, I will decide.”</b> You discuss with the team, then decide.</div><div style="margin-top:3px"><b>“Hãy thảo luận theo nhóm, tôi sẽ quyết định.”</b> Bạn thảo luận với cả đội, rồi quyết định.</div></div><div style="background:#f0eaf8;padding:8px;text-align:center;line-height:1.3"><div style="font-weight:700;font-size:16px;color:#7b4fc0">GII</div><div style="font-size:11px;color:var(--en,#56665a)">Group II</div><div style="font-size:11px">Nhóm II.</div></div><div style="padding:8px;font-size:12px;line-height:1.4;border-bottom:1px solid #dae4d6"><div style="color:var(--en,#56665a)">Manager and subordinates meet as a group to discuss the situation, and the group makes the decision.</div><div style="margin-top:3px">Người quản lý và cấp dưới họp thành nhóm để thảo luận tình huống, và nhóm ra quyết định.</div></div><div style="padding:8px;font-size:12px;line-height:1.4;border-bottom:1px solid #dae4d6"><div style="color:var(--en,#56665a)"><b>“Let’s discuss and decide together.”</b> You facilitate a group discussion and reach a shared decision.</div><div style="margin-top:3px"><b>“Hãy cùng thảo luận và cùng quyết định.”</b> Bạn điều phối cuộc thảo luận nhóm và cùng đi đến một quyết định chung.</div></div></div></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);margin-top:10px;font-size:var(--fs,13.5px);line-height:var(--lh,1.6)"><div style="color:var(--en,#56665a)">A = autocratic | C = consultative | G = group</div><div>A = độc đoán (autocratic) | C = tham vấn (consultative) | G = nhóm (group)</div><div style="color:var(--en,#56665a)"><b>The right decision style depends on the situation.</b><br />Consider factors such as decision importance, time pressure, quality of information, and the value of others’ input.</div><div><b>Phong cách ra quyết định phù hợp phụ thuộc vào tình huống.</b><br /><span>Hãy cân nhắc các yếu tố như tầm quan trọng của quyết định, áp lực thời gian, chất lượng thông tin và giá trị của ý kiến từ người khác.</span></div></div><figure style="margin:12px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t10/p36a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình gốc của slide: bảng năm phong cách ra quyết định của mô hình Vroom–Yetton–Jago, mỗi phong cách có một biểu tượng minh hoạ (một người, tài liệu, hai bóng thoại, nhóm người, nhóm người kèm dấu tích).</figcaption>
+</figure>
+</section>
+<section id="s37" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 37</span>
+<span style="color:#86958a">Wrap-up</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Wrap-up — Remember These Four Things Before You Go.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tổng kết — Hãy nhớ bốn điều này trước khi ra về.</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Diagnose before you lead</li><li>Clarity is not the same as talking more</li><li>Different people need different things at different time</li><li>Match participation to the decision</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Chẩn đoán trước khi lãnh đạo</li><li>Rõ ràng không có nghĩa là nói nhiều hơn</li><li>Những người khác nhau cần những điều khác nhau vào những thời điểm khác nhau</li><li>Chọn mức độ tham gia phù hợp với từng quyết định</li></ul></div>
+</div>
+
+</section>
+<section id="s38" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 38</span>
+<span style="color:#86958a">References</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Academic sources cited in this deck — These Are the Sources Behind Today’s Session.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Các nguồn học thuật được trích dẫn trong bài — Đây là các nguồn làm nền tảng cho buổi học hôm nay.</h3>
+</div>
+<ul style="margin:10px 0 0;padding-left:18px;font-size:12px;line-height:1.55;color:var(--en,#56665a)"><li style="margin-bottom:4px">Blake, R. R., &amp; Mouton, J. S. (1964). <i>The managerial grid: Key orientations for achieving production through people.</i> Gulf Publishing.</li><li style="margin-bottom:4px">Fleishman, E. A. (1953). Leadership climate, human relations training, and supervisory behavior. <i>Personnel Psychology, 6</i>(2), 205–222. https://doi.org/10.1111/j.1744-6570.1953.tb01040.x</li><li style="margin-bottom:4px">Hemphill, J. K., &amp; Coons, A. E. (1957). Development of the Leader Behavior Description Questionnaire. In R. M. Stogdill &amp; A. E. Coons (Eds.), <i>Leader behavior: Its description and measurement</i> (pp. 6–38). Bureau of Business Research, Ohio State University.</li><li style="margin-bottom:4px">Hersey, P., &amp; Blanchard, K. H. (1969). <i>Management of organizational behavior: Utilizing human resources.</i> Prentice-Hall.</li><li style="margin-bottom:4px">Katz, D., Maccoby, N., &amp; Morse, N. C. (1950). <i>Productivity, supervision and morale in an office situation.</i> Institute for Social Research, University of Michigan.</li><li style="margin-bottom:4px">Katz, D., Maccoby, N., Gurin, G., &amp; Floor, L. G. (1951). <i>Productivity, supervision and morale among railroad workers.</i> Institute for Social Research, University of Michigan.</li><li style="margin-bottom:4px">Vroom, V. H., &amp; Yetton, P. W. (1973). <i>Leadership and decision-making.</i> University of Pittsburgh Press</li></ul><p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Danh mục tài liệu tham khảo giữ nguyên văn tiếng Anh. Một số chỗ bị tách chữ trong file PDF (“Pub lishing”, “Soci al”, “Institu te”) đã được viết liền lại.</i></p>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 10 · Adapt Your Leadership Style</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t10.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Điều chỉnh phong cách lãnh đạo","lv":0,"en":"Adapt Your Leadership Style","vi":"Điều chỉnh phong cách lãnh đạo"},
+  {"id":"s02","num":"02","label":"Tiến trình buổi học — Chúng ta sẽ dành ba giờ tới như thế này","lv":0,"en":"Session flow — Here’s How We’ll Spend the Next Three Hours","vi":"Tiến trình buổi học — Chúng ta sẽ dành ba giờ tới như thế này"},
+  {"id":"s03","num":"03","label":"Kết thúc buổi học — Bạn sẽ có thể…","lv":0,"en":"By the end of the session — You Will Be Able To…","vi":"Kết thúc buổi học — Bạn sẽ có thể…"},
+  {"id":"s04","num":"04","label":"Chào mừng!","lv":0,"en":"Welcome!","vi":"Chào mừng!"},
+  {"id":"s05","num":"05","label":"Rất hào hứng với buổi học này","lv":0,"en":"Very excited for this session","vi":"Rất hào hứng với buổi học này"},
+  {"id":"s06","num":"06","label":"Câu hỏi định hướng: Trong công việc, bạn ghi nhận ai đã góp phần vào sự phát triển sự ng…","lv":0,"en":"Frame: Who do you credit professionally for your career development so far?","vi":"Câu hỏi định hướng: Trong công việc, bạn ghi nhận ai đã góp phần vào sự phát triển sự nghiệp của bạn cho đến nay?"},
+  {"id":"s07","num":"07","label":"Hoạt động nhỏ 1 (6 phút) — Phỏng vấn theo cặp","lv":0,"en":"Mini activity #1 (6 mins) — Pair Interviews","vi":"Hoạt động nhỏ 1 (6 phút) — Phỏng vấn theo cặp"},
+  {"id":"s08","num":"08","label":"Chia sẻ hành trình của người cùng cặp:","lv":0,"en":"Share your partner’s journey:","vi":"Chia sẻ hành trình của người cùng cặp:"},
+  {"id":"s09","num":"09","label":"Điều chỉnh cách lãnh đạo — Hành vi lãnh đạo: Người lãnh đạo thực sự làm gì?","lv":0,"en":"Adapt your leadership — Leadership behaviors: What is it that leaders actually do?","vi":"Điều chỉnh cách lãnh đạo — Hành vi lãnh đạo: Người lãnh đạo thực sự làm gì?"},
+  {"id":"s10","num":"10","label":"Lưới lãnh đạo","lv":0,"en":"Leadership Grid","vi":"Lưới lãnh đạo"},
+  {"id":"s11","num":"11","label":"Hoạt động 1 — Vẽ không nhìn","lv":0,"en":"Activity #1 — Blind drawing","vi":"Hoạt động 1 — Vẽ không nhìn"},
+  {"id":"s12","num":"12","label":"Hoạt động 1 (6 phút) — Vẽ không nhìn, Vòng 1: Kiểm tra kỹ năng đưa ra chỉ dẫn","lv":0,"en":"Activity #1 (6 mins) — Blind Drawing Round #1: Test your direction-giving skills","vi":"Hoạt động 1 (6 phút) — Vẽ không nhìn, Vòng 1: Kiểm tra kỹ năng đưa ra chỉ dẫn"},
+  {"id":"s13","num":"13","label":"Hoạt động 1 (6 phút) — Vẽ không nhìn, Vòng 2: Kiểm tra kỹ năng đưa ra chỉ dẫn","lv":0,"en":"Activity #1 (6 mins) — Blind Drawing Round #2: Test your direction-giving skills","vi":"Hoạt động 1 (6 phút) — Vẽ không nhìn, Vòng 2: Kiểm tra kỹ năng đưa ra chỉ dẫn"},
+  {"id":"s14","num":"14","label":"Công bố kết quả: Vòng 1 — Thảo luận kết quả với người cùng cặp","lv":0,"en":"The Big Reveal: Round 1 — Discuss with your partners your results","vi":"Công bố kết quả: Vòng 1 — Thảo luận kết quả với người cùng cặp"},
+  {"id":"s15","num":"15","label":"Công bố kết quả: Vòng 2 — Chia sẻ kết quả","lv":0,"en":"The Big Reveal: Round 2 — Share the results","vi":"Công bố kết quả: Vòng 2 — Chia sẻ kết quả"},
+  {"id":"s16","num":"16","label":"Một số điểm chính","lv":0,"en":"Some key points","vi":"Một số điểm chính"},
+  {"id":"s17","num":"17","label":"Hoạt động 2 — Thử thách sắp xếp thứ tự","lv":0,"en":"Activity #2 — Sequence Challenge","vi":"Hoạt động 2 — Thử thách sắp xếp thứ tự"},
+  {"id":"s18","num":"18","label":"Thử thách sắp xếp thứ tự — Thiết lập cho Vòng 1","lv":0,"en":"Sequence Challenge — Setup for Round #1","vi":"Thử thách sắp xếp thứ tự — Thiết lập cho Vòng 1"},
+  {"id":"s19","num":"19","label":"Suy ngẫm Vòng 1 — Hai góc nhìn về cùng một sự cố giao tiếp.","lv":0,"en":"Round 1 reflection — Two perspectives on the same communication breakdown.","vi":"Suy ngẫm Vòng 1 — Hai góc nhìn về cùng một sự cố giao tiếp."},
+  {"id":"s20","num":"20","label":"Vòng 2 — Giờ bạn đã biết quy trình, nhưng bạn có thể tin vào tình huống không?","lv":0,"en":"Sequence Round 2 — You know the process now, but can you trust the situation?","vi":"Vòng 2 — Giờ bạn đã biết quy trình, nhưng bạn có thể tin vào tình huống không?"},
+  {"id":"s21","num":"21","label":"Suy ngẫm Vòng 2 — Nhóm cần gì khi sự tự tin thấp hơn?","lv":0,"en":"Round 2 reflection — What did the group need when confidence was lower?","vi":"Suy ngẫm Vòng 2 — Nhóm cần gì khi sự tự tin thấp hơn?"},
+  {"id":"s22","num":"22","label":"Vòng 3","lv":0,"en":"Sequence Round 3","vi":"Vòng 3"},
+  {"id":"s23","num":"23","label":"Suy ngẫm Vòng 3 — Điều gì xảy ra khi người lãnh đạo ngừng tự giải quyết?","lv":0,"en":"Round 3 reflection — What happened when the leader stopped solving?","vi":"Suy ngẫm Vòng 3 — Điều gì xảy ra khi người lãnh đạo ngừng tự giải quyết?"},
+  {"id":"s24","num":"24","label":"Điều gì đã thay đổi qua ba vòng?","lv":0,"en":"What changed across the three rounds?","vi":"Điều gì đã thay đổi qua ba vòng?"},
+  {"id":"s25","num":"25","label":"Lãnh đạo theo tình huống: chẩn đoán trước","lv":0,"en":"Situational Leadership: diagnose first","vi":"Lãnh đạo theo tình huống: chẩn đoán trước"},
+  {"id":"s26","num":"26","label":"Đặt các vòng lên cùng một bản đồ","lv":0,"en":"Map the rounds together","vi":"Đặt các vòng lên cùng một bản đồ"},
+  {"id":"s27","num":"27","label":"Bốn cách phản hồi của người lãnh đạo","lv":0,"en":"The four leadership responses","vi":"Bốn cách phản hồi của người lãnh đạo"},
+  {"id":"s28","num":"28","label":"Điều gì trong hoạt động sắp xếp thứ tự là không thực tế?","lv":0,"en":"What was unrealistic about the sequence activity?","vi":"Điều gì trong hoạt động sắp xếp thứ tự là không thực tế?"},
+  {"id":"s29","num":"29","label":"Phù – Nghỉ giải lao 15 phút","lv":0,"en":"Whew – Take a 15-Minute Break","vi":"Phù – Nghỉ giải lao 15 phút"},
+  {"id":"s30","num":"30","label":"Hoạt động 3 — Thử thách marshmallow","lv":0,"en":"Activity #3 — Marshmallow Challenge","vi":"Hoạt động 3 — Thử thách marshmallow"},
+  {"id":"s31","num":"31","label":"Thử thách","lv":0,"en":"The challenge","vi":"Thử thách"},
+  {"id":"s32","num":"32","label":"Đội 3 hoặc 4 người","lv":0,"en":"Teams of 3 or 4","vi":"Đội 3 hoặc 4 người"},
+  {"id":"s33","num":"33","label":"Thử thách lãnh đạo ẩn giấu","lv":0,"en":"The hidden leadership challenge","vi":"Thử thách lãnh đạo ẩn giấu"},
+  {"id":"s34","num":"34","label":"Tổng kết thử thách marshmallow","lv":0,"en":"Marshmallow debrief","vi":"Tổng kết thử thách marshmallow"},
+  {"id":"s35","num":"35","label":"Hoạt động 4 — Lạc trên biển","lv":0,"en":"Activity #4 — Lost at Sea","vi":"Hoạt động 4 — Lạc trên biển"},
+  {"id":"s36","num":"36","label":"Mô hình Vroom–Yetton–Jago — Năm phong cách ra quyết định mà người lãnh đạo có thể dùng","lv":0,"en":"Vroom–Yetton–Jago Model — Five decision styles available to a leader","vi":"Mô hình Vroom–Yetton–Jago — Năm phong cách ra quyết định mà người lãnh đạo có thể dùng"},
+  {"id":"s37","num":"37","label":"Tổng kết — Hãy nhớ bốn điều này trước khi ra về.","lv":0,"en":"Wrap-up — Remember These Four Things Before You Go.","vi":"Tổng kết — Hãy nhớ bốn điều này trước khi ra về."},
+  {"id":"s38","num":"38","label":"Các nguồn học thuật được trích dẫn trong bài — Đây là các nguồn làm nền tảng cho buổi họ…","lv":0,"en":"Academic sources cited in this deck — These Are the Sources Behind Today’s Session.","vi":"Các nguồn học thuật được trích dẫn trong bài — Đây là các nguồn làm nền tảng cho buổi học hôm nay."}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t10.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t10.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t10.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t10.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

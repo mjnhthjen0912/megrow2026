@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 8 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Correcting Behaviour Through Coaching</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Điều chỉnh hành vi thông qua coaching</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 8: Điều chỉnh hành vi thông qua coaching</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Topic 8: Correcting Behaviour Through Coaching — bản đối chiếu Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">TS. Thao Luong · 44 slide</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide là một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ. Chữ nằm trong hình đồ hoạ của slide cũng được dịch. Khẩu hiệu “Ready for what’s next” của RMIT xuất hiện ở hầu hết các slide nên không nhắc lại.</p>
+<p style="margin:0 0 8px">Phần mô tả hình ảnh, video và các slide lặp lại được ghi bằng chữ nghiêng màu xám. Đó là ghi chú của bản dịch, không phải nội dung gốc trên slide.</p>
+<p style="margin:0">Tên riêng, tên tổ chức và trích dẫn nguồn giữ nguyên. <i>Coaching</i> được giữ nguyên, hiểu là cách người quản lý dùng câu hỏi để giúp nhân viên tự suy ngẫm và thay đổi. Bốn bước của buổi học được dịch là: <i>Notice</i> – “Nhận diện”, <i>Converse</i> – “Đối thoại”, <i>Coach</i> – “Coaching”, <i>Hold Accountable</i> – “Giữ trách nhiệm”. <i>Standard</i> là “chuẩn mực”, <i>ownership</i> là “tinh thần làm chủ”. <i>Emotional Intelligence (EI)</i> là “trí tuệ cảm xúc”; chữ viết tắt EI ở chủ đề này khác với EI (External Identity) ở chủ đề 7. <i>Self-awareness</i> là “tự nhận thức”, <i>self-management</i> là “tự quản lý”.</p>
+</div>
+
+<section id="s01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Topic 8: Correcting Behavior Through Coaching</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chủ đề 8: Điều chỉnh hành vi thông qua coaching</h3>
+<div style="color:var(--en,#56665a)">How to address difficult behavior with clarity, confidence and care<br /><br />Dr Thao Luong</div>
+<div><span>Cách xử lý hành vi khó với sự rõ ràng, tự tin và quan tâm</span><br /><br />TS. Thao Luong</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide tiêu đề của chương trình me.grow (RMIT University Vietnam, Saigon South Campus – Zalo). Dòng phụ đề trên slide bị cắt ở chữ “car”; bản dịch hiểu là “care”.</i></p>
+</section>
+<section id="s02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">About this session</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">About this session</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Về buổi học này</h3>
+<div style="color:var(--en,#56665a)">Becoming a manager changes the conversations you are responsible for.<br /><br />For the first time, you are not only responsible for your own performance, you are responsible for setting expectations, giving feedback, addressing behaviour, and helping others succeed.<br /><br />Some of these conversations will feel uncomfortable. This session helps you approach them with clarity, confidence and care, using coaching to create reflection and ownership, while remaining clear about expectations and accountability.<br /><br />By the end of this session, you will:<ul style="margin:0;padding-left:18px"><li>Recognize behavior that needs your attention and address it early;</li><li>Raise difficult issues clearly without attacking the person;</li><li>Use questions to help people reflect, take ownership and find a better way forward;</li><li>Be supportive while remaining clear about standards and expected change.</li></ul></div>
+<div><span>Trở thành quản lý làm thay đổi những cuộc trò chuyện mà bạn phải chịu trách nhiệm.</span><br /><br /><span>Lần đầu tiên, bạn không chỉ chịu trách nhiệm về hiệu suất của riêng mình, mà còn chịu trách nhiệm đặt ra kỳ vọng, đưa phản hồi, xử lý hành vi và giúp người khác thành công.</span><br /><br /><span>Một số cuộc trò chuyện như vậy sẽ khiến bạn không thoải mái. Buổi học này giúp bạn tiếp cận chúng với sự rõ ràng, tự tin và quan tâm, dùng coaching để tạo ra sự suy ngẫm và tinh thần làm chủ, đồng thời vẫn rõ ràng về kỳ vọng và trách nhiệm.</span><br /><br /><span>Kết thúc buổi học, bạn sẽ:</span><ul style="margin:0;padding-left:18px"><li>Nhận ra hành vi cần mình lưu tâm và xử lý sớm;</li><li>Nêu vấn đề khó một cách rõ ràng mà không công kích con người;</li><li>Dùng câu hỏi để giúp người khác suy ngẫm, nhận trách nhiệm và tìm ra hướng đi tốt hơn;</li><li>Hỗ trợ người khác trong khi vẫn rõ ràng về chuẩn mực và sự thay đổi được kỳ vọng.</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bên cạnh là ảnh một người đang vẽ những bậc thang cho hình người bước lên.</i></p>
+</section>
+<section id="s03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">Agenda</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Agenda</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chương trình</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li><b>Notice:</b> “What should I address?”</li><li><b>Converse:</b> Raise difficult issues clearly and manage your emotions</li><li><b>Coach:</b> Use questions to create reflection and ownership</li><li><b>Hold Accountable:</b> Stay supportive while remaining clear about expected changes</li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li><b>Nhận diện:</b> “Tôi nên xử lý điều gì?”</li><li><b>Đối thoại:</b> Nêu vấn đề khó một cách rõ ràng và quản lý cảm xúc của bạn</li><li><b>Coaching:</b> Dùng câu hỏi để tạo ra sự suy ngẫm và tinh thần làm chủ</li><li><b>Giữ trách nhiệm:</b> Luôn hỗ trợ nhưng vẫn rõ ràng về những thay đổi được kỳ vọng</li></ol></div>
+</div>
+</section>
+<section id="s04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">About me</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">About me</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Về tôi</h3>
+<div style="color:var(--en,#56665a)"><b>Dr. Thao Luong</b><br />Senior Program Manager – Lecturer (Human Resource Management)<br />E-mail: thao.luong3@rmit.edu.vn<br /><br />Education:<ul style="margin:0;padding-left:18px"><li>Ph.D. in Knowledge Science, Japan Advanced Institute of Science and Technology (Japan)</li><li>Master in HRM, Griffith University (Australia)</li><li>Bachelor in Business, University of Economics HCMC (Vietnam)</li><li>CHT &amp; CHE (American Hotel and Lodging Educational Institute)</li><li>Trained Facilitator in the LEGO® Serious Play® Methodology</li></ul><br />Work Experience (15 years): Sales (PepsiCo International), HR (FrieslandCampina), Corporate Training (Saigontourist Group), VP (Saigontourist Hospitality College)</div>
+<div><b>TS. Thao Luong</b><br /><span>Quản lý Chương trình cấp cao – Giảng viên (Quản trị Nguồn nhân lực)</span><br /><span>E-mail: thao.luong3@rmit.edu.vn</span><br /><br /><span>Học vấn:</span><ul style="margin:0;padding-left:18px"><li>Tiến sĩ Khoa học Tri thức, Viện Khoa học và Công nghệ Tiên tiến Nhật Bản (Nhật Bản)</li><li>Thạc sĩ Quản trị Nguồn nhân lực, Đại học Griffith (Úc)</li><li>Cử nhân Kinh doanh, Đại học Kinh tế TP.HCM (Việt Nam)</li><li>CHT &amp; CHE (Viện Giáo dục Khách sạn và Lưu trú Hoa Kỳ – American Hotel and Lodging Educational Institute)</li><li>Điều phối viên được đào tạo về phương pháp LEGO® Serious Play®</li></ul><br /><span>Kinh nghiệm làm việc (15 năm): Bán hàng (PepsiCo International), Nhân sự (FrieslandCampina), Đào tạo doanh nghiệp (Saigontourist Group), Phó Hiệu trưởng (Saigontourist Hospitality College)</span></div>
+</div>
+</section>
+<section id="s05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 05</span>
+<span style="color:#86958a">Our playbook</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Our Playbook</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Luật chơi của chúng ta</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Be fully present</li><li>Try to earn the playground money for your team</li><li>Honor others’ opinions</li><li>Put cellphones away and on vibrate (if possible)</li><li>Please don’t hurt anyone</li><li>Use burning thoughts for questions</li><li>Relax and have fun</li><li>“Through discipline comes freedom” – Aristotle</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Hiện diện trọn vẹn</li><li>Cố gắng kiếm “tiền sân chơi” về cho đội của bạn</li><li>Tôn trọng ý kiến của người khác</li><li>Cất điện thoại và để chế độ rung (nếu có thể)</li><li>Xin đừng làm ai bị tổn thương</li><li>Dùng những suy nghĩ còn trăn trở để đặt câu hỏi</li><li>Thư giãn và vui vẻ</li><li>“Tự do đến từ kỷ luật” – Aristotle</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide minh hoạ bằng hình Aristotle, một xấp tiền đồ chơi và chiếc ô RMIT.</i></p>
+</section>
+<section id="s06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06</span>
+<span style="color:#86958a">Section 1 · Notice</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">1. Notice: “What should I address?”</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">1. Nhận diện: “Tôi nên xử lý điều gì?”</h3>
+</div>
+</section>
+<section id="s07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 07</span>
+<span style="color:#86958a">The role shift</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">NOTICE starts with the role shift</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">NHẬN DIỆN bắt đầu từ sự chuyển đổi vai trò</h3>
+<div style="color:var(--en,#56665a)">As a manager, what you tolerate becomes information for the team.</div>
+<div>Khi bạn là quản lý, những gì bạn dung thứ sẽ trở thành thông điệp gửi tới cả nhóm.</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:50%"><span>From</span><br /><span>Từ</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:50%"><span>To</span><br /><span>Đến</span></td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">My work</span><br /><b style="font-weight:500">Công việc của tôi</b></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Our work</span><br /><b style="font-weight:500">Công việc của chúng ta</b></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">My standards</span><br /><b style="font-weight:500">Chuẩn mực của tôi</b></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Team standards</span><br /><b style="font-weight:500">Chuẩn mực của nhóm</b></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">My relationships</span><br /><b style="font-weight:500">Các mối quan hệ của tôi</b></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Fairness across relationships</span><br /><b style="font-weight:500">Sự công bằng trong mọi mối quan hệ</b></td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">My discomfort</span><br /><b style="font-weight:500">Sự khó chịu của tôi</b></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">My responsibility to act</span><br /><b style="font-weight:500">Trách nhiệm hành động của tôi</b></td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Manager question:</b> “Is this something I am uncomfortable with or something the team genuinely needs me to address?”</div>
+<div><b>Câu hỏi cho người quản lý:</b> “Đây là điều tôi thấy khó chịu, hay là điều nhóm thực sự cần tôi xử lý?”</div>
+</div>
+</section>
+<section id="s08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 08</span>
+<span style="color:#86958a">Discussion activity</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Discussion Activity: Notice or let it go?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động thảo luận: Nhận diện hay bỏ qua?</h3>
+<div style="color:var(--en,#56665a)">Decide first. Then explain what signal your choice sends to the team.</div>
+<div>Hãy quyết định trước. Sau đó giải thích lựa chọn của bạn gửi tín hiệu gì tới cả nhóm.</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:12%"><span>Case</span><br /><span>Tình huống</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:44%">English</td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:44%">Tiếng Việt</td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">A</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">A usually reliable employee is 10 minutes late once.</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Một nhân viên vốn đáng tin cậy đi trễ 10 phút một lần.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">B</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">A strong performer repeatedly interrupts junior colleagues.</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Một nhân viên giỏi liên tục ngắt lời các đồng nghiệp ít kinh nghiệm hơn.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">C</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Two colleagues disagree strongly about a technical approach.</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Hai đồng nghiệp bất đồng gay gắt về một hướng tiếp cận kỹ thuật.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">D</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">A team member publicly mocks another person’s suggestion.</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Một thành viên chế giễu đề xuất của người khác trước mặt mọi người.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">E</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Someone prefers a different working style from yours.</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Một người thích phong cách làm việc khác với bạn.</td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">F</b></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">A team member repeatedly ignores an agreed team process.</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Một thành viên nhiều lần phớt lờ quy trình mà cả nhóm đã thống nhất.</td></tr>
+</tbody>
+</table>
+</section>
+<section id="s09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 09</span>
+<span style="color:#86958a">The 5-Impact Test</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The 5-Impact Test</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bài kiểm tra 5 tác động</h3>
+<div style="color:var(--en,#56665a)"><i>Adapted for this workshop from the Situation-Behavior-Impact (SBI) feedback framework (Center for Creative Leadership)</i><br /><br />When deciding whether a behavior needs addressing, consider:</div>
+<div><i>Được điều chỉnh cho workshop này từ khung phản hồi Tình huống – Hành vi – Tác động (Situation-Behavior-Impact – SBI) của Center for Creative Leadership</i><br /><br /><span>Khi quyết định một hành vi có cần được xử lý hay không, hãy cân nhắc:</span></div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:18%"><span>Impact</span><br /><span>Tác động</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:41%">English</td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:41%">Tiếng Việt</td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">PERFORMANCE</b><br /><span>Hiệu suất</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Does it affect results, quality, productivity or delivery?</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Nó có ảnh hưởng đến kết quả, chất lượng, năng suất hay tiến độ bàn giao không?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">PEOPLE</b><br /><span>Con người</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Does it affect colleagues, workload, wellbeing or collaboration?</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Nó có ảnh hưởng đến đồng nghiệp, khối lượng công việc, sức khoẻ tinh thần hay sự cộng tác không?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">CULTURE</b><br /><span>Văn hoá</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Does it reinforce or undermine the behaviors we expect?</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Nó củng cố hay làm xói mòn những hành vi mà chúng ta kỳ vọng?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">TRUST</b><br /><span>Niềm tin</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Does it affect reliability, credibility or working relationships?</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Nó có ảnh hưởng đến độ tin cậy, uy tín hay quan hệ công việc không?</td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">POLICY / ETHICS</b><br /><span>Chính sách / Đạo đức</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Does it create a compliance, fairness, safety or ethical concern?</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Nó có gây ra vấn đề về tuân thủ, công bằng, an toàn hay đạo đức không?</td></tr>
+</tbody>
+</table>
+<figure style="margin:10px 0 0;max-width:320px;break-inside:avoid">
+<img src="assets/t8/p09a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Mô hình phản hồi SBI (Situation – Behavior – Impact). Chú thích trên slide: “The SBI Feedback Model is a structured framework developed by the Center for Creative Leadership” (Mô hình phản hồi SBI là một khung có cấu trúc do Center for Creative Leadership phát triển).</figcaption>
+</figure><div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:stretch"><div style="flex:1 1 120px;min-width:0;display:flex"><div style="flex:1;border:1px solid #dae4d6;text-align:center"><div style="background:#d9a07a;font-weight:700;font-size:18px;padding:6px">1.</div><div style="padding:8px;line-height:1.35"><div style="color:var(--en,#56665a);font-weight:700;text-transform:uppercase">Situation</div><div style="font-weight:700">Tình huống</div></div></div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">→</div><div style="flex:1 1 120px;min-width:0;display:flex"><div style="flex:1;border:1px solid #dae4d6;text-align:center"><div style="background:#e07a72;font-weight:700;font-size:18px;padding:6px">2.</div><div style="padding:8px;line-height:1.35"><div style="color:var(--en,#56665a);font-weight:700;text-transform:uppercase">Behavior</div><div style="font-weight:700">Hành vi</div></div></div></div><div style="flex:0 0 auto;align-self:center;font-weight:700;color:#86958a;font-size:18px">→</div><div style="flex:1 1 120px;min-width:0;display:flex"><div style="flex:1;border:1px solid #dae4d6;text-align:center"><div style="background:#8fbca3;font-weight:700;font-size:18px;padding:6px">3.</div><div style="padding:8px;line-height:1.35"><div style="color:var(--en,#56665a);font-weight:700;text-transform:uppercase">Impact</div><div style="font-weight:700">Tác động</div></div></div></div></div></div>
+</section>
+<section id="s10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">Discussion activity (debrief)</span>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide nhắc lại sáu tình huống A–F của slide 08, thêm một câu kết:</i></p>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Not every irritation needs correction, but repeated or harmful behavior should not be normalized by silence.</div>
+<div>Không phải điều gì gây khó chịu cũng cần điều chỉnh, nhưng hành vi lặp lại hoặc gây hại thì không nên để sự im lặng biến nó thành bình thường.</div>
+</div>
+</section>
+<section id="s11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">Section 2 · Converse</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">2. Converse: Raise difficult issues clearly and manage your emotions</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">2. Đối thoại: Nêu vấn đề khó một cách rõ ràng và quản lý cảm xúc của bạn</h3>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm hình một trái tim và một bộ não đối diện nhau.</i></p>
+</section>
+<section id="s12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 12</span>
+<span style="color:#86958a">Start with what you can observe</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">CONVERSE starts with what you can observe</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">ĐỐI THOẠI bắt đầu từ những gì bạn quan sát được</h3>
+<div style="color:var(--en,#56665a)">The first sentence often determines whether the conversation opens or closes.</div>
+<div>Câu nói đầu tiên thường quyết định cuộc trò chuyện sẽ mở ra hay khép lại.</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:50%"><span>Person / Judgement</span><br /><span>Con người / Phán xét</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:50%"><span>Behaviour / Observation</span><br /><span>Hành vi / Quan sát</span></td></tr></thead>
+<tbody>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">“You’re disrespectful and difficult.”</span><br /><span>“Bạn thật thiếu tôn trọng và khó chịu.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">“In today’s meeting, you interrupted Lan three times while she was presenting.”</span><br /><span>“Trong cuộc họp hôm nay, bạn đã ngắt lời Lan ba lần khi cô ấy đang trình bày.”</span></td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Then make the standard visible:</b><br />“I want us to challenge ideas strongly, and I expect us to let colleagues finish and respond to the idea, not the person.”</div>
+<div><b>Sau đó, nêu rõ chuẩn mực:</b><br /><span>“Tôi muốn chúng ta phản biện ý tưởng thật mạnh mẽ, và tôi mong chúng ta để đồng nghiệp nói hết, rồi phản hồi vào ý tưởng chứ không nhắm vào con người.”</span></div>
+</div>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Camera test:</b> could a camera or microphone have captured what you are describing?</div>
+<div><b>Phép thử máy quay:</b> một chiếc máy quay hay micro có thể ghi lại điều bạn đang mô tả không?</div>
+</div>
+</section>
+<section id="s13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 13</span>
+<span style="color:#86958a">Rewrite the opening</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity: Rewrite the opening</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động: Viết lại câu mở đầu</h3>
+<div style="color:var(--en,#56665a)">Make each opening specific, neutral and clear about the standard (behavior).</div>
+<div>Hãy làm cho mỗi câu mở đầu cụ thể, trung lập và rõ ràng về chuẩn mực (hành vi).</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:50%"><span>Opening</span><br /><span>Câu mở đầu</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:50%"><span>Your rewrite</span><br /><span>Bạn viết lại</span></td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">“You’ve got a bad attitude.”</span><br /><span>“Bạn có thái độ không tốt.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Rewrite here: observation + standard</span><br /><span>Viết lại tại đây: quan sát + chuẩn mực</span><div style="margin-top:8px;padding-top:7px;border-top:1px dashed #d3dfd0"><span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Ví dụ gợi ý · không có trên slide</span><br /><span style="color:var(--en,#56665a)">“In this morning’s review, you rolled your eyes and said ‘this won’t work’ twice before Minh finished explaining. I expect us to hear the full proposal before we challenge it.”</span><br /><span>“Trong buổi review sáng nay, bạn đã đảo mắt và hai lần nói ‘cách này không được đâu’ trước khi Minh giải thích xong. Tôi mong chúng ta nghe hết đề xuất rồi mới phản biện.”</span></div></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">“Everyone thinks you’re difficult.”</span><br /><span>“Ai cũng thấy bạn khó chịu.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Rewrite here: observation + standard</span><br /><span>Viết lại tại đây: quan sát + chuẩn mực</span><div style="margin-top:8px;padding-top:7px;border-top:1px dashed #d3dfd0"><span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Ví dụ gợi ý · không có trên slide</span><br /><span style="color:var(--en,#56665a)">“This week, two colleagues told me they didn’t get replies to their messages about the release for two days. I expect us to reply to teammates within one working day, even if it’s just to say when we can help.”</span><br /><span>“Tuần này, hai đồng nghiệp cho tôi biết tin nhắn của họ về đợt phát hành không được bạn trả lời suốt hai ngày. Tôi mong chúng ta phản hồi đồng đội trong vòng một ngày làm việc, dù chỉ để báo khi nào mình có thể hỗ trợ.”</span></div></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">“Can you be more professional?”</span><br /><span>“Bạn có thể chuyên nghiệp hơn được không?”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Rewrite here: observation + standard</span><br /><span>Viết lại tại đây: quan sát + chuẩn mực</span><div style="margin-top:8px;padding-top:7px;border-top:1px dashed #d3dfd0"><span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Ví dụ gợi ý · không có trên slide</span><br /><span style="color:var(--en,#56665a)">“In yesterday’s client call, you joined 15 minutes late and had not reviewed the agenda we shared. I expect us to be on time and prepared for client meetings.”</span><br /><span>“Trong cuộc gọi với khách hàng hôm qua, bạn vào muộn 15 phút và chưa xem trước chương trình họp mà nhóm đã gửi. Tôi mong chúng ta đến đúng giờ và chuẩn bị trước cho các buổi họp với khách hàng.”</span></div></td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">“You always make meetings unpleasant.”</span><br /><span>“Lúc nào bạn cũng làm cuộc họp trở nên khó chịu.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Rewrite here: observation + standard</span><br /><span>Viết lại tại đây: quan sát + chuẩn mực</span><div style="margin-top:8px;padding-top:7px;border-top:1px dashed #d3dfd0"><span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Ví dụ gợi ý · không có trên slide</span><br /><span style="color:var(--en,#56665a)">“In the last two stand-ups, you replied to Lan’s updates with ‘that’s obvious’ and ‘again?’. I expect us to respond to updates respectfully and raise concerns about the work, not the person.”</span><br /><span>“Trong hai buổi họp đầu ngày gần nhất, bạn đáp lại cập nhật của Lan bằng câu ‘chuyện hiển nhiên mà’ và ‘lại nữa à?’. Tôi mong chúng ta phản hồi các cập nhật một cách tôn trọng và nêu băn khoăn về công việc, không nhắm vào con người.”</span></div></td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Pair check:</b> Is it observable? Is it free of labels? Is the expectation clear?</div>
+<div><b>Kiểm tra theo cặp:</b> Điều này có quan sát được không? Có tránh dán nhãn không? Kỳ vọng đã rõ ràng chưa?</div>
+</div>
+</section>
+<section id="s14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 14</span>
+<span style="color:#86958a">Manage your emotions</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">At this stage, also try to manage your emotions</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Ở giai đoạn này, hãy cố gắng quản lý cả cảm xúc của bạn</h3>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm ảnh một người đàn ông cầm nhiều tấm giấy vẽ các gương mặt biểu cảm khác nhau.</i></p>
+</section>
+<section id="s15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 15</span>
+<span style="color:#86958a">What are emotions?</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">What are Emotions?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Cảm xúc là gì?</h3>
+<div style="color:var(--en,#56665a)"><b>Definition</b><ul style="margin:0;padding-left:18px"><li>Emotions are psychological and physiological responses to situations that matter to us.</li><li>They influence how we think, feel, and act.</li></ul><br /><b>In simple terms, emotions:</b><ul style="margin:0;padding-left:18px"><li>are signals about what we are experiencing</li><li>shape our attention and interpretation</li><li>affect our reactions, decisions, and relationships</li><li>can help or hinder us, depending on how we manage them</li></ul></div>
+<div><b>Định nghĩa</b><ul style="margin:0;padding-left:18px"><li>Cảm xúc là những phản ứng tâm lý và sinh lý trước các tình huống có ý nghĩa với chúng ta.</li><li>Chúng ảnh hưởng đến cách chúng ta suy nghĩ, cảm nhận và hành động.</li></ul><br /><b>Nói đơn giản, cảm xúc:</b><ul style="margin:0;padding-left:18px"><li>là tín hiệu về những gì chúng ta đang trải qua</li><li>định hướng sự chú ý và cách chúng ta diễn giải</li><li>ảnh hưởng đến phản ứng, quyết định và các mối quan hệ của chúng ta</li><li>có thể giúp ích hoặc cản trở chúng ta, tuỳ vào cách chúng ta quản lý chúng</li></ul></div>
+</div>
+</section>
+<section id="s16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 16</span>
+<span style="color:#86958a">Emotion check-in</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity: Emotion Check-In</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động: Điểm danh cảm xúc</h3>
+<div style="color:var(--en,#56665a)">Notice how emotions show up in leadership and influence our responses at work.<br /><br /><b>Instructions</b><br />Think of a recent work situation where you felt a strong emotion as a leader or colleague. It could be frustration, pressure, disappointment, pride, anxiety, or excitement.<br /><br />Reflect on these questions:<ul style="margin:0;padding-left:18px"><li>What happened?</li><li>How/What did you feel?</li><li>How did that emotion affect your response?</li></ul><br /><b>Process</b><ul style="margin:0;padding-left:18px"><li>2 minutes individual reflection</li><li>3 minutes pair sharing</li><li>Be ready to share one insight with the room</li></ul></div>
+<div><span>Nhận biết cảm xúc xuất hiện thế nào trong vai trò lãnh đạo và ảnh hưởng ra sao đến cách chúng ta phản ứng trong công việc.</span><br /><br /><b>Hướng dẫn</b><br /><span>Hãy nghĩ về một tình huống công việc gần đây khi bạn trải qua một cảm xúc mạnh, với tư cách người lãnh đạo hay đồng nghiệp. Đó có thể là bực bội, áp lực, thất vọng, tự hào, lo lắng hay hào hứng.</span><br /><br /><span>Suy ngẫm về các câu hỏi sau:</span><ul style="margin:0;padding-left:18px"><li>Chuyện gì đã xảy ra?</li><li>Bạn đã cảm thấy thế nào/cảm thấy gì?</li><li>Cảm xúc đó ảnh hưởng thế nào đến phản ứng của bạn?</li></ul><br /><b>Cách thực hiện</b><ul style="margin:0;padding-left:18px"><li>2 phút suy ngẫm cá nhân</li><li>3 phút chia sẻ theo cặp</li><li>Sẵn sàng chia sẻ một điều nhận ra với cả lớp</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm hình những quả bóng mặt cười nhiều màu với các biểu cảm khác nhau.</i></p>
+</section>
+<section id="s17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 17</span>
+<span style="color:#86958a">Debrief</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Debrief message</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thông điệp tổng kết</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Emotions are always present in leadership.</li><li>Emotional intelligence begins with noticing them before they start shaping our behavior unconsciously.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Cảm xúc luôn hiện diện trong công việc lãnh đạo.</li><li>Trí tuệ cảm xúc bắt đầu từ việc nhận ra cảm xúc trước khi chúng âm thầm chi phối hành vi của chúng ta.</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm ảnh bìa sách <i>Primal Leadership</i>.</i></p>
+</section>
+<section id="s18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">Emotional intelligence</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">What is Emotional Intelligence (EI)?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Trí tuệ cảm xúc (EI) là gì?</h3>
+<div style="color:var(--en,#56665a)"><b>Definition</b><br />EI is the ability to recognize, understand, manage, and use emotions effectively in ourselves and in our interactions with others<br /><br /><b>Emotional intelligence includes the ability to:</b><ul style="margin:0;padding-left:18px"><li>notice what we are feeling</li><li>understand how emotions affect our thoughts and behavior</li><li>regulate our responses in constructive ways</li><li>recognize emotions in others</li><li>respond in ways that support trust, communication, and relationships</li></ul></div>
+<div><b>Định nghĩa</b><br /><span>EI là khả năng nhận biết, thấu hiểu, quản lý và sử dụng cảm xúc một cách hiệu quả, ở chính mình và trong tương tác với người khác</span><br /><br /><b>Trí tuệ cảm xúc bao gồm khả năng:</b><ul style="margin:0;padding-left:18px"><li>nhận biết mình đang cảm thấy gì</li><li>hiểu cảm xúc ảnh hưởng thế nào đến suy nghĩ và hành vi</li><li>điều chỉnh phản ứng của mình theo hướng xây dựng</li><li>nhận biết cảm xúc của người khác</li><li>phản hồi theo cách củng cố niềm tin, giao tiếp và các mối quan hệ</li></ul></div>
+</div>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a">(Grewal et al., 2006)</p>
+<figure style="margin:10px 0 0;max-width:340px;break-inside:avoid">
+<img src="assets/t8/p18a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">“4 Core Competencies of Emotional Intelligence” (4 năng lực cốt lõi của trí tuệ cảm xúc), Harvard Business School Online.</figcaption>
+</figure><div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin:14px 0 4px;break-inside:avoid;border:1.5px solid #9fb8a2;border-radius:10px;background:#fbfdf9;padding:14px 16px 12px 10px"><div style="display:grid;grid-template-rows:1fr 1fr;gap:8px"><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Nhận thức</span> · Awareness</span></div><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Hành động</span> · Actions</span></div></div><div style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:1fr;gap:8px"><div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">TỰ NHẬN THỨC</b></div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>Self-Awareness</b> </div></div><div style="background:#dcebd3;border:1px solid #9fc49a;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">NHẬN THỨC XÃ HỘI</b></div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #9fc49a;padding-top:6px"><b>Social Awareness</b> </div></div><div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">TỰ QUẢN LÝ</b></div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>Self Management</b> </div></div><div style="background:#dcebd3;border:1px solid #9fc49a;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">QUẢN LÝ MỐI QUAN HỆ</b></div><div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #9fc49a;padding-top:6px"><b>Relationship Management</b> </div></div></div><div></div><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;border-top:1.5px solid #86958a;padding-top:6px"><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Bản thân</span> · Self</span><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Người khác</span> · Others</span></div></div>
+</section>
+<section id="s19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 19</span>
+<span style="color:#86958a">Video observation</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity: Video Observation (Group Activity)</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động: Quan sát video (hoạt động nhóm)</h3>
+<div style="color:var(--en,#56665a)">How emotional intelligence shows up in leadership behavior and workplace interaction.<br /><br /><b>Discussion questions</b><ol style="margin:0;padding-left:20px"><li>What emotions did you notice in the interaction?</li><li>What signs of high or low emotional intelligence did you observe?</li><li>How did emotions influence communication and behavior?</li><li>How might the interaction have gone differently with stronger emotional intelligence?</li><li>What leadership lessons can we take from this example?</li></ol></div>
+<div><span>Trí tuệ cảm xúc thể hiện thế nào trong hành vi lãnh đạo và tương tác nơi làm việc.</span><br /><br /><b>Câu hỏi thảo luận</b><ol style="margin:0;padding-left:20px"><li>Bạn nhận thấy những cảm xúc nào trong cuộc tương tác?</li><li>Bạn quan sát được những dấu hiệu nào của trí tuệ cảm xúc cao hoặc thấp?</li><li>Cảm xúc đã ảnh hưởng thế nào đến giao tiếp và hành vi?</li><li>Cuộc tương tác có thể diễn ra khác đi thế nào nếu trí tuệ cảm xúc mạnh hơn?</li><li>Chúng ta rút ra được bài học lãnh đạo nào từ ví dụ này?</li></ol></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm khung hình của một đoạn phim được chiếu trong lớp.</i></p>
+</section>
+<section id="s20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 20</span>
+<span style="color:#86958a">Debrief</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Debrief message</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thông điệp tổng kết</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Emotional intelligence becomes visible in how leaders respond, communicate, and influence others in real situations.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Trí tuệ cảm xúc hiện ra qua cách người lãnh đạo phản ứng, giao tiếp và tạo ảnh hưởng tới người khác trong những tình huống thực tế.</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm ảnh bìa sách <i>Primal Leadership</i>.</i></p>
+</section>
+<section id="s21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 21</span>
+<span style="color:#86958a">Self-awareness and self-management</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Self-Awareness and Self-Management</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tự nhận thức và tự quản lý</h3>
+<div style="color:var(--en,#56665a)">Two core intrapersonal foundations are:<ul style="margin:0;padding-left:18px"><li><b>Self-awareness:</b> noticing feelings, intuition, and inner signals</li><li><b>Self-management:</b> managing emotions, attitudes, and behavior more effectively</li></ul><br />These two are closely linked:<ul style="margin:0;padding-left:18px"><li>self-awareness helps us recognize what we feel</li><li>self-management helps us act constructively under pressure</li><li>together, they support better performance and stronger relationships</li></ul></div>
+<div>Hai nền tảng cốt lõi bên trong mỗi người là:<ul style="margin:0;padding-left:18px"><li><b>Tự nhận thức:</b> nhận biết cảm xúc, trực giác và các tín hiệu bên trong</li><li><b>Tự quản lý:</b> quản lý cảm xúc, thái độ và hành vi hiệu quả hơn</li></ul><br /><span>Hai yếu tố này gắn chặt với nhau:</span><ul style="margin:0;padding-left:18px"><li>tự nhận thức giúp chúng ta nhận ra mình đang cảm thấy gì</li><li>tự quản lý giúp chúng ta hành động có tính xây dựng khi chịu áp lực</li><li>kết hợp lại, chúng giúp làm việc hiệu quả hơn và xây dựng quan hệ bền chặt hơn</li></ul></div>
+</div>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a">(Neale et al., 2009)</p>
+</section>
+<section id="s22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 22</span>
+<span style="color:#86958a">Self-awareness</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Self-Awareness</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tự nhận thức</h3>
+<div style="color:var(--en,#56665a)">Self-awareness is being in touch with your feelings, intuition, and the signals your body is sending you.<br /><br />People with stronger self-awareness are more able to:<ul style="margin:0;padding-left:18px"><li>notice what they are feeling in the moment</li><li>recognize emotional triggers</li><li>understand where emotions show up in the body</li><li>connect emotions to underlying attitudes, beliefs, or values</li><li>learn from emotional patterns instead of repeating them automatically</li></ul></div>
+<div><span>Tự nhận thức là kết nối được với cảm xúc, trực giác của bạn và những tín hiệu mà cơ thể đang gửi tới bạn.</span><br /><br /><span>Người có khả năng tự nhận thức tốt hơn thường có thể:</span><ul style="margin:0;padding-left:18px"><li>nhận biết mình đang cảm thấy gì ngay lúc đó</li><li>nhận ra những yếu tố kích hoạt cảm xúc</li><li>hiểu cảm xúc biểu hiện ở đâu trên cơ thể</li><li>liên hệ cảm xúc với thái độ, niềm tin hay giá trị ẩn bên dưới</li><li>rút kinh nghiệm từ các khuôn mẫu cảm xúc thay vì lặp lại chúng một cách tự động</li></ul></div>
+</div>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a">(Neale et al., 2009)</p>
+</section>
+<section id="s23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 23</span>
+<span style="color:#86958a">Self-awareness reflection</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity: Self-Awareness Through Emotional Reflection</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động: Tự nhận thức qua suy ngẫm cảm xúc</h3>
+<div style="color:var(--en,#56665a)">As you watch the video, do not focus only on the facts of the case. Pay attention to your own emotional response.<br /><br /><b>Self-awareness questions after watching:</b><ol style="margin:0;padding-left:20px"><li>What emotion am I feeling right now?</li><li>What is triggering this reaction in me?</li><li>What personal values does this response reflect?</li><li>If I were to react immediately, what might I do?</li><li>What would a more self-aware and self-managed response look like?</li></ol></div>
+<div><span>Khi xem video, đừng chỉ tập trung vào các tình tiết của câu chuyện. Hãy chú ý đến phản ứng cảm xúc của chính bạn.</span><br /><br /><b>Câu hỏi tự nhận thức sau khi xem:</b><ol style="margin:0;padding-left:20px"><li>Lúc này tôi đang cảm thấy gì?</li><li>Điều gì đang kích hoạt phản ứng này trong tôi?</li><li>Phản ứng này phản ánh những giá trị cá nhân nào?</li><li>Nếu phản ứng ngay lập tức, tôi có thể sẽ làm gì?</li><li>Một phản ứng có tự nhận thức và tự quản lý tốt hơn sẽ trông như thế nào?</li></ol></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm khung hình của đoạn video được chiếu.</i></p>
+</section>
+<section id="s24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 24</span>
+<span style="color:#86958a">Self-management</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">What is Self-Management?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tự quản lý là gì?</h3>
+<div style="color:var(--en,#56665a)"><b>Definition</b><br />Self-management is the ability to regulate emotions, manage impulses, and respond in constructive ways, especially under pressure.<br /><br /><b>Self-management helps leaders to:</b><ul style="margin:0;padding-left:18px"><li>stay calm in difficult situations</li><li>pause before reacting</li><li>respond thoughtfully rather than emotionally</li><li>remain focused and disciplined</li><li>act in ways that support trust and effectiveness</li></ul></div>
+<div><b>Định nghĩa</b><br /><span>Tự quản lý là khả năng điều chỉnh cảm xúc, kiểm soát sự bốc đồng và phản hồi theo cách có tính xây dựng, nhất là khi chịu áp lực.</span><br /><br /><b>Tự quản lý giúp người lãnh đạo:</b><ul style="margin:0;padding-left:18px"><li>giữ bình tĩnh trong tình huống khó khăn</li><li>dừng lại trước khi phản ứng</li><li>phản hồi có cân nhắc thay vì theo cảm xúc</li><li>giữ sự tập trung và kỷ luật</li><li>hành động theo cách củng cố niềm tin và hiệu quả</li></ul></div>
+</div>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a">(Neale et al., 2009)</p>
+<figure style="margin:10px 0 0;max-width:320px;break-inside:avoid">
+<img src="assets/t8/p24a.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Vòng tròn Emotional Intelligence (Trí tuệ cảm xúc) với năm thành phần.</figcaption>
+</figure><div style="margin:12px 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:center;max-width:600px;margin:0 auto"><div style="border:1px solid #e3a0a0;border-radius:999px;padding:6px 12px;text-align:center;line-height:1.3;font-size:12.5px"><div style="color:var(--en,#56665a)">Motivation/Passion</div><div style="font-weight:700">Động lực/Đam mê</div></div><div></div><div style="border:1px solid #e3a0a0;border-radius:999px;padding:6px 12px;text-align:center;line-height:1.3;font-size:12.5px"><div style="color:var(--en,#56665a)">Self-Awareness</div><div style="font-weight:700">Tự nhận thức</div></div><div style="border:1px solid #e3a0a0;border-radius:999px;padding:6px 12px;text-align:center;line-height:1.3;font-size:12.5px"><div style="color:var(--en,#56665a)">Empathy</div><div style="font-weight:700">Thấu cảm</div></div><div style="justify-self:center;align-self:center;width:150px;height:150px;border-radius:50%;background:#b3202a;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.3;padding:12px;box-sizing:border-box;font-size:12.5px"><div style="font-weight:700">Emotional Intelligence</div><div style="margin-top:3px">Trí tuệ cảm xúc</div></div><div style="border:1px solid #e3a0a0;border-radius:999px;padding:6px 12px;text-align:center;line-height:1.3;font-size:12.5px"><div style="color:var(--en,#56665a)">Self-Regulation/Management</div><div style="font-weight:700">Tự điều chỉnh/Tự quản lý</div></div><div></div><div style="border:1px solid #e3a0a0;border-radius:999px;padding:6px 12px;text-align:center;line-height:1.3;font-size:12.5px"><div style="color:var(--en,#56665a)">Social Skills</div><div style="font-weight:700">Kỹ năng xã hội</div></div><div></div></div></div>
+</section>
+<section id="s25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 25</span>
+<span style="color:#86958a">Activity 6</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity 6: Self Management in Action</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động 6: Tự quản lý trong thực tế</h3>
+</div>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Group Discussion:</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thảo luận nhóm:</h3>
+<div style="color:var(--en,#56665a)">As Jeff, how would you handle the situation differently?</div>
+<div>Nếu là Jeff, bạn sẽ xử lý tình huống này khác đi như thế nào?</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm khung hình của đoạn video về nhân vật Jeff được chiếu trong lớp.</i></p>
+</section>
+<section id="s26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 26</span>
+<span style="color:#86958a">Why it matters</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Why Self-Awareness and Self-Management Matter</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Vì sao tự nhận thức và tự quản lý quan trọng</h3>
+<div style="color:var(--en,#56665a)">Thoughts, feelings, and actions are always connected, and they shape performance.<ul style="margin:0;padding-left:18px"><li>Emotions are involved in every action, decision, and judgment</li><li>Whatever the situation, we are always <b>thinking, feeling, and doing</b></li><li>Attitudes influence emotions, and emotions influence behavior</li><li>When emotions take over thinking, we can experience an <b>emotional hijack</b></li></ul></div>
+<div>Suy nghĩ, cảm xúc và hành động luôn gắn liền với nhau, và chúng định hình hiệu quả công việc.<ul style="margin:0;padding-left:18px"><li>Cảm xúc tham gia vào mọi hành động, quyết định và nhận định</li><li>Dù trong tình huống nào, chúng ta luôn <b>suy nghĩ, cảm nhận và hành động</b></li><li>Thái độ ảnh hưởng đến cảm xúc, và cảm xúc ảnh hưởng đến hành vi</li><li>Khi cảm xúc lấn át lý trí, chúng ta có thể rơi vào trạng thái <b>bị cảm xúc “chiếm quyền”</b> (emotional hijack)</li></ul></div>
+</div>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a">(Neale et al., 2009)</p>
+</section>
+<section id="s27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 27</span>
+<span style="color:#86958a">Leadership implications</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Leadership Implications</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hàm ý đối với lãnh đạo</h3>
+<div style="color:var(--en,#56665a)">Without self-awareness and self-management, leaders may:<ul style="margin:0;padding-left:18px"><li>react habitually rather than thoughtfully</li><li>let frustration, fear, or defensiveness drive behavior</li><li>reduce trust, clarity, and effectiveness</li></ul><br />With stronger self-awareness and self-management, leaders are better able to:<ul style="margin:0;padding-left:18px"><li>pause</li><li>interpret what they are feeling</li><li>manage their response</li><li>act more constructively under pressure</li></ul></div>
+<div>Thiếu tự nhận thức và tự quản lý, người lãnh đạo có thể:<ul style="margin:0;padding-left:18px"><li>phản ứng theo thói quen thay vì có cân nhắc</li><li>để sự bực bội, sợ hãi hay tâm thế phòng thủ chi phối hành vi</li><li>làm giảm niềm tin, sự rõ ràng và hiệu quả</li></ul><br /><span>Khi tự nhận thức và tự quản lý tốt hơn, người lãnh đạo có khả năng:</span><ul style="margin:0;padding-left:18px"><li>dừng lại</li><li>diễn giải điều mình đang cảm thấy</li><li>quản lý phản ứng của mình</li><li>hành động có tính xây dựng hơn khi chịu áp lực</li></ul></div>
+</div>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a">(Neale et al., 2009)</p>
+</section>
+<section id="s28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 28</span>
+<span style="color:#86958a">Converse (revisited)</span>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide nhắc lại nội dung slide 12 (câu phán xét và câu quan sát, cùng cách nêu chuẩn mực). Dòng cuối được thay bằng:</i></p>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Your EI also contributes to the effectiveness of your action at this stage.</div>
+<div>Trí tuệ cảm xúc của bạn cũng góp phần làm cho hành động ở giai đoạn này hiệu quả hơn.</div>
+</div>
+</section>
+<section id="s29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 29</span>
+<span style="color:#86958a">Section 3 · Coach</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">3. Coach: Use questions to create reflection and ownership</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">3. Coaching: Dùng câu hỏi để tạo ra sự suy ngẫm và tinh thần làm chủ</h3>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm hình minh hoạ hai người ngồi trò chuyện.</i></p>
+</section>
+<section id="s30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 30</span>
+<span style="color:#86958a">Coaching for behavioral change</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">What is coaching for behavioral change?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Coaching để thay đổi hành vi là gì?</h3>
+<div style="color:var(--en,#56665a)">A line-manager approach: create reflection and ownership while remaining clear about the standard.<br /><br /><b>COACHING = helping someone THINK so they can CHANGE</b></div>
+<div><span>Một cách tiếp cận dành cho quản lý trực tiếp: tạo ra sự suy ngẫm và tinh thần làm chủ, đồng thời vẫn rõ ràng về chuẩn mực.</span><br /><br /><b>COACHING = giúp một người SUY NGHĨ để họ có thể THAY ĐỔI</b></div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:25%"><span>1 · See</span><br /><span>Nhìn nhận</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:25%"><span>2 · Reflect</span><br /><span>Suy ngẫm</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:25%"><span>3 · Own</span><br /><span>Làm chủ</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:25%"><span>4 · Change</span><br /><span>Thay đổi</span></td></tr></thead>
+<tbody>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">Recognise what I did</span><br /><span>Nhận ra điều tôi đã làm</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Understand the impact</span><br /><span>Hiểu tác động</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Take responsibility</span><br /><span>Nhận trách nhiệm</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Choose a better behavior</span><br /><span>Chọn một hành vi tốt hơn</span></td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Managerial coaching:</b> the manager acts as a facilitator of workplace learning, enabling employees to learn, develop and improve performance.</div>
+<div><b>Coaching trong quản lý:</b> người quản lý đóng vai trò người dẫn dắt việc học tập tại nơi làm việc, giúp nhân viên học hỏi, phát triển và cải thiện hiệu suất.</div>
+</div>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a">Sources / Nguồn: Ellinger et al. (2011), definition reproduced/discussed in Turner et al. (2023), <i>Frontiers in Psychology</i>; CIPD (2025).</p>
+</section>
+<section id="s31" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 31</span>
+<span style="color:#86958a">Not the same as being soft</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Coaching is not the same as being “soft”</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Coaching không có nghĩa là “dễ dãi”</h3>
+<div style="color:var(--en,#56665a)">For behavioral correction, coaching sits inside a clear management conversation.</div>
+<div>Khi cần điều chỉnh hành vi, coaching nằm trong một cuộc trò chuyện quản lý rõ ràng.</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:50%"><span>Left column (red)</span><br /><span>Cột trái (màu đỏ)</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:50%"><span>Right column (green)</span><br /><span>Cột phải (màu xanh)</span></td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">TELLING<span> · Ra lệnh</span></b><br /><span style="color:var(--en,#56665a)">“Don’t do that again.”</span><br /><span>“Đừng làm thế nữa.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">CLARIFYING<span> · Làm rõ</span></b><br /><span style="color:var(--en,#56665a)">Make the behavior and standard visible.</span><br /><span>Nêu rõ hành vi và chuẩn mực.</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">JUDGING<span> · Phán xét</span></b><br /><span style="color:var(--en,#56665a)">“You have a bad attitude.”</span><br /><span>“Bạn có thái độ không tốt.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">QUESTIONING<span> · Đặt câu hỏi</span></b><br /><span style="color:var(--en,#56665a)">Help the employee examine what happened.</span><br /><span>Giúp nhân viên xem xét lại chuyện đã xảy ra.</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">EXCUSING<span> · Bao biện</span></b><br /><span style="color:var(--en,#56665a)">“I understand, so it’s okay.”</span><br /><span>“Tôi hiểu mà, nên không sao đâu.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">LISTENING + CHALLENGING<span> · Lắng nghe + chất vấn</span></b><br /><span style="color:var(--en,#56665a)">Explore perspective without abandoning the standard.</span><br /><span>Tìm hiểu góc nhìn của họ mà không từ bỏ chuẩn mực.</span></td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">FIXING<span> · Làm thay</span></b><br /><span style="color:var(--en,#56665a)">“Here’s exactly what you should do.”</span><br /><span>“Đây chính xác là điều bạn nên làm.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">OWNERSHIP<span> · Làm chủ</span></b><br /><span style="color:var(--en,#56665a)">Let the employee articulate a better response.</span><br /><span>Để nhân viên tự nói ra cách phản ứng tốt hơn.</span></td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">The manager provides clarity about <b>WHAT</b> needs to change. Coaching helps the employee work through <b>HOW</b> to change it.</div>
+<div>Người quản lý làm rõ <b>ĐIỀU GÌ</b> cần thay đổi. Coaching giúp nhân viên tự tìm ra <b>CÁCH</b> thay đổi.</div>
+</div>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a"><span>CIPD (2025): workplace coaching uses one-to-one conversations to enhance skills, knowledge or work performance and focuses on specific skills and goals.</span><br /><span>CIPD (2025): coaching tại nơi làm việc dùng các cuộc trò chuyện một-một để nâng cao kỹ năng, kiến thức hay hiệu quả công việc, và tập trung vào những kỹ năng và mục tiêu cụ thể.</span></p>
+</section>
+<section id="s32" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 32</span>
+<span style="color:#86958a">Intention ≠ impact</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity: Intention ≠ impact</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động: Ý định ≠ tác động</h3>
+<div style="color:var(--en,#56665a)">Practise moving the conversation forward without debating whether the person “meant it.”</div>
+<div>Luyện cách đưa cuộc trò chuyện tiến lên mà không tranh cãi xem người kia có “cố ý” hay không.</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:50%"><span>Employee</span><br /><span>Nhân viên</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:50%"><span>Manager</span><br /><span>Quản lý</span></td></tr></thead>
+<tbody>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">“I was only joking. I didn’t mean to offend anyone.”</span><br /><span>“Tôi chỉ đùa thôi. Tôi không có ý xúc phạm ai cả.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">Acknowledge intention → refocus on impact → ask for an alternative</span><br /><span>Ghi nhận ý định → quay về tác động → đề nghị một cách làm khác</span></td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>In pairs:</b> create a 2-3 sentence response. Then swap with a new employee line:</div>
+<div><b>Theo cặp:</b> soạn một câu trả lời dài 2–3 câu. Sau đó đổi sang một câu nói khác của nhân viên:</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Trên slide, phần sau dấu hai chấm để trống.</i></p>
+</section>
+<section id="s33" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 33</span>
+<span style="color:#86958a">Listening</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Listening as Emotional Intelligence</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lắng nghe – một biểu hiện của trí tuệ cảm xúc</h3>
+<div style="color:var(--en,#56665a)">Listening is more than hearing words; it is how leaders show attention, respect, and understanding (Neale et al., 2009).<br /><br /><b>Common barriers to listening, such as:</b><ul style="margin:0;padding-left:18px"><li>getting distracted by inner thoughts</li><li>planning what to say next</li><li>interrupting</li><li>listening through labels or preconceptions</li><li>turning the conversation back to yourself</li><li>dismissing or trivializing others’ concerns</li><li>giving answers too quickly</li></ul></div>
+<div><span>Lắng nghe không chỉ là nghe thấy lời nói; đó là cách người lãnh đạo thể hiện sự chú tâm, tôn trọng và thấu hiểu (Neale et al., 2009).</span><br /><br /><b>Những rào cản thường gặp khi lắng nghe, chẳng hạn:</b><ul style="margin:0;padding-left:18px"><li>bị phân tâm bởi suy nghĩ trong đầu</li><li>lo tính trước điều sẽ nói tiếp</li><li>ngắt lời</li><li>nghe qua lăng kính của nhãn dán hay định kiến</li><li>kéo câu chuyện quay về bản thân mình</li><li>gạt đi hoặc xem nhẹ mối bận tâm của người khác</li><li>đưa ra câu trả lời quá nhanh</li></ul></div>
+</div>
+</section>
+<section id="s34" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 34</span>
+<span style="color:#86958a">Three levels of listening</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Three Levels of Listening</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Ba cấp độ lắng nghe</h3>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:20%"><span>Level</span><br /><span>Cấp độ</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:40%">English</td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:40%">Tiếng Việt</td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">1 · Factual listening</b><br /><span>Lắng nghe dữ kiện</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>listening for facts and information</li><li>useful when clarifying arrangements or details</li></ul></span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><ul style="margin:0;padding-left:18px"><li>lắng nghe để nắm dữ kiện và thông tin</li><li>hữu ích khi cần làm rõ các sắp xếp hay chi tiết</li></ul></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">2 · Emotional listening</b><br /><span>Lắng nghe cảm xúc</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>listening for emotions, tone of voice, pauses, and non-verbal cues</li><li>most useful when trying to truly understand the other person</li></ul></span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><ul style="margin:0;padding-left:18px"><li>lắng nghe cảm xúc, giọng điệu, những khoảng ngừng và tín hiệu phi ngôn ngữ</li><li>hữu ích nhất khi muốn thực sự thấu hiểu người đối diện</li></ul></td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">3 · Intuitive listening</b><br /><span>Lắng nghe trực giác</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>paying attention to your own gut sense during the conversation</li><li>useful when something feels inconsistent or incomplete</li></ul></span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><ul style="margin:0;padding-left:18px"><li>chú ý đến cảm nhận bản năng của chính bạn trong lúc trò chuyện</li><li>hữu ích khi có điều gì đó có vẻ không nhất quán hoặc chưa trọn vẹn</li></ul></td></tr>
+</tbody>
+</table>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a">(Neale et al., 2009)</p>
+</section>
+<section id="s35" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 35</span>
+<span style="color:#86958a">Questioning</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Questioning to Understand Others</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Đặt câu hỏi để thấu hiểu người khác</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Questioning is crucial for understanding others</li><li>Open questions are more helpful than closed questions</li><li>Closed questions often keep people closed</li><li>Questions can be used not only to get information for ourselves, but also to help others generate useful insight for themselves.</li></ul><br /><b>Examples of open questions:</b><ul style="margin:0;padding-left:18px"><li>How are you feeling about this situation?</li><li>What matters most to you here?</li><li>What do you think is making this difficult?</li><li>What would help most right now?</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Đặt câu hỏi là yếu tố then chốt để thấu hiểu người khác</li><li>Câu hỏi mở hữu ích hơn câu hỏi đóng</li><li>Câu hỏi đóng thường khiến người ta khép lại</li><li>Câu hỏi không chỉ giúp chúng ta lấy thông tin, mà còn giúp người khác tự rút ra những nhận thức hữu ích cho chính họ.</li></ul><br /><b>Ví dụ về câu hỏi mở:</b><ul style="margin:0;padding-left:18px"><li>Bạn cảm thấy thế nào về tình huống này?</li><li>Điều gì quan trọng nhất với bạn ở đây?</li><li>Theo bạn, điều gì đang khiến việc này trở nên khó khăn?</li><li>Điều gì sẽ giúp ích nhất lúc này?</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm hình minh hoạ hai người đang trò chuyện.</i></p>
+</section>
+<section id="s36" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 36</span>
+<span style="color:#86958a">Section 4 · Hold accountable</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">4. Hold Accountable: Stay supportive while remaining clear about expected changes</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">4. Giữ trách nhiệm: Luôn hỗ trợ nhưng vẫn rõ ràng về những thay đổi được kỳ vọng</h3>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm hình cột biển chỉ đường, một biển ghi “Clear Expectations” (Kỳ vọng rõ ràng).</i></p>
+</section>
+<section id="s37" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 37</span>
+<span style="color:#86958a">Support + standard</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">HOLD ACCOUNTABLE: support + standard</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">GIỮ TRÁCH NHIỆM: hỗ trợ + chuẩn mực</h3>
+<div style="color:var(--en,#56665a)">Coaching creates ownership. Accountability makes the expected change explicit.</div>
+<div>Coaching tạo ra tinh thần làm chủ. Trách nhiệm làm cho sự thay đổi được kỳ vọng trở nên rõ ràng.</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:20%"></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:40%"><span>Low accountability</span><br /><span>Trách nhiệm thấp</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:40%"><span>High accountability</span><br /><span>Trách nhiệm cao</span></td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>High support</span><br /><span>Hỗ trợ cao</span></span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><b style="font-weight:600;color:#1b2a20">Supportive but unclear</b><br /><span>Hỗ trợ nhưng thiếu rõ ràng</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">DEVELOPMENT + ACCOUNTABILITY</b><br /><span>PHÁT TRIỂN + TRÁCH NHIỆM</span></td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Low support</span><br /><span>Hỗ trợ thấp</span></span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><b style="font-weight:600;color:#1b2a20">Avoidance</b><br /><span>Né tránh</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><b style="font-weight:600;color:#1b2a20">Command / compliance</b><br /><span>Ra lệnh / tuân thủ</span></td></tr>
+</tbody>
+</table>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Trên slide, ô “Development + Accountability” được tô xanh lá để nhấn mạnh.</i></p>
+</section>
+<section id="s38" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 38</span>
+<span style="color:#86958a">When they push back</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">When they push back</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Khi họ phản kháng</h3>
+<div style="color:var(--en,#56665a)">Do not win the argument. Keep the conversation on behaviour, impact and expectation.</div>
+<div>Đừng cố thắng cuộc tranh luận. Hãy giữ cuộc trò chuyện xoay quanh hành vi, tác động và kỳ vọng.</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:50%"><span>Employee says</span><br /><span>Nhân viên nói</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:50%"><span>Employee says</span><br /><span>Nhân viên nói</span></td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">“That’s not what happened.”</span><br /><span>“Không phải chuyện như vậy.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">“Everyone does it.”</span><br /><span>“Ai cũng làm thế mà.”</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">“Why are you picking on me?”</span><br /><span>“Sao anh/chị cứ nhắm vào tôi?”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">“She started it.”</span><br /><span>“Cô ấy gây chuyện trước.”</span></td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">“I’m just being honest.”</span><br /><span>“Tôi chỉ nói thật thôi.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">“Fine. I won’t say anything anymore.”</span><br /><span>“Được thôi. Từ giờ tôi không nói gì nữa.”</span></td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>LISTEN → ACKNOWLEDGE → REFOCUS → HOLD THE LINE</b><br /><br />“I hear that you value being direct. I want you to keep challenging ideas. I am asking you to change how you express disagreement with colleagues.”</div>
+<div><b>LẮNG NGHE → GHI NHẬN → QUAY VỀ TRỌNG TÂM → GIỮ VỮNG LẬP TRƯỜNG</b><br /><br /><span>“Tôi hiểu là bạn coi trọng sự thẳng thắn. Tôi muốn bạn tiếp tục phản biện các ý tưởng. Điều tôi đề nghị là bạn thay đổi cách bày tỏ sự bất đồng với đồng nghiệp.”</span></div>
+</div>
+</section>
+<section id="s39" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 39</span>
+<span style="color:#86958a">Turn it into an agreement</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">HOLD ACCOUNTABLE — Turn “I’ll do better” into an agreement</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">GIỮ TRÁCH NHIỆM — Biến câu “Tôi sẽ làm tốt hơn” thành một thoả thuận</h3>
+<div style="color:var(--en,#56665a)">A behavioral commitment should be observable enough to follow up.</div>
+<div>Một cam kết về hành vi cần đủ cụ thể để có thể quan sát và theo dõi.</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:50%"><span>Vague</span><br /><span>Mơ hồ</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:50%"><span>Specific</span><br /><span>Cụ thể</span></td></tr></thead>
+<tbody>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">“I’ll communicate better.”</span><br /><span>“Tôi sẽ giao tiếp tốt hơn.”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">“In meetings, I will let people finish and challenge the idea rather than comment on the person.”</span><br /><span>“Trong các cuộc họp, tôi sẽ để mọi người nói hết, và phản biện ý tưởng thay vì bình phẩm về con người.”</span></td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Close with three things:</b><ol style="margin:0;padding-left:20px"><li>Expected behaviour</li><li>When / where it applies</li><li>When you will follow up</li></ol><br /><b>Accountability is not a threat. It is clarity about what needs to happen next.</b></div>
+<div><b>Kết thúc bằng ba điều:</b><ol style="margin:0;padding-left:20px"><li>Hành vi được kỳ vọng</li><li>Áp dụng khi nào / ở đâu</li><li>Khi nào bạn sẽ theo dõi lại</li></ol><br /><b>Trách nhiệm không phải là lời đe doạ. Đó là sự rõ ràng về điều cần diễn ra tiếp theo.</b></div>
+</div>
+</section>
+<section id="s40" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 40</span>
+<span style="color:#86958a">Role-play and practice</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Role-play and Practice</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Đóng vai và thực hành</h3>
+</div>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Group Discussion:</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thảo luận nhóm:</h3>
+<div style="color:var(--en,#56665a)">As Jeff, how would you handle the situation differently?</div>
+<div>Nếu là Jeff, bạn sẽ xử lý tình huống này khác đi như thế nào?</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm khung hình của đoạn video về nhân vật Jeff, như slide 25.</i></p>
+</section>
+<section id="s41" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 41</span>
+<span style="color:#86958a">The whole conversation</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The whole conversation</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Toàn bộ cuộc trò chuyện</h3>
+<div style="color:var(--en,#56665a)">NOTICE → CONVERSE → COACH → HOLD ACCOUNTABLE</div>
+<div>NHẬN DIỆN → ĐỐI THOẠI → COACHING → GIỮ TRÁCH NHIỆM</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:25%"><span>Notice</span><br /><span>Nhận diện</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:25%"><span>Converse</span><br /><span>Đối thoại</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:25%">Coach<br />Coaching</td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:25%"><span>Hold accountable</span><br /><span>Giữ trách nhiệm</span></td></tr></thead>
+<tbody>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><span style="color:var(--en,#56665a)">This behaviour needs attention.</span><br /><span>Hành vi này cần được lưu tâm.</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">“Here is what I observed, and here is the standard.”</span><br /><span>“Đây là điều tôi quan sát được, và đây là chuẩn mực.”</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">“What happened? What was the impact? What could you do differently?”</span><br /><span>“Chuyện gì đã xảy ra? Tác động là gì? Bạn có thể làm khác đi thế nào?”</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">“Let’s agree exactly what changes and when we will follow up.”</span><br /><span>“Hãy thống nhất cụ thể điều gì sẽ thay đổi và khi nào chúng ta theo dõi lại.”</span></td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Important:</b> serious misconduct, harassment, discrimination, retaliation, or major ethical/security concerns should follow the appropriate escalation process.</div>
+<div><b>Lưu ý quan trọng:</b> các trường hợp vi phạm nghiêm trọng, quấy rối, phân biệt đối xử, trả đũa, hoặc vấn đề lớn về đạo đức/an ninh cần được xử lý theo quy trình báo cáo lên cấp trên phù hợp.</div>
+</div>
+</section>
+<section id="s42" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 42</span>
+<span style="color:#86958a">Action plan</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">ACTION PLAN — My first 90 days</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">KẾ HOẠCH HÀNH ĐỘNG — 90 ngày đầu tiên của tôi</h3>
+<div style="color:var(--en,#56665a)">Choose one habit under each learning outcome.</div>
+<div>Chọn một thói quen cho mỗi mục tiêu học tập.</div>
+</div>
+<div style="margin-top:10px"></div><table style="font-size:11.5px;line-height:1.45">
+<thead><tr style="border-bottom:1.5px solid #1b2a20"><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;width:22%"><span>Outcome</span><br /><span>Mục tiêu</span></td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:39%">English</td><td style="padding:0 8px 7px 0;vertical-align:bottom;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600;padding-left:8px;width:39%">Tiếng Việt</td></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">NOTICE</b><br /><span>Nhận diện</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">One behaviour I will address earlier…</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Một hành vi tôi sẽ xử lý sớm hơn…</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">CONVERSE</b><br /><span>Đối thoại</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">One phrase I will stop using / start using…</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Một câu nói tôi sẽ ngừng dùng / bắt đầu dùng…</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">COACH</b><br />Coaching</td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">One question I will use more often…</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Một câu hỏi tôi sẽ dùng thường xuyên hơn…</td></tr>
+<tr><td style="padding:7px 8px 7px 0px;vertical-align:top"><b style="font-weight:600;color:var(--ac,#2f6b45)">HOLD ACCOUNTABLE</b><br /><span>Giữ trách nhiệm</span></td><td style="padding:7px 8px 7px 8px;vertical-align:top"><span style="color:var(--en,#56665a)">One follow-up habit I will build…</span></td><td style="padding:7px 0px 7px 8px;vertical-align:top">Một thói quen theo dõi tôi sẽ xây dựng…</td></tr>
+</tbody>
+</table>
+<div style="margin-top:12px"></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Clarity + curiosity + follow-through = trust in your management.</b></div>
+<div><b>Rõ ràng + tò mò + theo đến cùng = niềm tin vào cách bạn quản lý.</b></div>
+</div>
+</section>
+<section id="s43" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 43</span>
+<span style="color:#86958a">References</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">References</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tài liệu tham khảo</h3>
+</div>
+<p style="margin:10px 0 0;font-size:11px;line-height:1.5;color:#86958a">Beattie, R. S., Kim, S., Hagen, M. S., Egan, T. M., Ellinger, A. D., &amp; Hamlin, R. G. (2014). Managerial Coaching: A Review of the Empirical Literature and Development of a Model to Guide Future Practice. <i>Advances in Developing Human Resources, 16</i>(2), 184–201. https://doi.org/10.1177/1523422313520476<br /><br />Cannon, M. D., &amp; Witherspoon, R. (2005). Actionable feedback: Unlocking the power of learning and performance improvement. <i>Academy of Management Perspectives, 19</i>(2), 120–134. https://doi.org/10.5465/ame.2005.16965107<br /><br />Goleman, D. (2019). <i>The Emotionally Intelligent Leader</i>. Harvard Business Review Press.<br /><br />Grewal, D., Brackett, M., &amp; Salovey, P. (2006). Emotional Intelligence and the Self-Regulation of Affect. In <i>Emotion regulation in couples and families: Pathways to dysfunction and health</i> (pp. 37–55). American Psychological Association. https://doi.org/10.1037/11468-002<br /><br />Hill, L. A. (2003). <i>Becoming a Manager: How New Managers Master the Challenges of Leadership</i>. Harvard Business School Press.<br /><br />Neale, S., Spencerarnell, L., &amp; Wilson, L. (2009). <i>Emotional Intelligence Coaching: Improving Performance for Leaders, Coaches and the Individual</i>. Kogan Page.<br /><br />Plakhotnik, M. S., Rocco, T. S., &amp; Roberts, N. A. (2011). Development Review Integrative Literature Review: Increasing Retention and Success of First-Time Managers: A Model of Three Integral Processes for the Transition to Management. <i>Human Resource Development Review, 10</i>(1), 26–45. https://doi.org/10.1177/1534484310386752</p>
+</section>
+<section id="s44" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 44</span>
+<span style="color:#86958a">Closing</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Thank you!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Cảm ơn!</h3>
+<div style="color:var(--en,#56665a)">Position title: Senior Program Manager, Lecturer (HRM)<br />Name: Dr. Thao Luong<br />Email address: thao.luong3@rmit.edu.vn</div>
+<div><span>Chức danh: Quản lý Chương trình cấp cao, Giảng viên (Quản trị Nguồn nhân lực)</span><br />Họ tên: TS. Thao Luong<br />Email: thao.luong3@rmit.edu.vn</div>
+</div>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 8 · Correcting Behaviour Through Coaching</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t8.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Chủ đề 8: Điều chỉnh hành vi thông qua coaching","lv":0,"en":"Topic 8: Correcting Behavior Through Coaching","vi":"Chủ đề 8: Điều chỉnh hành vi thông qua coaching"},
+  {"id":"s02","num":"02","label":"Về buổi học này","lv":0,"en":"About this session","vi":"Về buổi học này"},
+  {"id":"s03","num":"03","label":"Chương trình","lv":0,"en":"Agenda","vi":"Chương trình"},
+  {"id":"s04","num":"04","label":"Về tôi","lv":0,"en":"About me","vi":"Về tôi"},
+  {"id":"s05","num":"05","label":"Luật chơi của chúng ta","lv":0,"en":"Our Playbook","vi":"Luật chơi của chúng ta"},
+  {"id":"s06","num":"06","label":"1. Nhận diện: “Tôi nên xử lý điều gì?”","lv":0,"en":"1. Notice: “What should I address?”","vi":"1. Nhận diện: “Tôi nên xử lý điều gì?”"},
+  {"id":"s07","num":"07","label":"NHẬN DIỆN bắt đầu từ sự chuyển đổi vai trò","lv":0,"en":"NOTICE starts with the role shift","vi":"NHẬN DIỆN bắt đầu từ sự chuyển đổi vai trò"},
+  {"id":"s08","num":"08","label":"Hoạt động thảo luận: Nhận diện hay bỏ qua?","lv":0,"en":"Discussion Activity: Notice or let it go?","vi":"Hoạt động thảo luận: Nhận diện hay bỏ qua?"},
+  {"id":"s09","num":"09","label":"Bài kiểm tra 5 tác động","lv":0,"en":"The 5-Impact Test","vi":"Bài kiểm tra 5 tác động"},
+  {"id":"s10","num":"10","label":"Discussion activity (debrief)","lv":0,"en":"Discussion activity (debrief)","vi":""},
+  {"id":"s11","num":"11","label":"2. Đối thoại: Nêu vấn đề khó một cách rõ ràng và quản lý cảm xúc của bạn","lv":0,"en":"2. Converse: Raise difficult issues clearly and manage your emotions","vi":"2. Đối thoại: Nêu vấn đề khó một cách rõ ràng và quản lý cảm xúc của bạn"},
+  {"id":"s12","num":"12","label":"ĐỐI THOẠI bắt đầu từ những gì bạn quan sát được","lv":0,"en":"CONVERSE starts with what you can observe","vi":"ĐỐI THOẠI bắt đầu từ những gì bạn quan sát được"},
+  {"id":"s13","num":"13","label":"Hoạt động: Viết lại câu mở đầu","lv":0,"en":"Activity: Rewrite the opening","vi":"Hoạt động: Viết lại câu mở đầu"},
+  {"id":"s14","num":"14","label":"Ở giai đoạn này, hãy cố gắng quản lý cả cảm xúc của bạn","lv":0,"en":"At this stage, also try to manage your emotions","vi":"Ở giai đoạn này, hãy cố gắng quản lý cả cảm xúc của bạn"},
+  {"id":"s15","num":"15","label":"Cảm xúc là gì?","lv":0,"en":"What are Emotions?","vi":"Cảm xúc là gì?"},
+  {"id":"s16","num":"16","label":"Hoạt động: Điểm danh cảm xúc","lv":0,"en":"Activity: Emotion Check-In","vi":"Hoạt động: Điểm danh cảm xúc"},
+  {"id":"s17","num":"17","label":"Thông điệp tổng kết","lv":0,"en":"Debrief message","vi":"Thông điệp tổng kết"},
+  {"id":"s18","num":"18","label":"Trí tuệ cảm xúc (EI) là gì?","lv":0,"en":"What is Emotional Intelligence (EI)?","vi":"Trí tuệ cảm xúc (EI) là gì?"},
+  {"id":"s19","num":"19","label":"Hoạt động: Quan sát video (hoạt động nhóm)","lv":0,"en":"Activity: Video Observation (Group Activity)","vi":"Hoạt động: Quan sát video (hoạt động nhóm)"},
+  {"id":"s20","num":"20","label":"Thông điệp tổng kết","lv":0,"en":"Debrief message","vi":"Thông điệp tổng kết"},
+  {"id":"s21","num":"21","label":"Tự nhận thức và tự quản lý","lv":0,"en":"Self-Awareness and Self-Management","vi":"Tự nhận thức và tự quản lý"},
+  {"id":"s22","num":"22","label":"Tự nhận thức","lv":0,"en":"Self-Awareness","vi":"Tự nhận thức"},
+  {"id":"s23","num":"23","label":"Hoạt động: Tự nhận thức qua suy ngẫm cảm xúc","lv":0,"en":"Activity: Self-Awareness Through Emotional Reflection","vi":"Hoạt động: Tự nhận thức qua suy ngẫm cảm xúc"},
+  {"id":"s24","num":"24","label":"Tự quản lý là gì?","lv":0,"en":"What is Self-Management?","vi":"Tự quản lý là gì?"},
+  {"id":"s25","num":"25","label":"Hoạt động 6: Tự quản lý trong thực tế","lv":0,"en":"Activity 6: Self Management in Action","vi":"Hoạt động 6: Tự quản lý trong thực tế"},
+  {"id":"s26","num":"26","label":"Vì sao tự nhận thức và tự quản lý quan trọng","lv":0,"en":"Why Self-Awareness and Self-Management Matter","vi":"Vì sao tự nhận thức và tự quản lý quan trọng"},
+  {"id":"s27","num":"27","label":"Hàm ý đối với lãnh đạo","lv":0,"en":"Leadership Implications","vi":"Hàm ý đối với lãnh đạo"},
+  {"id":"s28","num":"28","label":"Converse (revisited)","lv":0,"en":"Converse (revisited)","vi":""},
+  {"id":"s29","num":"29","label":"3. Coaching: Dùng câu hỏi để tạo ra sự suy ngẫm và tinh thần làm chủ","lv":0,"en":"3. Coach: Use questions to create reflection and ownership","vi":"3. Coaching: Dùng câu hỏi để tạo ra sự suy ngẫm và tinh thần làm chủ"},
+  {"id":"s30","num":"30","label":"Coaching để thay đổi hành vi là gì?","lv":0,"en":"What is coaching for behavioral change?","vi":"Coaching để thay đổi hành vi là gì?"},
+  {"id":"s31","num":"31","label":"Coaching không có nghĩa là “dễ dãi”","lv":0,"en":"Coaching is not the same as being “soft”","vi":"Coaching không có nghĩa là “dễ dãi”"},
+  {"id":"s32","num":"32","label":"Hoạt động: Ý định ≠ tác động","lv":0,"en":"Activity: Intention ≠ impact","vi":"Hoạt động: Ý định ≠ tác động"},
+  {"id":"s33","num":"33","label":"Lắng nghe – một biểu hiện của trí tuệ cảm xúc","lv":0,"en":"Listening as Emotional Intelligence","vi":"Lắng nghe – một biểu hiện của trí tuệ cảm xúc"},
+  {"id":"s34","num":"34","label":"Ba cấp độ lắng nghe","lv":0,"en":"Three Levels of Listening","vi":"Ba cấp độ lắng nghe"},
+  {"id":"s35","num":"35","label":"Đặt câu hỏi để thấu hiểu người khác","lv":0,"en":"Questioning to Understand Others","vi":"Đặt câu hỏi để thấu hiểu người khác"},
+  {"id":"s36","num":"36","label":"4. Giữ trách nhiệm: Luôn hỗ trợ nhưng vẫn rõ ràng về những thay đổi được kỳ vọng","lv":0,"en":"4. Hold Accountable: Stay supportive while remaining clear about expected changes","vi":"4. Giữ trách nhiệm: Luôn hỗ trợ nhưng vẫn rõ ràng về những thay đổi được kỳ vọng"},
+  {"id":"s37","num":"37","label":"GIỮ TRÁCH NHIỆM: hỗ trợ + chuẩn mực","lv":0,"en":"HOLD ACCOUNTABLE: support + standard","vi":"GIỮ TRÁCH NHIỆM: hỗ trợ + chuẩn mực"},
+  {"id":"s38","num":"38","label":"Khi họ phản kháng","lv":0,"en":"When they push back","vi":"Khi họ phản kháng"},
+  {"id":"s39","num":"39","label":"GIỮ TRÁCH NHIỆM — Biến câu “Tôi sẽ làm tốt hơn” thành một thoả thuận","lv":0,"en":"HOLD ACCOUNTABLE — Turn “I’ll do better” into an agreement","vi":"GIỮ TRÁCH NHIỆM — Biến câu “Tôi sẽ làm tốt hơn” thành một thoả thuận"},
+  {"id":"s40","num":"40","label":"Đóng vai và thực hành","lv":0,"en":"Role-play and Practice","vi":"Đóng vai và thực hành"},
+  {"id":"s41","num":"41","label":"Toàn bộ cuộc trò chuyện","lv":0,"en":"The whole conversation","vi":"Toàn bộ cuộc trò chuyện"},
+  {"id":"s42","num":"42","label":"KẾ HOẠCH HÀNH ĐỘNG — 90 ngày đầu tiên của tôi","lv":0,"en":"ACTION PLAN — My first 90 days","vi":"KẾ HOẠCH HÀNH ĐỘNG — 90 ngày đầu tiên của tôi"},
+  {"id":"s43","num":"43","label":"Tài liệu tham khảo","lv":0,"en":"References","vi":"Tài liệu tham khảo"},
+  {"id":"s44","num":"44","label":"Cảm ơn!","lv":0,"en":"Thank you!","vi":"Cảm ơn!"}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t8.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t8.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t8.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t8.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

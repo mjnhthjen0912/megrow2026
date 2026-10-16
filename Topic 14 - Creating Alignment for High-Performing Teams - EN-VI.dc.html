@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 14 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Creating Alignment for High-Performing Teams</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Tạo sự đồng thuận cho đội nhóm hiệu suất cao</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 14: Tạo sự đồng thuận cho đội nhóm hiệu suất cao</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Creating Alignment for High-Performing Teams — tài liệu thảo luận tình huống, Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">Tình huống: <i>The BCPC Internet Strategy Team: An Exercise</i> · Amy C. Edmondson &amp; Laura R. Feldman<span> · HBS 604-035 (bản sửa 2016)</span></p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Về tài liệu này.</b> Chủ đề 14 không có slide; buổi học xoay quanh một bài tập tình huống của Harvard Business School. Phần 1–2 là nguyên văn tổng quan và mục tiêu học tập kèm bản dịch. Phần 3–5 tóm tắt tình huống và các dữ kiện cần cho thảo luận. Phần 6–12 là hướng dẫn thảo luận do người biên soạn bổ sung, sắp theo bốn mục tiêu học tập. Bản dịch toàn văn tình huống, đối chiếu từng đoạn, nằm ngay sau Phần 2 (khung nền màu be). Tình huống thuộc bản quyền của Harvard Business School; bản dịch chỉ dùng nội bộ cho chương trình đã được cấp phép ghi trên file gốc.</p>
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Lưu ý quan trọng.</b> Bài tập dùng phiếu vai (role sheet) riêng cho từng người, không có trong file PDF. Những nhận định về thông tin mà từng vai có thể nắm giữ là suy luận từ nội dung tình huống. Người điều phối nên đối chiếu với phiếu vai và teaching note của HBS trước buổi học. Phần 5 có thêm phiếu vai thực tế của Terry (Giám đốc Nhân sự) trong bản RMIT – Zalo me.grow 2026.</p>
+<p style="margin:0">Thuật ngữ: <i>alignment</i> là “sự đồng thuận”; <i>advocacy</i> là “trình bày quan điểm”; <i>inquiry</i> là “tìm hiểu”; <i>hidden profile</i> là “hồ sơ ẩn” (tình huống mà thông tin quyết định nằm rải rác ở từng người); <i>wholesale</i> là “bán buôn”; <i>retail</i> là “bán lẻ”; <i>pilot</i> là “thử nghiệm”. Tên người, tên công ty và tên sản phẩm giữ nguyên.</p>
+</div>
+
+<section id="s01" data-screen-label="01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 01</span>
+<span style="color:#86958a">Overview</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Overview</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tổng quan</h3>
+<div style="color:var(--en,#56665a)">Building trust is only the first step – high-performing teams also need alignment around shared goals, priorities, and ways of working. This interactive session explores how leaders can bring together diverse perspectives, manage differing priorities, and facilitate productive discussions that lead to better decisions and stronger collaboration.</div>
+<div>Xây dựng niềm tin mới chỉ là bước đầu – đội nhóm hiệu suất cao còn cần sự đồng thuận về mục tiêu chung, thứ tự ưu tiên và cách làm việc. Buổi học tương tác này tìm hiểu cách người lãnh đạo kết nối các góc nhìn đa dạng, quản lý những ưu tiên khác nhau và điều phối các cuộc thảo luận hiệu quả để đi đến quyết định tốt hơn và sự hợp tác bền chặt hơn.</div>
+<div style="color:var(--en,#56665a)">Participants examine how communication, inquiry, advocacy, and shared understanding influence team effectiveness, particularly in cross-functional environments where information, priorities, and perspectives may differ.</div>
+<div>Người học xem xét cách giao tiếp, tìm hiểu, trình bày quan điểm và sự hiểu biết chung ảnh hưởng đến hiệu quả của nhóm, đặc biệt trong môi trường liên chức năng, nơi thông tin, thứ tự ưu tiên và góc nhìn có thể khác nhau.</div>
+<div style="color:var(--en,#56665a)">Through realistic workplace scenarios, collaborative activities, and facilitated reflection, participants practise practical leadership techniques to build alignment, encourage constructive dialogue, and improve team decision-making.</div>
+<div>Thông qua các tình huống công việc thực tế, hoạt động cộng tác và phần suy ngẫm có hướng dẫn, người học thực hành các kỹ thuật lãnh đạo thiết thực để tạo sự đồng thuận, khuyến khích đối thoại mang tính xây dựng và cải thiện việc ra quyết định của nhóm.</div>
+</div>
+</section>
+
+<section id="s02" data-screen-label="02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 02</span>
+<span style="color:#86958a">Learning outcomes</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Learning Outcomes for Topic 14</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Mục tiêu học tập của Chủ đề 14</h3>
+<div style="color:var(--en,#56665a)">By the end of this topic, participants will be able to:<ol style="margin:4px 0 0;padding-left:20px"><li>Recognise how different perspectives, priorities, and incomplete information influence team decision-making and alignment.</li><li>Balance advocacy and inquiry to facilitate more productive team discussions.</li><li>Apply practical leadership behaviours that build shared understanding and alignment across teams.</li><li>Integrate diverse perspectives to improve decision quality and organisational outcomes.</li></ol></div>
+<div>Kết thúc chủ đề này, người học có thể:<ol style="margin:4px 0 0;padding-left:20px"><li>Nhận biết các góc nhìn khác nhau, thứ tự ưu tiên khác nhau và thông tin không đầy đủ ảnh hưởng thế nào đến việc ra quyết định và sự đồng thuận của nhóm.</li><li>Cân bằng giữa trình bày quan điểm và tìm hiểu để điều phối các cuộc thảo luận nhóm hiệu quả hơn.</li><li>Áp dụng các hành vi lãnh đạo thiết thực giúp xây dựng sự hiểu biết chung và sự đồng thuận giữa các nhóm.</li><li>Kết hợp các góc nhìn đa dạng để nâng cao chất lượng quyết định và kết quả của tổ chức.</li></ol></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Các câu hỏi thảo luận ở Phần 7–10 được đánh số theo bốn mục tiêu này (MT1–MT4).</i></p>
+</section>
+
+<div id="ban-dich" data-screen-label="Bản dịch" style="background:#edf3e9;border:1px solid #cddbca;padding:20px 22px 4px;margin:0 0 30px">
+<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:0 0 16px;break-after:avoid">
+<span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--ac,#2f6b45);padding:3px 8px">Bản dịch toàn văn</span>
+<h2 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:23px;line-height:1.2">Tình huống BCPC — đối chiếu Anh – Việt</h2>
+</div>
+<section id="a1" data-screen-label="A1" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)"><span>Bản dịch</span> · Trang 1</span>
+<span style="color:#86958a">Full translation · Introduction</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a);font-size:11px;letter-spacing:.06em;text-transform:uppercase">604-035 · Rev: January 7, 2016 · Amy C. Edmondson</div>
+<div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase">604-035<span> · Bản sửa: 7 tháng 1, 2016</span> · Amy C. Edmondson</div>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The BCPC Internet Strategy Team: An Exercise</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nhóm Chiến lược Internet của BCPC: Bài tập tình huống</h3>
+<div style="color:var(--en,#56665a)"><b>Introduction</b></div>
+<div><b>Giới thiệu</b></div>
+<div style="color:var(--en,#56665a)">Internet Strategy Team Leader Chris Berkowitz was preparing for a meeting of representatives from all of Big City Phone Company’s (BCPC) major functional units. Together, they were to develop a recommendation to the CEO for how BCPC, a successful “Baby Bell,” should take advantage of the new High-speed Internet-access Product (HIP) opportunities. Should they move quickly into the HIP market? If so, how?</div>
+<div>Trưởng nhóm Chiến lược Internet Chris Berkowitz đang chuẩn bị cho một cuộc họp với đại diện của tất cả các bộ phận chức năng chính của Big City Phone Company (BCPC). Họ sẽ cùng xây dựng một khuyến nghị gửi CEO về cách BCPC, một “Baby Bell” thành công, nên tận dụng những cơ hội từ Sản phẩm truy cập Internet tốc độ cao (HIP) mới. Họ có nên nhanh chóng tham gia thị trường HIP không? Nếu có, thì bằng cách nào?</div>
+<div style="color:var(--en,#56665a)">A pilot of HIP technology had been successfully completed, and now BCPC faced two choices. They could (1) staff and launch HIP as a high-speed Internet access service across its entire service region or (2) concentrate on providing HIP as a wholesaler and learn from the mistakes of retail providers of the service. Berkowitz was to lead a team of people well versed in the telecommunications business, and was confident that the team could arrive at an effective recommendation.</div>
+<div>Một đợt thử nghiệm công nghệ HIP đã hoàn tất thành công, và giờ BCPC đứng trước hai lựa chọn. Họ có thể (1) bố trí nhân sự và ra mắt HIP như một dịch vụ truy cập Internet tốc độ cao trên toàn bộ khu vực phục vụ, hoặc (2) tập trung cung cấp HIP với tư cách nhà bán buôn và học hỏi từ sai lầm của các nhà cung cấp bán lẻ dịch vụ này. Berkowitz sẽ dẫn dắt một nhóm gồm những người am hiểu ngành viễn thông, và tin tưởng rằng nhóm có thể đi đến một khuyến nghị hiệu quả.</div>
+<div style="color:var(--en,#56665a)">BCPC competed on excellent customer service and satisfaction. They were known across the industry for the sophisticated and thorough system of metrics with which they measured service quality. Despite its relatively recent entry into the long distance market, BCPC had quickly reached a high level of customer satisfaction following its launch of the new service. The CEO expected no less from the introduction of HIP. Berkowitz considered the team’s decision process critical for many reasons, not the least of which was the fact that new product introductions in this industry tended to be highly visible within the firm and to the public.</div>
+<div>BCPC cạnh tranh bằng dịch vụ khách hàng xuất sắc và mức độ hài lòng cao. Công ty nổi tiếng trong ngành với hệ thống chỉ số tinh vi và toàn diện dùng để đo lường chất lượng dịch vụ. Dù mới tham gia thị trường đường dài chưa lâu, BCPC đã nhanh chóng đạt mức hài lòng cao của khách hàng sau khi ra mắt dịch vụ mới này. CEO kỳ vọng việc giới thiệu HIP cũng phải đạt được như vậy. Berkowitz cho rằng quy trình ra quyết định của nhóm là cực kỳ quan trọng vì nhiều lý do, trong đó có một lý do không hề nhỏ: việc giới thiệu sản phẩm mới trong ngành này thường được chú ý rất nhiều, cả trong công ty lẫn ngoài công chúng.</div>
+<div style="color:var(--en,#56665a)"><b>Competitive Landscape</b></div>
+<div><b>Bối cảnh cạnh tranh</b></div>
+<div style="color:var(--en,#56665a)">BCPC offered local, long distance, and wireless (cellular) telephone services to an area comprised of 30 million access lines.<sup>1</sup> Local service providers such as BCPC connected customers to the telecommunications network, provided local telephone service, and access to long distance carriers. They also provided people-intensive services such as service initiation, billing, and selling value-added features (such as caller ID). In 1999 the U.S. local exchange (service), long distance, and wireless markets had revenues of $112, $106, and $40 billion, respectively. In 1999, BCPC was a major player in the wireless technology market with almost ten million subscribers. In providing Internet access, BCPC also competed with cable companies.</div>
+<div>BCPC cung cấp dịch vụ điện thoại nội hạt, đường dài và không dây (di động) cho một khu vực gồm 30 triệu đường thuê bao.<sup>1</sup> Các nhà cung cấp dịch vụ nội hạt như BCPC kết nối khách hàng với mạng viễn thông, cung cấp dịch vụ điện thoại nội hạt và quyền truy cập vào các nhà mạng đường dài. Họ cũng cung cấp các dịch vụ cần nhiều nhân lực như khởi tạo dịch vụ, tính cước và bán các tính năng giá trị gia tăng (như hiển thị số người gọi). Năm 1999, các thị trường tổng đài nội hạt (dịch vụ), đường dài và không dây tại Mỹ có doanh thu lần lượt là 112, 106 và 40 tỷ đô la. Năm 1999, BCPC là một trong những công ty lớn trên thị trường công nghệ không dây với gần mười triệu thuê bao. Trong mảng cung cấp truy cập Internet, BCPC còn phải cạnh tranh với các công ty truyền hình cáp.</div>
+<div style="color:var(--en,#56665a);font-size:12px"><sup>1</sup> Access lines, which connect customers to the telecommunications network, are a standard measure of the size of a local service provider. In 1999 there were approximately 200 million access lines in the United States.</div>
+<div style="font-size:12px"><sup>1</sup> Đường thuê bao (access line), tức đường kết nối khách hàng với mạng viễn thông, là thước đo tiêu chuẩn về quy mô của một nhà cung cấp dịch vụ nội hạt. Năm 1999, nước Mỹ có khoảng 200 triệu đường thuê bao.</div>
+<div style="color:var(--en,#56665a);font-size:12px">Professor Amy C. Edmondson and Research Associate Laura R. Feldman prepared this exercise as the basis for class discussion rather than to illustrate either effective or ineffective handling of an administrative situation. The exercise was revised in 2016 with the assistance of Barbara Larson.</div>
+<div style="font-size:12px">Giáo sư Amy C. Edmondson và Trợ lý nghiên cứu Laura R. Feldman soạn bài tập này làm cơ sở cho thảo luận trên lớp, không nhằm minh hoạ cách xử lý một tình huống quản trị là hiệu quả hay không hiệu quả. Bài tập được chỉnh sửa năm 2016 với sự hỗ trợ của Barbara Larson.</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>“Baby Bell” là tên gọi các công ty điện thoại khu vực tách ra từ hệ thống Bell (AT&amp;T) của Mỹ. Trang 1 còn có thông báo bản quyền của Harvard Business School và dòng ghi tài liệu được cấp phép cho chương trình đào tạo tại RMIT Việt Nam; hai dòng này không dịch.</i></p>
+</section>
+
+<section id="a2" data-screen-label="A2" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)"><span>Bản dịch</span> · Trang 2</span>
+<span style="color:#86958a">Culture of Customer Service · Human Resources</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Culture of Customer Service</b></div>
+<div><b>Văn hoá dịch vụ khách hàng</b></div>
+<div style="color:var(--en,#56665a)">Service was a key value at BCPC. Top executives considered customer service to be BCPC’s key differentiator in the telecommunications market and strove for only “Very good” and “Outstanding” ratings in customer surveys. Research indicated a substantial drop-off in customer loyalty among people who gave BCPC “Satisfactory” ratings. To continually exceed customer expectations, BCPC ran monthly surveys of 7,500 customers in which they measured satisfaction with various types of company contact by geographic region. Results were analyzed and translated into internal business practices that addressed root causes. For example, the director of customer feedback commented,</div>
+<div>Dịch vụ là một giá trị cốt lõi tại BCPC. Ban lãnh đạo cấp cao xem dịch vụ khách hàng là yếu tố khác biệt then chốt của BCPC trên thị trường viễn thông và chỉ nhắm tới các mức đánh giá “Rất tốt” và “Xuất sắc” trong khảo sát khách hàng. Nghiên cứu cho thấy lòng trung thành giảm đáng kể ở những khách hàng chỉ đánh giá BCPC ở mức “Đạt yêu cầu”. Để liên tục vượt kỳ vọng của khách hàng, BCPC khảo sát 7.500 khách hàng mỗi tháng, đo mức hài lòng với từng loại tiếp xúc với công ty theo từng khu vực địa lý. Kết quả được phân tích và chuyển thành các thực hành nội bộ nhằm xử lý nguyên nhân gốc rễ. Chẳng hạn, giám đốc phụ trách phản hồi khách hàng cho biết:</div>
+<div style="color:var(--en,#56665a);padding-left:16px;border-left:1px solid #d3dfd0">We periodically do rigorous statistical analysis of the data to determine what we call the “key drivers.” We try to find the internal process measures that correspond to these two, three, or four top items. When that is finished, we communicate the information to the field groups so that they understand what’s important to customers. We look at the cycle time customers have experienced and find the break point to maximize satisfaction levels. In the consumer market we find that about 24 hours is the maximum length of the tolerance for service breakdowns.</div>
+<div style="padding-left:16px;border-left:1px solid #d3dfd0">Định kỳ, chúng tôi phân tích thống kê dữ liệu một cách chặt chẽ để xác định cái mà chúng tôi gọi là “các động lực chính”. Chúng tôi cố tìm những chỉ số quy trình nội bộ tương ứng với hai, ba hoặc bốn yếu tố hàng đầu này. Khi xong, chúng tôi truyền đạt thông tin cho các nhóm hiện trường để họ hiểu điều gì quan trọng với khách hàng. Chúng tôi xem xét thời gian xử lý mà khách hàng đã trải qua và tìm ra ngưỡng giới hạn để tối đa hoá mức hài lòng. Ở thị trường khách hàng cá nhân, chúng tôi thấy khoảng 24 giờ là mức tối đa khách hàng có thể chịu đựng khi dịch vụ gặp sự cố.</div>
+<div style="color:var(--en,#56665a)">Customer survey results were dispersed to the top as well as to the front lines of the organization: the CEO and other top managers received monthly reports, from which they reviewed and revised goals and objectives. Managers took these reviews very seriously; 25% of management team bonuses were tied to these results. The results were translated into precise processes and procedures that enabled customer service representatives to provide high quality service on the front lines.</div>
+<div>Kết quả khảo sát khách hàng được chuyển tới cả cấp cao nhất lẫn tuyến đầu của tổ chức: CEO và các nhà quản lý cấp cao nhận báo cáo hằng tháng, từ đó xem xét và điều chỉnh mục tiêu. Các nhà quản lý rất coi trọng những đợt đánh giá này; 25% tiền thưởng của đội ngũ quản lý gắn với các kết quả đó. Kết quả được chuyển thành các quy trình và thủ tục chính xác, giúp nhân viên dịch vụ khách hàng cung cấp dịch vụ chất lượng cao ở tuyến đầu.</div>
+<div style="color:var(--en,#56665a)"><b>Human Resources</b></div>
+<div><b>Nhân sự</b></div>
+<div style="color:var(--en,#56665a)">With the exception of weather-related challenges, BCPC could predict the level of demand for its services, as well as how long each service encounter was likely to take, with a high degree of accuracy, facilitating accurate planning and staffing, and providing a foundation for its culture of customer service.</div>
+<div>Ngoại trừ những khó khăn do thời tiết, BCPC có thể dự đoán rất chính xác mức nhu cầu đối với dịch vụ của mình, cũng như mỗi lần phục vụ khách hàng có thể kéo dài bao lâu. Điều này giúp lập kế hoạch và bố trí nhân sự chính xác, đồng thời tạo nền tảng cho văn hoá dịch vụ khách hàng của công ty.</div>
+<div style="color:var(--en,#56665a)">The idea behind BCPC’s intensive customer representative training process was, in the words of one BCPC trainer, that “first impressions are lasting impressions, and when a customer calls and speaks to you, you are BCPC. Furthermore, when a customer calls it may be the only contact they have with BCPC for years. So the impression you make is that much more important.”</div>
+<div>Theo lời một giảng viên đào tạo của BCPC, ý tưởng đằng sau quy trình đào tạo chuyên sâu cho nhân viên dịch vụ khách hàng là: “Ấn tượng đầu tiên là ấn tượng lâu dài, và khi khách hàng gọi điện và nói chuyện với bạn, bạn chính là BCPC. Hơn nữa, cuộc gọi đó có thể là lần tiếp xúc duy nhất của họ với BCPC trong nhiều năm. Vì vậy ấn tượng bạn tạo ra càng quan trọng hơn.”</div>
+<div style="color:var(--en,#56665a)">BCPC was known to screen as many as 20,000 people to fill 800 positions. Once hired, the representatives were enrolled in a four-month classroom and field course that taught them the details of the job (billing, regulatory requirements, and services such as call waiting) and the high level of interpersonal skills they would need to deal with difficult customers. The representatives were allowed some leeway with respect to language and procedures but primarily followed scripts and relied on an online database of information and troubleshooting support.</div>
+<div>BCPC được biết đến với việc sàng lọc tới 20.000 người để tuyển 800 vị trí. Sau khi được tuyển, nhân viên tham gia một khoá học bốn tháng, gồm học trên lớp và thực tế, dạy họ chi tiết công việc (tính cước, yêu cầu pháp lý và các dịch vụ như chờ cuộc gọi) cùng kỹ năng giao tiếp ở mức cao cần thiết để xử lý những khách hàng khó tính. Nhân viên được linh hoạt phần nào về cách nói và thủ tục, nhưng chủ yếu làm theo kịch bản và dựa vào một cơ sở dữ liệu trực tuyến chứa thông tin và hướng dẫn xử lý sự cố.</div>
+</div>
+</section>
+
+<section id="a3" data-screen-label="A3" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)"><span>Bản dịch</span> · Trang 3</span>
+<span style="color:#86958a">HIP · The Team</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>HIP</b></div>
+<div><b>HIP</b></div>
+<div style="color:var(--en,#56665a)">HIP was a modem technology that used existing telephone lines to transport high-bandwidth data such as multimedia and video to service subscriber personal computers (PCs). By turning a customer’s existing phone line into a three-channel data delivery system, phone and internet services were available simultaneously. HIP access was six times faster than that of traditional analog modem and cost only $10 more per month than local phone service ($40 instead of $30). There was a very high customer demand for the new HIP service.</div>
+<div>HIP là một công nghệ modem sử dụng đường dây điện thoại sẵn có để truyền dữ liệu băng thông cao như đa phương tiện và video tới máy tính cá nhân (PC) của thuê bao. Bằng cách biến đường dây điện thoại hiện có của khách hàng thành một hệ thống truyền dữ liệu ba kênh, dịch vụ điện thoại và Internet có thể dùng cùng lúc. Truy cập HIP nhanh gấp sáu lần modem analog truyền thống và chỉ đắt hơn dịch vụ điện thoại nội hạt $10 mỗi tháng ($40 thay vì $30). Nhu cầu của khách hàng đối với dịch vụ HIP mới rất cao.</div>
+<div style="color:var(--en,#56665a)">Both cable and phone companies could offer HIP. Under federal regulations, local regional carriers (such as BCPC) were required to make their networks available “at cost” to third-party providers. This meant that BCPC was required to be a wholesale provider of HIP service and had the option of being a service provider. Similarly, BCPC was required to sell its network capacity for local and long distance services to incumbent competitors.</div>
+<div>Cả công ty truyền hình cáp lẫn công ty điện thoại đều có thể cung cấp HIP. Theo quy định liên bang, các nhà mạng khu vực nội hạt (như BCPC) bắt buộc phải cung cấp mạng của mình “theo giá vốn” cho các nhà cung cấp bên thứ ba. Điều đó có nghĩa là BCPC bắt buộc phải là nhà cung cấp bán buôn dịch vụ HIP, và có quyền lựa chọn trở thành nhà cung cấp dịch vụ. Tương tự, BCPC bắt buộc phải bán dung lượng mạng cho dịch vụ nội hạt và đường dài cho các đối thủ cạnh tranh hiện hữu.</div>
+<div style="color:var(--en,#56665a)">The HIP technology required users to have a signal splitter (to separate the phone and internet data streams), a HIP modem, and, of course, a PC that met HIP system requirements (a broad range of PC possibilities were available at that time). There were installation challenges at BCPC and customer locations that required considerable technical skill. To provide HIP service BCPC would have to integrate many vendors’ technologies. Team leader Berkowitz observed: “You’ve got this end-to-end experience that’s incredibly complicated.”</div>
+<div>Công nghệ HIP yêu cầu người dùng có một bộ chia tín hiệu (để tách luồng dữ liệu điện thoại và Internet), một modem HIP, và tất nhiên một máy tính đáp ứng yêu cầu hệ thống của HIP (thời đó có rất nhiều loại máy tính khác nhau). Việc lắp đặt tại cơ sở của BCPC và tại nhà khách hàng gặp nhiều khó khăn, đòi hỏi kỹ năng kỹ thuật đáng kể. Để cung cấp dịch vụ HIP, BCPC sẽ phải tích hợp công nghệ của nhiều nhà cung cấp. Trưởng nhóm Berkowitz nhận xét: “Đây là một trải nghiệm đầu-cuối phức tạp vô cùng.”</div>
+<div style="color:var(--en,#56665a)">BCPC had just completed a successful three-month market test of 25 customers in southeastern Tennessee. While BCPC anticipated that its brand name could attract HIP users, some were concerned that supporting such a qualitatively different service might hinder BCPC’s ability to provide its trademark reliable and excellent customer support. For this reason, BCPC planned to rigorously survey HIP customers to ensure that they were continuing to achieve “Very good” and “Outstanding” ratings of service quality.</div>
+<div>BCPC vừa hoàn tất thành công một đợt thử nghiệm thị trường kéo dài ba tháng với 25 khách hàng ở đông nam Tennessee. Dù BCPC dự đoán thương hiệu của mình có thể thu hút người dùng HIP, một số người lo ngại rằng việc hỗ trợ một dịch vụ khác biệt về bản chất như vậy có thể cản trở khả năng cung cấp dịch vụ hỗ trợ khách hàng đáng tin cậy và xuất sắc vốn là dấu ấn của BCPC. Vì lý do này, BCPC dự định khảo sát chặt chẽ khách hàng HIP để bảo đảm công ty tiếp tục đạt mức đánh giá chất lượng dịch vụ “Rất tốt” và “Xuất sắc”.</div>
+<div style="color:var(--en,#56665a)"><b>The Team</b></div>
+<div><b>Nhóm</b></div>
+<div style="color:var(--en,#56665a)">The multi-functional team convening to discuss BCPC’s internet strategy included Berkowitz from business development, and five other members: Morgan Jones, VP of Finance, Alex Wilson, VP of Marketing, Jan Trow, Senior Project Director of Information Systems, Robin Rhee, Director of Operations Management, and Terry Maneri, Director of Human Resources. Team members represented several levels of hierarchy at BCPC, creating a challenge for open communication and teamwork. Nonetheless, Chris hoped that team members would introduce themselves and start right in on their work. The questions they would have to answer before reporting back to BCPC’s CEO were: (1) What do you recommend BCPC do in terms of the launch of HIP in Big City? (2) What were the key issues you considered in making this decision?</div>
+<div>Nhóm liên chức năng họp để thảo luận chiến lược Internet của BCPC gồm Berkowitz từ bộ phận phát triển kinh doanh và năm thành viên khác: Morgan Jones, Phó chủ tịch Tài chính; Alex Wilson, Phó chủ tịch Marketing; Jan Trow, Giám đốc dự án cấp cao về Hệ thống thông tin; Robin Rhee, Giám đốc Quản lý vận hành; và Terry Maneri, Giám đốc Nhân sự. Các thành viên thuộc nhiều cấp bậc khác nhau tại BCPC, tạo ra thách thức cho giao tiếp cởi mở và làm việc nhóm. Dù vậy, Chris hy vọng các thành viên sẽ giới thiệu bản thân rồi bắt tay ngay vào công việc. Những câu hỏi họ phải trả lời trước khi báo cáo lại CEO của BCPC là: (1) Các bạn khuyến nghị BCPC làm gì đối với việc ra mắt HIP tại Big City? (2) Các bạn đã cân nhắc những vấn đề then chốt nào khi đưa ra quyết định này?</div>
+<div style="color:var(--en,#56665a)">Exhibit 1 provides guidelines for participating in the BCPC team decision-making exercise.</div>
+<div>Phụ lục 1 đưa ra hướng dẫn tham gia bài tập ra quyết định nhóm của BCPC.</div>
+</div>
+</section>
+
+<section id="a4" data-screen-label="A4" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)"><span>Bản dịch</span> · Trang 4</span>
+<span style="color:#86958a">Exhibit 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Exhibit 1 — Guidelines for the BCPC team decision-making exercise</b></div>
+<div><b>Phụ lục 1 — Hướng dẫn bài tập ra quyết định nhóm của BCPC</b></div>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li>Each individual will receive a separate hand out describing the role he or she will play in the Internet Strategy Team discussion.</li><li>To simulate a group decision-making process, you will draw from information or views held by your role to participate in the decision. The information on the sheet is meant as background to familiarize you with the views and experience of your character, to supplement the background information on BCPC contained in this case.</li><li>Please do not share your role sheet with other group members. You are, of course, free to provide information to the group that you have at your disposal, given the particular role you are playing.</li><li>You will be joining the rest of the strategy team to make a group decision. In preparation for the team meeting, think carefully about what your recommendation might be.</li><li>Please make a name card, with the name and job title of your character.</li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li>Mỗi người sẽ nhận một tài liệu riêng mô tả vai mà mình sẽ đóng trong cuộc thảo luận của Nhóm Chiến lược Internet.</li><li>Để mô phỏng quá trình ra quyết định nhóm, bạn sẽ dựa vào thông tin hoặc quan điểm mà vai của mình nắm giữ để tham gia vào quyết định. Thông tin trong phiếu là bối cảnh giúp bạn làm quen với quan điểm và kinh nghiệm của nhân vật, bổ sung cho thông tin nền về BCPC trong tình huống này.</li><li>Vui lòng không đưa phiếu vai của bạn cho các thành viên khác. Tất nhiên, bạn được tự do cung cấp cho nhóm bất kỳ thông tin nào bạn có, phù hợp với vai bạn đang đóng.</li><li>Bạn sẽ cùng các thành viên còn lại của nhóm chiến lược đưa ra một quyết định chung. Để chuẩn bị cho cuộc họp nhóm, hãy suy nghĩ kỹ khuyến nghị của bạn có thể là gì.</li><li>Vui lòng làm một thẻ tên, ghi tên và chức danh của nhân vật bạn đóng.</li></ol></div>
+<div style="color:var(--en,#56665a)">Source: Casewriters.</div>
+<div>Nguồn: Nhóm tác giả tình huống.</div>
+</div>
+</section>
+</div>
+
+<section id="s03" data-screen-label="03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 03</span>
+<span style="color:#86958a">Case summary</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The BCPC Internet Strategy Team — case at a glance</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nhóm Chiến lược Internet của BCPC — tóm tắt tình huống</h3>
+<div style="color:var(--en,#56665a)"><b>Company.</b> Big City Phone Company (BCPC) is a successful regional phone company offering local, long distance and wireless services across about 30 million access lines. It competes on customer service and is known for a rigorous system of service-quality metrics.</div>
+<div><b>Công ty.</b> Big City Phone Company (BCPC) là một công ty điện thoại khu vực thành công, cung cấp dịch vụ nội hạt, đường dài và di động trên khoảng 30 triệu đường thuê bao. Công ty cạnh tranh bằng dịch vụ khách hàng và nổi tiếng với hệ thống đo lường chất lượng dịch vụ rất chặt chẽ.</div>
+<div style="color:var(--en,#56665a)"><b>Decision.</b> Team leader Chris Berkowitz (Business Development) must lead a cross-functional team to a recommendation for the CEO on HIP, a new high-speed Internet access product. The team must answer two questions: (1) What should BCPC do about launching HIP in Big City? (2) What key issues did the team consider?</div>
+<div><b>Quyết định.</b> Trưởng nhóm Chris Berkowitz (Phát triển kinh doanh) phải dẫn dắt một nhóm liên chức năng đưa ra khuyến nghị cho CEO về HIP, sản phẩm truy cập Internet tốc độ cao mới. Nhóm cần trả lời hai câu hỏi: (1) BCPC nên làm gì với việc ra mắt HIP tại Big City? (2) Nhóm đã cân nhắc những vấn đề then chốt nào?</div>
+<div style="color:var(--en,#56665a)"><b>Two options in the case.</b><br />(1) Staff and launch HIP as a retail service across the entire service region.<br />(2) Concentrate on being a wholesaler of HIP and learn from the mistakes of retail providers.</div>
+<div><b>Hai phương án trong tình huống.</b><br /><span>(1) Tuyển người và ra mắt HIP như một dịch vụ bán lẻ trên toàn bộ khu vực phục vụ.</span><br /><span>(2) Tập trung làm nhà bán buôn HIP và học từ sai lầm của các nhà cung cấp bán lẻ.</span></div>
+<div style="color:var(--en,#56665a)"><b>How the exercise works.</b> Each participant receives a private role sheet and plays one of six team members. Participants may share any information their role has, but must not show the sheet itself. The group then makes a single decision.</div>
+<div><b>Cách bài tập vận hành.</b> Mỗi người nhận một phiếu vai riêng và đóng một trong sáu thành viên của nhóm. Người chơi được chia sẻ bất kỳ thông tin nào vai của mình có, nhưng không được đưa phiếu vai cho người khác xem. Sau đó cả nhóm đưa ra một quyết định chung.</div>
+</div>
+<div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Vì sao tình huống này phù hợp với Chủ đề 14</b></p><p style="margin:0">Bài tập được thiết kế theo dạng <b>hồ sơ ẩn</b>: thông tin chung mà ai cũng có (nhu cầu cao, thử nghiệm thành công, thương hiệu mạnh) nghiêng về phía ra mắt ngay, còn những thông tin cần để thấy hết rủi ro nằm rải rác trong phiếu vai của từng người. Nhóm chỉ ra được quyết định tốt khi các thành viên chủ động chia sẻ điều chỉ mình biết và hỏi về điều người khác biết. Vì vậy chất lượng quyết định phụ thuộc trực tiếp vào cách nhóm thảo luận, đúng với cả bốn mục tiêu học tập.</p></div>
+</section>
+
+<section id="s04" data-screen-label="04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 04</span>
+<span style="color:#86958a">Key facts</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Facts in the case and what they imply</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Các dữ kiện trong tình huống và ý nghĩa của chúng</h3>
+<div style="color:var(--en,#56665a)"><b style="color:var(--ac,#2f6b45)">Supports launch</b> · Customer demand for HIP is very high. HIP is six times faster than an analog modem and costs only $10 more per month ($40 instead of $30).</div>
+<div><b style="color:var(--ac,#2f6b45)">Ủng hộ ra mắt</b> · Nhu cầu của khách hàng với HIP rất cao. HIP nhanh gấp sáu lần modem analog và chỉ đắt hơn $10 mỗi tháng ($40 thay vì $30).</div>
+<div style="color:var(--en,#56665a)"><b style="color:var(--ac,#2f6b45)">Supports launch</b> · Cable companies can also offer HIP, so waiting may hand the market to competitors.</div>
+<div><b style="color:var(--ac,#2f6b45)">Ủng hộ ra mắt</b> · Các công ty truyền hình cáp cũng có thể cung cấp HIP, nên chờ đợi có thể nhường thị trường cho đối thủ.</div>
+<div style="color:var(--en,#56665a)"><b style="color:var(--ac,#2f6b45)">Supports launch</b> · Strong brand; BCPC quickly reached high satisfaction after entering long distance. The CEO “expected no less” for HIP.</div>
+<div><b style="color:var(--ac,#2f6b45)">Ủng hộ ra mắt</b> · Thương hiệu mạnh; BCPC nhanh chóng đạt mức hài lòng cao khi tham gia thị trường đường dài. CEO kỳ vọng HIP cũng phải đạt như vậy.</div>
+<div style="color:var(--en,#56665a)"><b style="color:#8a5a3c">Needs testing</b> · The pilot was “successful”, but it covered 25 customers, for three months, in one area (southeastern Tennessee). The full region has about 30 million access lines.</div>
+<div><b style="color:#8a5a3c">Cần kiểm chứng</b> · Thử nghiệm “thành công”, nhưng chỉ với 25 khách hàng, trong ba tháng, tại một khu vực (đông nam Tennessee). Toàn khu vực có khoảng 30 triệu đường thuê bao.</div>
+<div style="color:var(--en,#56665a)"><b style="color:#8a5a3c">Risk</b> · Installation at BCPC and customer sites requires considerable technical skill, and BCPC would need to integrate many vendors’ technologies. Berkowitz himself calls the end-to-end experience “incredibly complicated”.</div>
+<div><b style="color:#8a5a3c">Rủi ro</b> · Việc lắp đặt tại BCPC và tại nhà khách hàng đòi hỏi kỹ năng kỹ thuật đáng kể, và BCPC phải tích hợp công nghệ của nhiều nhà cung cấp. Chính Berkowitz nói trải nghiệm đầu-cuối này “phức tạp vô cùng”.</div>
+<div style="color:var(--en,#56665a)"><b style="color:#8a5a3c">Risk</b> · BCPC’s service model relies on predictable demand, scripted representatives and an online troubleshooting database. Hiring is highly selective (up to 20,000 screened for 800 positions) and training takes four months.</div>
+<div><b style="color:#8a5a3c">Rủi ro</b> · Mô hình dịch vụ của BCPC dựa trên nhu cầu dự đoán được, nhân viên làm theo kịch bản và một cơ sở dữ liệu xử lý sự cố. Tuyển dụng rất chọn lọc (sàng lọc tới 20.000 người cho 800 vị trí) và đào tạo mất bốn tháng.</div>
+<div style="color:var(--en,#56665a)"><b style="color:#8a5a3c">Risk</b> · Customers tolerate service breakdowns for about 24 hours at most, and loyalty drops sharply when customers rate service only “Satisfactory”.</div>
+<div><b style="color:#8a5a3c">Rủi ro</b> · Khách hàng chỉ chịu đựng sự cố dịch vụ tối đa khoảng 24 giờ, và lòng trung thành giảm mạnh khi khách chỉ đánh giá dịch vụ ở mức “Đạt yêu cầu”.</div>
+<div style="color:var(--en,#56665a)"><b style="color:#8a5a3c">Risk</b> · Some in BCPC already worry that supporting such a different service could damage its reputation for reliable support. 25% of management bonuses are tied to satisfaction results.</div>
+<div><b style="color:#8a5a3c">Rủi ro</b> · Một số người trong BCPC đã lo rằng hỗ trợ một dịch vụ khác biệt như vậy có thể làm tổn hại danh tiếng hỗ trợ đáng tin cậy. 25% tiền thưởng của cấp quản lý gắn với kết quả mức độ hài lòng.</div>
+<div style="color:var(--en,#56665a)"><b style="color:#7a5634">Alternative</b> · Regulation already requires BCPC to provide its network to third parties “at cost”, so BCPC will be a HIP wholesaler regardless. Retail is optional.</div>
+<div><b style="color:#7a5634">Phương án khác</b> · Quy định đã buộc BCPC cung cấp mạng cho bên thứ ba “theo giá vốn”, nên dù thế nào BCPC cũng là nhà bán buôn HIP. Bán lẻ là lựa chọn thêm.</div>
+<div style="color:var(--en,#56665a)"><b style="color:#7a5634">Context</b> · New product launches are highly visible inside the firm and to the public, which raises the stakes of the team’s decision process.</div>
+<div><b style="color:#7a5634">Bối cảnh</b> · Việc ra mắt sản phẩm mới rất được chú ý cả trong công ty lẫn ngoài công chúng, khiến quy trình ra quyết định của nhóm càng quan trọng.</div>
+<div style="color:var(--en,#56665a)"><b style="color:#7a5634">Team dynamics</b> · Members span several levels of hierarchy, which the case names as “a challenge for open communication”. Berkowitz is confident and hopes people will simply introduce themselves and “start right in”.</div>
+<div><b style="color:#7a5634">Động lực nhóm</b> · Các thành viên thuộc nhiều cấp bậc khác nhau, điều mà tình huống gọi thẳng là một thách thức cho giao tiếp cởi mở. Berkowitz tự tin và mong mọi người chỉ cần giới thiệu bản thân rồi bắt tay ngay vào việc.</div>
+</div>
+<div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Mâu thuẫn cốt lõi</b></p><p style="margin:0">Thế mạnh của BCPC là dịch vụ chuẩn hoá cho nhu cầu dự đoán được. HIP lại phức tạp về kỹ thuật, nhiều nhà cung cấp và khó dự đoán. Nghĩa là chính hệ thống đã tạo nên danh tiếng của BCPC có thể không phù hợp với sản phẩm mới. Các dữ kiện “ủng hộ ra mắt” là thông tin ai cũng thấy; các dữ kiện “rủi ro” nằm ở những phần chuyên môn mà chỉ một vài chức năng nắm rõ.</p></div>
+</section>
+
+<section id="s05" data-screen-label="05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 05</span>
+<span style="color:#86958a">The team</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Six roles, six lenses</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Sáu vai, sáu lăng kính</h3>
+<div style="color:var(--en,#56665a)">Likely priorities and information are inferred from the case text. Terry’s entry is checked against the role sheet below.</div>
+<div>Ưu tiên và thông tin dự kiến được suy ra từ nội dung tình huống. Riêng vai Terry đã được đối chiếu với phiếu vai ở bên dưới.</div>
+<div style="color:var(--en,#56665a)"><b>Chris Berkowitz</b> — Team Leader, Business Development<br />Priority: seize the growth opportunity and deliver a recommendation. Risk: as leader and sponsor, an early opinion can anchor the group.</div>
+<div><b>Chris Berkowitz</b><span> — Trưởng nhóm, Phát triển kinh doanh</span><br /><span>Ưu tiên: nắm bắt cơ hội tăng trưởng và đưa ra khuyến nghị. Rủi ro: là trưởng nhóm và người thúc đẩy dự án, ý kiến nêu sớm của Chris dễ “neo” suy nghĩ của cả nhóm.</span></div>
+<div style="color:var(--en,#56665a)"><b>Morgan Jones</b> — VP of Finance<br />Priority: revenue, investment and margin. Likely knowledge: cost of staffing, installation and support; the economics of selling wholesale at cost.</div>
+<div><b>Morgan Jones</b><span> — Phó chủ tịch Tài chính</span><br /><span>Ưu tiên: doanh thu, đầu tư và biên lợi nhuận. Có thể nắm: chi phí nhân sự, lắp đặt và hỗ trợ; bài toán kinh tế khi bán buôn theo giá vốn.</span></div>
+<div style="color:var(--en,#56665a)"><b>Alex Wilson</b> — VP of Marketing<br />Priority: market share, brand, beating cable competitors. Likely knowledge: demand data, customer expectations, competitor moves.</div>
+<div><b>Alex Wilson</b><span> — Phó chủ tịch Marketing</span><br /><span>Ưu tiên: thị phần, thương hiệu, vượt đối thủ truyền hình cáp. Có thể nắm: số liệu nhu cầu, kỳ vọng khách hàng, động thái của đối thủ.</span></div>
+<div style="color:var(--en,#56665a)"><b>Jan Trow</b> — Senior Project Director, Information Systems<br />Priority: systems that work end to end. Likely knowledge: multi-vendor integration, ordering, billing and troubleshooting systems.</div>
+<div><b>Jan Trow</b><span> — Giám đốc dự án cấp cao, Hệ thống thông tin</span><br /><span>Ưu tiên: hệ thống vận hành trơn tru từ đầu đến cuối. Có thể nắm: tích hợp nhiều nhà cung cấp, hệ thống đặt hàng, tính cước và xử lý sự cố.</span></div>
+<div style="color:var(--en,#56665a)"><b>Robin Rhee</b> — Director of Operations Management<br />Priority: service levels and execution. Likely knowledge: what actually happened in pilot installations; field capacity and repair times.</div>
+<div><b>Robin Rhee</b><span> — Giám đốc Quản lý vận hành</span><br /><span>Ưu tiên: mức độ dịch vụ và khả năng thực thi. Có thể nắm: điều gì thực sự xảy ra khi lắp đặt trong đợt thử nghiệm; năng lực hiện trường và thời gian sửa chữa.</span></div>
+<div style="color:var(--en,#56665a)"><b>Terry Maneri</b> — Director of Human Resources<br />Priority: people capability. Likely knowledge: whether representatives and technicians have the skills HIP needs; time and cost to hire and train.</div>
+<div><b>Terry Maneri</b><span> — Giám đốc Nhân sự</span><br /><span>Ưu tiên: năng lực con người. Có thể nắm: nhân viên dịch vụ và kỹ thuật viên có đủ kỹ năng HIP cần hay không; thời gian và chi phí để tuyển và đào tạo.</span></div>
+</div>
+<div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Điểm cần chú ý về cấp bậc</b></p><p style="margin:0">Hai người có chức danh cao nhất (VP Tài chính và VP Marketing) đại diện cho góc nhìn thương mại. Những người nhiều khả năng nắm thông tin vận hành quan trọng nhất (Hệ thống thông tin, Vận hành, Nhân sự) lại ở cấp thấp hơn. Đây chính là cấu trúc dễ khiến thông tin rủi ro không được nói ra.</p></div>
+<figure style="margin:14px 0 0;break-inside:avoid">
+<div style="border:1px solid #dae4d6;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:12.5px;line-height:1.55">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 16px"><div style="display:flex;align-items:center;gap:7px;font-weight:700;letter-spacing:.02em"><span style="width:10px;height:10px;border-radius:50%;background:#e60028"></span><span>RMIT University</span></div><div style="color:#56665a">Zalo me.grow 2026</div></div>
+<div style="background:#f3f7f1;padding:8px 10px"><div style="color:#56665a"><b>THE BCPC INTERNET STRATEGY TEAM</b><br />CONFIDENTIAL – YOUR ROLE ASSIGNMENT</div><div><b>NHÓM CHIẾN LƯỢC INTERNET CỦA BCPC</b><br /><span>BẢO MẬT – PHÂN VAI CỦA BẠN</span></div></div>
+<div style="background:#f3f7f1;padding:8px 10px"><div style="color:#56665a">Dear [participant],<br />Welcome to the <b>BCPC Team Challenge!</b><br />Today, you will play the role of <b>Terry</b>, the <b>Director, HR</b> at Big City Phone Company (BCPC), a telecommunications company.</div><div><span>Gửi [học viên],</span><br /><span>Chào mừng bạn đến với </span><b>Thử thách nhóm BCPC!</b><br /><span>Hôm nay, bạn sẽ đóng vai </span><b>Terry</b>, <b>Giám đốc Nhân sự</b> của Big City Phone Company (BCPC), một công ty viễn thông.</div></div>
+<div style="background:#f3f7f1;padding:8px 10px"><div style="color:#56665a">BCPC is considering launching a new High-speed Internet Product (HIP). The CEO has formed an Internet Strategy Team to decide whether and how the company should launch this service.</div><div>BCPC đang cân nhắc ra mắt một sản phẩm Internet tốc độ cao mới (HIP). CEO đã thành lập Nhóm Chiến lược Internet để quyết định có nên ra mắt dịch vụ này hay không và ra mắt như thế nào.</div></div>
+<div style="background:#f3f7f1;padding:8px 10px"><div style="color:#56665a"><b>Your role information:</b> Been at BCPC for 2 months &amp; is eager to make a good impression; believes the human resources at BCPC are insufficient for HIP delivery. The hiring/training challenge appears considerable, making an aggressive launch seem unwise and unrealistic.</div><div><b>Thông tin vai của bạn:</b> Mới làm việc tại BCPC được 2 tháng và rất muốn tạo ấn tượng tốt; cho rằng nguồn nhân lực của BCPC không đủ để triển khai HIP. Thách thức tuyển dụng/đào tạo có vẻ rất lớn, khiến việc ra mắt ồ ạt trở nên thiếu khôn ngoan và không thực tế.</div></div>
+<div style="background:#f3f7f1;padding:8px 10px;border-left:3px solid #8a5a3c"><div style="color:#56665a"><b>Your view on the launch:</b> <b style="color:#8a5a3c">Against</b></div><div><b>Quan điểm của bạn về việc ra mắt:</b> <b style="color:#8a5a3c">Phản đối</b></div></div>
+<div style="background:#f3f7f1;padding:8px 10px"><div style="color:#56665a">Your task: You will join five other managers in a team meeting. Together, you must agree on one recommendation to the CEO.</div><div>Nhiệm vụ: Bạn sẽ cùng năm quản lý khác tham gia một cuộc họp nhóm. Cả nhóm phải thống nhất một khuyến nghị duy nhất gửi CEO.</div></div>
+<div style="background:#f3f7f1;padding:8px 10px"><div style="color:#56665a">Please remember:</div><div>Xin lưu ý:</div>
+<div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
+<div style="display:flex;gap:10px;background:#ffffff;padding:6px 10px"><b style="color:var(--ac,#2f6b45);min-width:14px">1.</b><div><div style="color:#56665a">Read your role information carefully and think like your assigned character.</div><div>Đọc kỹ thông tin vai và suy nghĩ như nhân vật được giao.</div></div></div>
+<div style="display:flex;gap:10px;background:#ffffff;padding:6px 10px"><b style="color:var(--ac,#2f6b45);min-width:14px">2.</b><div><div style="color:#56665a">Keep this letter and your role briefing private. Do not show them to others.</div><div>Giữ kín thư này và phiếu vai của bạn. Không cho người khác xem.</div></div></div>
+<div style="display:flex;gap:10px;background:#ffffff;padding:6px 10px"><b style="color:var(--ac,#2f6b45);min-width:14px">3.</b><div><div style="color:#56665a">You may share and discuss information from your role during the meeting.</div><div>Bạn được chia sẻ và thảo luận thông tin từ vai của mình trong cuộc họp.</div></div></div>
+<div style="display:flex;gap:10px;background:#ffffff;padding:6px 10px"><b style="color:var(--ac,#2f6b45);min-width:14px">4.</b><div><div style="color:#56665a">Listen to other managers and work together to reach one team decision.</div><div>Lắng nghe các quản lý khác và cùng nhau đi đến một quyết định chung của nhóm.</div></div></div>
+</div></div>
+<div style="background:#f3f7f1;padding:8px 10px"><div style="color:#56665a">You will have <b>20 minutes</b> for the team discussion.<br /><i>Good luck with your team challenge!</i></div><div>Bạn có <b>20 phút</b><span> cho phần thảo luận nhóm.</span><br /><i>Chúc bạn hoàn thành tốt thử thách nhóm!</i></div></div>
+<div style="padding:2px 10px">Dr Phuong Nguyen · RMIT Vietnam</div>
+</div>
+<figcaption style="margin-top:6px;font-size:12px;color:#86958a">Phiếu vai của Terry (Giám đốc Nhân sự), bản RMIT – Zalo me.grow 2026 — diễn giải theo cấu trúc hình ở khung trên.</figcaption>
+</figure>
+<div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Phiếu vai Terry gợi ý gì cho thảo luận</b></p><ul style="margin:0;padding-left:18px"><li><b>Thông tin ẩn khớp với suy luận ở trên.</b> Terry nắm thông tin rằng nguồn nhân lực hiện tại không đủ cho HIP. Điều này khớp với dữ kiện trong tình huống: sàng lọc tới 20.000 người cho 800 vị trí và đào tạo mất bốn tháng.</li><li><b>Mỗi vai được giao sẵn lập trường.</b> Trong bản RMIT, Terry được giao quan điểm “Phản đối”. Nhóm nên tách lập trường khỏi lý do: hỏi Terry dựa vào số liệu nào (cần tuyển bao nhiêu người, đào tạo mất bao lâu) thay vì chỉ đếm phiếu ủng hộ và phản đối.</li><li><b>Người mới, cấp thấp hơn, muốn gây ấn tượng.</b> Terry mới vào BCPC 2 tháng. Cùng với khoảng cách cấp bậc với hai VP, đây là điều kiện dễ khiến Terry nói giảm hoặc giữ lại thông tin. Trưởng nhóm cần chủ động mời Terry trình bày (MT1, MT2).</li><li><b>Thời gian thật ngắn.</b> Phiếu vai cho 20 phút họp nhóm. Với sáu người, nhóm nào để một hai người nói phần lớn thời gian sẽ khó nghe đủ thông tin rủi ro.</li></ul></div>
+<div style="margin:12px 0 0;border:1px solid #dae4d6;padding:14px;font-size:12.5px;line-height:1.55;break-inside:avoid">
+<div style="margin:0 0 10px"><div style="color:#56665a"><b>Terry’s 20-minute plan</b></div><div><b style="color:var(--ac,#2f6b45)">Kế hoạch 20 phút cho vai Terry</b></div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px">
+<div style="background:#f3f7f1;padding:8px 10px;border-top:3px solid var(--ac,#2f6b45);display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ac,#2f6b45)">0–3′</div><div><div style="color:#56665a"><b>State your position with reasons</b></div><div><b>Nêu lập trường kèm lý do</b></div></div><div style="color:#56665a">“I don’t yet support a region-wide retail launch: our people are not ready for HIP.”<br />· 20,000 screened for 800 positions<br />· 4 months of training<br />· Multi-vendor installation needs technical skill; reps work from scripts<br />· Customers tolerate about 24 hours of breakdown; 25% of bonuses tied to satisfaction</div><div><span>“Tôi chưa ủng hộ ra mắt bán lẻ toàn khu vực ngay, vì nhân lực chưa sẵn sàng cho HIP.”</span><br /><span>· Sàng lọc 20.000 người cho 800 vị trí</span><br /><span>· Đào tạo mất 4 tháng</span><br /><span>· Lắp đặt nhiều nhà cung cấp cần kỹ năng kỹ thuật; nhân viên làm theo kịch bản</span><br /><span>· Khách chỉ chịu sự cố khoảng 24 giờ; 25% thưởng gắn với mức hài lòng</span></div></div>
+<div style="background:#f3f7f1;padding:8px 10px;border-top:3px solid var(--ac,#2f6b45);display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ac,#2f6b45)">3–12′</div><div><div style="color:#56665a"><b>Ask other roles</b></div><div><b>Hỏi các vai khác</b></div></div><div style="color:#56665a">· Robin: what really happened in pilot installations? Field capacity?<br />· Jan: is troubleshooting ready for HIP?<br />· Alex: year-one customer volume? How fast is cable moving?<br />· Morgan: hiring and training cost vs revenue; wholesale economics<br />· Chris: the CEO’s timing expectations<br />Note: the pilot had 25 customers, 3 months, one area.</div><div><span>· Robin: lắp đặt thử nghiệm thực tế ra sao? Năng lực hiện trường?</span><br /><span>· Jan: hệ thống xử lý sự cố đã sẵn sàng cho HIP chưa?</span><br /><span>· Alex: số khách năm đầu? Đối thủ cáp tiến nhanh đến đâu?</span><br /><span>· Morgan: chi phí tuyển, đào tạo so với doanh thu; bài toán bán buôn</span><br /><span>· Chris: kỳ vọng thời gian của CEO</span><br /><span>Lưu ý: thử nghiệm chỉ 25 khách, 3 tháng, một khu vực.</span></div></div>
+<div style="background:#f3f7f1;padding:8px 10px;border-top:3px solid var(--ac,#2f6b45);display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ac,#2f6b45)">12–16′</div><div><div style="color:#56665a"><b>Propose a middle path</b></div><div><b>Đề xuất phương án trung gian</b></div></div><div style="color:#56665a">· Wholesale now (already required by regulation)<br />· Phased retail launch, starting in a small area<br />· Expand only when trained staffing and satisfaction thresholds are met</div><div><span>· Bán buôn ngay (quy định đã bắt buộc)</span><br /><span>· Bán lẻ theo giai đoạn, bắt đầu ở khu vực nhỏ</span><br /><span>· Chỉ mở rộng khi đủ nhân sự đã đào tạo và mức hài lòng đạt ngưỡng</span></div></div>
+<div style="background:#f3f7f1;padding:8px 10px;border-top:3px solid var(--ac,#2f6b45);display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ac,#2f6b45)">16–20′</div><div><div style="color:#56665a"><b>Close the recommendation</b></div><div><b>Chốt khuyến nghị</b></div></div><div style="color:#56665a">Help the team answer both required questions: what BCPC should do about HIP, and which key issues were considered. Ask to list people capability as a key issue.</div><div>Giúp nhóm trả lời hai câu bắt buộc: BCPC nên làm gì với HIP, và đã cân nhắc vấn đề then chốt nào. Đề nghị đưa năng lực nhân sự vào danh sách vấn đề then chốt.</div></div>
+</div>
+<div style="margin-top:10px;background:#f3f7f1;padding:8px 10px;border-left:3px solid #8a5a3c"><div style="color:#56665a"><b>Behaviour.</b> As a 2-month newcomer below two VPs, Terry is likely to soften or hold back information. Share everything on the role sheet, and ask more than you argue.</div><div><b>Hành vi.</b> Là người mới 2 tháng và ở dưới hai VP, Terry dễ nói giảm hoặc giữ lại thông tin. Hãy chia sẻ hết thông tin trong phiếu vai, và hỏi nhiều hơn tranh luận.</div></div>
+</div>
+</section>
+
+<section id="s06" data-screen-label="06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 06</span>
+<span style="color:#86958a">Running the session</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Suggested flow (about 105 minutes)</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tiến trình gợi ý (khoảng 105 phút)</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li><b>Set-up (10 min).</b> Groups of six, plus one optional observer per group. Hand out the case and one role sheet per person. Each person makes a name card.</li><li><b>Individual preparation (15 min).</b> Read the case and role sheet; write a personal recommendation and the two or three facts that support it.</li><li><b>Team meeting (20 min).</b> Groups reach one recommendation and list the key issues considered. No facilitator input.</li><li><b>Report-out (15 min).</b> Each group states its decision. Record the decisions side by side on the board.</li><li><b>Information reveal (10 min).</b> Ask each role in turn: “What did your sheet say that you did not share?” Record new facts.</li><li><b>Debrief (30 min).</b> Work through the questions in Parts 7–11.</li><li><b>Personal commitment (5 min).</b> See Part 12.</li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li><b>Chuẩn bị (10 phút).</b> Chia nhóm sáu người, mỗi nhóm có thể thêm một người quan sát. Phát tình huống và mỗi người một phiếu vai. Mỗi người làm thẻ tên.</li><li><b>Chuẩn bị cá nhân (15 phút).</b> Đọc tình huống và phiếu vai; ghi khuyến nghị của riêng mình và hai, ba dữ kiện ủng hộ khuyến nghị đó.</li><li><b>Họp nhóm (20 phút).</b> Nhóm thống nhất một khuyến nghị và liệt kê các vấn đề then chốt đã cân nhắc. Người điều phối không can thiệp.</li><li><b>Báo cáo (15 phút).</b> Mỗi nhóm nêu quyết định. Ghi các quyết định cạnh nhau trên bảng.</li><li><b>Tiết lộ thông tin (10 phút).</b> Hỏi lần lượt từng vai: “Phiếu của bạn có thông tin gì mà bạn chưa chia sẻ?” Ghi lại các dữ kiện mới.</li><li><b>Thảo luận rút kinh nghiệm (30 phút).</b> Đi qua các câu hỏi ở Phần 7–11.</li><li><b>Cam kết cá nhân (5 phút).</b> Xem Phần 12.</li></ol></div>
+</div>
+<div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Gợi ý cho người điều phối</b></p><p style="margin:0">Bước 5 là bước tạo ra bài học mạnh nhất. Khi các nhóm thấy những thông tin quan trọng đã có sẵn trong phòng nhưng không được nói ra, câu hỏi “vì sao?” sẽ dẫn thẳng vào MT1 và MT2. Không nên nói trước cho người học rằng đây là bài tập về chia sẻ thông tin. Nếu có người quan sát, phát cho họ bảng ghi ở Phần 11.</p></div>
+</section>
+
+<section id="s07" data-screen-label="07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 07</span>
+<span style="color:#86958a">MT1 · Perspectives, priorities, incomplete information</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">LO1 — How perspectives, priorities and incomplete information shape the decision</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">MT1 — Góc nhìn, ưu tiên và thông tin không đầy đủ định hình quyết định thế nào</h3>
+<div style="color:var(--en,#56665a)"><b>Q1.1</b> What did each role know that others did not? Which of those facts should have changed the decision?</div>
+<div><b>Câu 1.1</b> Mỗi vai biết điều gì mà người khác không biết? Dữ kiện nào trong số đó lẽ ra phải làm thay đổi quyết định?</div>
+<div style="color:var(--en,#56665a)"><i>Direction:</i> Build a two-column board after the reveal: “shared by everyone” and “held by one role”. Typically the first column leans towards launch and the second holds the operational risks: installation, systems integration, staff skills, true pilot conditions and cost. Ask groups which single fact, had it been heard early, would have moved them most.</div>
+<div><i>Hướng thảo luận:</i> Sau bước tiết lộ, lập bảng hai cột: “ai cũng biết” và “chỉ một vai biết”. Thường cột thứ nhất nghiêng về ra mắt, còn cột thứ hai chứa các rủi ro vận hành: lắp đặt, tích hợp hệ thống, kỹ năng nhân viên, điều kiện thật của đợt thử nghiệm và chi phí. Hỏi các nhóm: nếu được nghe sớm, dữ kiện nào sẽ khiến nhóm đổi ý nhiều nhất?</div>
+<div style="color:var(--en,#56665a)"><b>Q1.2</b> Why does information held by only one person tend to stay hidden in a group discussion?</div>
+<div><b>Câu 1.2</b> Vì sao thông tin chỉ một người nắm giữ thường bị chìm trong thảo luận nhóm?</div>
+<div style="color:var(--en,#56665a)"><i>Direction:</i> Research on hidden profiles (Stasser &amp; Titus, 1985) shows groups spend most of their time on information everyone already shares. Shared facts get repeated, so they feel more credible. Unique facts are mentioned once, if at all, and are easy to dismiss. Hierarchy adds to this: a lower-level member may hesitate to contradict a VP or the team leader. Time pressure and a leader who frames the question as “how do we launch?” narrow the discussion further.</div>
+<div><i>Hướng thảo luận:</i> Nghiên cứu về hồ sơ ẩn (Stasser &amp; Titus, 1985) cho thấy nhóm dành phần lớn thời gian cho thông tin mà mọi người đều đã biết. Dữ kiện chung được nhắc lại nhiều lần nên có vẻ đáng tin hơn. Dữ kiện riêng chỉ được nêu một lần, nếu có, và dễ bị gạt đi. Cấp bậc làm tình trạng này nặng hơn: người ở cấp thấp ngại phản bác một VP hay trưởng nhóm. Áp lực thời gian và việc trưởng nhóm đặt câu hỏi theo hướng “ra mắt thế nào?” càng thu hẹp cuộc thảo luận.</div>
+<div style="color:var(--en,#56665a)"><b>Q1.3</b> How did each function’s priorities shape what it saw as “the problem”?</div>
+<div><b>Câu 1.3</b> Ưu tiên của mỗi chức năng đã định hình cách họ nhìn “vấn đề” ra sao?</div>
+<div style="color:var(--en,#56665a)"><i>Direction:</i> Marketing may see a market-timing problem; Finance a return-on-investment problem; Operations and IS an execution problem; HR a capability problem; Business Development a growth problem. None is wrong. Alignment starts when the group agrees what problem it is solving and which criteria matter most, before arguing about the answer.</div>
+<div><i>Hướng thảo luận:</i> Marketing có thể thấy đây là bài toán thời điểm thị trường; Tài chính thấy bài toán lợi nhuận đầu tư; Vận hành và Hệ thống thông tin thấy bài toán thực thi; Nhân sự thấy bài toán năng lực; Phát triển kinh doanh thấy bài toán tăng trưởng. Không ai sai. Sự đồng thuận bắt đầu khi nhóm thống nhất đang giải bài toán nào và tiêu chí nào quan trọng nhất, trước khi tranh luận về đáp án.</div>
+<div style="color:var(--en,#56665a)"><b>Q1.4</b> What does the “successful” pilot actually prove?</div>
+<div><b>Câu 1.4</b> Đợt thử nghiệm “thành công” thực sự chứng minh được điều gì?</div>
+<div style="color:var(--en,#56665a)"><i>Direction:</i> 25 customers over three months in one area is a very small base for a region of 30 million lines. Useful questions the team could have asked: Who were the pilot customers? Who installed and supported them, and how much effort did it take? How many installs needed repeat visits? Were satisfaction ratings “Very good” or only “Satisfactory”? “Successful” is a conclusion; the team needed the data behind it.</div>
+<div><i>Hướng thảo luận:</i> 25 khách hàng trong ba tháng tại một khu vực là cơ sở rất nhỏ cho một vùng có 30 triệu đường thuê bao. Những câu hỏi nhóm lẽ ra nên đặt: Khách hàng thử nghiệm là ai? Ai lắp đặt và hỗ trợ họ, tốn bao nhiêu công sức? Bao nhiêu ca lắp đặt phải quay lại? Mức hài lòng là “Rất tốt” hay chỉ “Đạt yêu cầu”? “Thành công” là một kết luận; nhóm cần dữ liệu đứng sau kết luận đó.</div>
+</div>
+</section>
+
+<section id="s08" data-screen-label="08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 08</span>
+<span style="color:#86958a">MT2 · Advocacy and inquiry</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">LO2 — Balancing advocacy and inquiry</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">MT2 — Cân bằng giữa trình bày quan điểm và tìm hiểu</h3>
+<div style="color:var(--en,#56665a)"><b>Two modes of talk.</b> <i>Advocacy</i> is stating your view and the reasoning behind it. <i>Inquiry</i> is asking about others’ views, data and reasoning. The idea comes from Chris Argyris and Donald Schön and was popularised by Peter Senge in <i>The Fifth Discipline</i>.</div>
+<div><b>Hai cách nói.</b> <i>Trình bày quan điểm</i> là nêu ý kiến của mình và lập luận đằng sau. <i>Tìm hiểu</i> là hỏi về quan điểm, dữ liệu và lập luận của người khác. Ý tưởng này xuất phát từ Chris Argyris và Donald Schön, được Peter Senge phổ biến trong cuốn <i>The Fifth Discipline</i>.</div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li><b>High advocacy, low inquiry</b> — telling and pushing; others defend or go quiet.</li><li><b>Low advocacy, high inquiry</b> — questioning without revealing your own view; can feel like an interrogation.</li><li><b>Low on both</b> — withdrawing; unique information never enters the room.</li><li><b>High on both</b> — mutual learning; views are stated clearly and tested openly.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li><b>Trình bày nhiều, tìm hiểu ít</b> — áp đặt và thúc ép; người khác phòng thủ hoặc im lặng.</li><li><b>Trình bày ít, tìm hiểu nhiều</b> — hỏi mà không cho biết quan điểm của mình; dễ thành tra hỏi.</li><li><b>Cả hai đều ít</b> — rút lui; thông tin riêng không bao giờ được đưa ra.</li><li><b>Cả hai đều nhiều</b> — cùng học hỏi; quan điểm được nêu rõ và được kiểm chứng công khai.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Q2.1</b> In your team meeting, which mode dominated? Who mostly advocated, and who mostly stayed silent?</div>
+<div><b>Câu 2.1</b> Trong cuộc họp của nhóm bạn, cách nói nào chiếm ưu thế? Ai chủ yếu trình bày quan điểm, ai chủ yếu im lặng?</div>
+<div style="color:var(--en,#56665a)"><i>Direction:</i> Use observer data if available. A common pattern: the leader and senior roles advocate early for launch; others either argue back (two competing advocacies, no inquiry) or withdraw. Ask: at what moment did the discussion become a contest of positions rather than a shared search for the best answer?</div>
+<div><i>Hướng thảo luận:</i> Dùng dữ liệu của người quan sát nếu có. Một khuôn mẫu thường gặp: trưởng nhóm và các vai cấp cao trình bày sớm theo hướng ra mắt; những người khác hoặc cãi lại (hai bên cùng trình bày, không ai tìm hiểu) hoặc rút lui. Hỏi: vào thời điểm nào cuộc thảo luận chuyển thành cuộc đấu quan điểm thay vì cùng tìm ra câu trả lời tốt nhất?</div>
+<div style="color:var(--en,#56665a)"><b>Q2.2</b> If Chris opens with “I’m confident we should launch”, what happens to the information held by Operations, IS and HR?</div>
+<div><b>Câu 2.2</b> Nếu Chris mở đầu bằng câu “Tôi tin chắc chúng ta nên ra mắt”, điều gì sẽ xảy ra với thông tin mà Vận hành, Hệ thống thông tin và Nhân sự đang nắm?</div>
+<div style="color:var(--en,#56665a)"><i>Direction:</i> The leader’s early advocacy sets an anchor. Raising a risk now means contradicting the leader, so lower-level members may soften or hold back their information. A leader who holds a strong view can still share it, but later, and with an explicit invitation to challenge it.</div>
+<div><i>Hướng thảo luận:</i> Việc trưởng nhóm trình bày quan điểm sớm tạo ra một điểm neo. Lúc này nêu rủi ro đồng nghĩa với phản bác trưởng nhóm, nên người cấp thấp hơn có thể nói nhẹ đi hoặc giữ lại thông tin. Người lãnh đạo có quan điểm mạnh vẫn có thể chia sẻ, nhưng nên nói sau và kèm lời mời rõ ràng để mọi người phản biện.</div>
+<div style="color:var(--en,#56665a)"><b>Q2.3</b> Rewrite a statement from your meeting so that it combines advocacy and inquiry.</div>
+<div><b>Câu 2.3</b> Viết lại một câu nói trong cuộc họp của nhóm sao cho kết hợp được cả trình bày quan điểm và tìm hiểu.</div>
+<div style="color:var(--en,#56665a)"><i>Example phrases:</i><ul style="margin:0;padding-left:18px"><li>Advocacy: “My view is X, because of A and B. Here is where I’m least sure.”</li><li>Advocacy with invitation: “What do you see that I might be missing?”</li><li>Inquiry: “What leads you to that conclusion? What data is it based on?”</li><li>Inquiry: “What would we have to believe for the other option to be right?”</li><li>Inquiry into unique information: “What do you know from your function that the rest of us don’t?”</li></ul></div>
+<div><i>Câu mẫu:</i><ul style="margin:0;padding-left:18px"><li>Trình bày: “Quan điểm của tôi là X, vì A và B. Đây là điểm tôi ít chắc chắn nhất.”</li><li>Trình bày kèm lời mời: “Anh/chị thấy điều gì mà tôi có thể đang bỏ sót?”</li><li>Tìm hiểu: “Điều gì dẫn anh/chị đến kết luận đó? Dựa trên dữ liệu nào?”</li><li>Tìm hiểu: “Chúng ta phải tin điều gì thì phương án còn lại mới đúng?”</li><li>Tìm hiểu thông tin riêng: “Từ góc độ bộ phận của anh/chị, có điều gì anh/chị biết mà chúng tôi chưa biết?”</li></ul></div>
+</div>
+</section>
+
+<section id="s09" data-screen-label="09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 09</span>
+<span style="color:#86958a">MT3 · Leadership behaviours for alignment</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">LO3 — What Chris could have done differently</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">MT3 — Chris lẽ ra có thể làm khác đi như thế nào</h3>
+<div style="color:var(--en,#56665a)"><b>Q3.1</b> Chris hoped the team would introduce themselves and “start right in”. What is missing from that plan?</div>
+<div><b>Câu 3.1</b> Chris mong mọi người giới thiệu bản thân rồi bắt tay ngay vào việc. Kế hoạch đó thiếu điều gì?</div>
+<div style="color:var(--en,#56665a)"><i>Direction:</i> Chris has a goal but no process. He has not framed the task, explained why each function is in the room, agreed decision criteria, or addressed the hierarchy that the case flags as a barrier. Being confident in the team’s ability is not the same as designing a discussion that uses it.</div>
+<div><i>Hướng thảo luận:</i> Chris có mục tiêu nhưng không có quy trình. Chris chưa định khung nhiệm vụ, chưa giải thích vì sao từng chức năng có mặt, chưa thống nhất tiêu chí quyết định và chưa xử lý vấn đề cấp bậc mà tình huống đã chỉ ra. Tin vào năng lực của nhóm khác với việc thiết kế một cuộc thảo luận tận dụng được năng lực đó.</div>
+<div style="color:var(--en,#56665a)"><b>Q3.2</b> What specific behaviours would build shared understanding — before, during and at the end of the meeting?</div>
+<div><b>Câu 3.2</b> Những hành vi cụ thể nào giúp xây dựng sự hiểu biết chung — trước, trong và cuối cuộc họp?</div>
+<div style="color:var(--en,#56665a)"><b>Before</b><ul style="margin:0;padding-left:18px"><li>Frame it as a decision under uncertainty: “We don’t yet know the right answer.”</li><li>Tell members they each hold information no one else has, and ask each to bring two facts only their function knows.</li><li>Share the decision criteria and how the final call will be made.</li></ul><b>During</b><ul style="margin:0;padding-left:18px"><li>Separate information-sharing from deciding: first collect facts, then evaluate options.</li><li>Go round the table, starting with lower-level roles; the leader speaks last.</li><li>Write facts on the board as “for launch”, “risk” and “unknown”.</li><li>Assign a devil’s advocate for each option.</li><li>Ask “Who has information that contradicts this?” and thank people who answer.</li><li>Summarise regularly: “Here’s what I’m hearing; what have I got wrong?”</li></ul><b>At the end</b><ul style="margin:0;padding-left:18px"><li>Check agreement with each person, not only the loudest voices.</li><li>Record remaining dissent and key assumptions in the recommendation.</li><li>Agree who does what next, and what evidence would change the decision.</li></ul></div>
+<div><b>Trước cuộc họp</b><ul style="margin:0;padding-left:18px"><li>Định khung đây là quyết định trong điều kiện chưa chắc chắn: “Chúng ta chưa biết đáp án đúng.”</li><li>Nói rõ mỗi thành viên đang nắm thông tin mà người khác không có, và đề nghị mỗi người mang theo hai dữ kiện chỉ bộ phận mình biết.</li><li>Chia sẻ tiêu chí quyết định và cách quyết định cuối cùng sẽ được đưa ra.</li></ul><b>Trong cuộc họp</b><ul style="margin:0;padding-left:18px"><li>Tách việc chia sẻ thông tin khỏi việc ra quyết định: trước tiên thu thập dữ kiện, sau đó mới đánh giá phương án.</li><li>Lần lượt từng người phát biểu, bắt đầu từ các vai cấp thấp hơn; trưởng nhóm nói sau cùng.</li><li>Ghi dữ kiện lên bảng theo ba cột: “ủng hộ ra mắt”, “rủi ro”, “chưa biết”.</li><li>Phân công người phản biện cho từng phương án.</li><li>Hỏi “Ai có thông tin trái ngược với điều này?” và cảm ơn người trả lời.</li><li>Tóm tắt thường xuyên: “Đây là điều tôi đang nghe được; tôi hiểu sai chỗ nào?”</li></ul><b>Cuối cuộc họp</b><ul style="margin:0;padding-left:18px"><li>Kiểm tra sự đồng ý của từng người, không chỉ những người nói nhiều.</li><li>Ghi lại ý kiến khác biệt còn tồn tại và các giả định then chốt trong khuyến nghị.</li><li>Thống nhất ai làm gì tiếp theo, và bằng chứng nào sẽ khiến quyết định thay đổi.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Q3.3</b> How does this connect to Topic 13?</div>
+<div><b>Câu 3.3</b> Điều này liên quan thế nào đến Chủ đề 13?</div>
+<div style="color:var(--en,#56665a)"><i>Direction:</i> The case authors include Amy Edmondson, whose psychological-safety work was covered in Topic 13. BCPC has high performance standards (25% of bonuses tied to satisfaction, a highly visible launch). If people don’t feel safe raising bad news, the team sits in the Anxiety Zone, where problems go unspoken. Trust makes speaking up possible; the leader’s process makes it routine.</div>
+<div><i>Hướng thảo luận:</i> Một trong các tác giả của tình huống là Amy Edmondson, người có nghiên cứu về an toàn tâm lý đã học ở Chủ đề 13. BCPC có chuẩn mực hiệu suất cao (25% tiền thưởng gắn với mức hài lòng, việc ra mắt được chú ý rộng rãi). Nếu mọi người không thấy an toàn khi báo tin xấu, nhóm sẽ rơi vào Vùng lo âu, nơi vấn đề không được nói ra. Niềm tin giúp việc lên tiếng trở nên khả thi; quy trình của người lãnh đạo biến nó thành thói quen.</div>
+</div>
+</section>
+
+<section id="s10" data-screen-label="10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 10</span>
+<span style="color:#86958a">MT4 · Integrating perspectives into a better decision</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">LO4 — From diverse perspectives to decision quality</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">MT4 — Từ góc nhìn đa dạng đến chất lượng quyết định</h3>
+<div style="color:var(--en,#56665a)"><b>Q4.1</b> The case offers two options. Are there better ones?</div>
+<div><b>Câu 4.1</b> Tình huống đưa ra hai phương án. Có phương án nào tốt hơn không?</div>
+<div style="color:var(--en,#56665a)"><i>Direction:</i> Integrating perspectives often produces options no single function would propose. Possible set:<ul style="margin:0;padding-left:18px"><li><b>A.</b> Full retail launch across the region now.</li><li><b>B.</b> Wholesale only (required anyway) and learn from retailers.</li><li><b>C.</b> Wholesale now plus a staged retail roll-out in selected areas, expanding only when readiness targets are met.</li><li><b>D.</b> Wholesale now and a larger, more representative retail pilot before deciding.</li></ul></div>
+<div><i>Hướng thảo luận:</i> Kết hợp nhiều góc nhìn thường tạo ra những phương án mà không chức năng nào tự đề xuất. Danh sách có thể gồm:<ul style="margin:0;padding-left:18px"><li><b>A.</b> Ra mắt bán lẻ toàn khu vực ngay.</li><li><b>B.</b> Chỉ bán buôn (vốn đã bắt buộc) và học từ các nhà bán lẻ.</li><li><b>C.</b> Bán buôn ngay, đồng thời ra mắt bán lẻ theo từng giai đoạn ở một số khu vực, chỉ mở rộng khi đạt các mục tiêu sẵn sàng.</li><li><b>D.</b> Bán buôn ngay và chạy một đợt thử nghiệm bán lẻ lớn hơn, sát thực tế hơn trước khi quyết định.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Q4.2</b> Which criteria should the team use to compare options?</div>
+<div><b>Câu 4.2</b> Nhóm nên dùng tiêu chí nào để so sánh các phương án?</div>
+<div style="color:var(--en,#56665a)"><i>Direction:</i> Ask each function to contribute one criterion, then agree weights together. For example: protecting “Very good/Outstanding” service ratings; competitive timing against cable; financial return; operational and systems readiness; staff capability; reputational risk; ability to learn and reverse. Scoring options against shared criteria turns a debate between functions into a joint analysis.</div>
+<div><i>Hướng thảo luận:</i> Đề nghị mỗi chức năng đóng góp một tiêu chí, rồi cùng thống nhất trọng số. Ví dụ: giữ mức đánh giá dịch vụ “Rất tốt/Xuất sắc”; thời điểm cạnh tranh với truyền hình cáp; lợi nhuận tài chính; mức sẵn sàng của vận hành và hệ thống; năng lực nhân viên; rủi ro danh tiếng; khả năng học hỏi và đảo ngược quyết định. Chấm điểm phương án theo tiêu chí chung giúp biến cuộc tranh luận giữa các chức năng thành một phân tích chung.</div>
+<div style="color:var(--en,#56665a)"><b>Q4.3</b> What would a strong recommendation to the CEO look like?</div>
+<div><b>Câu 4.3</b> Một khuyến nghị tốt gửi CEO sẽ trông như thế nào?</div>
+<div style="color:var(--en,#56665a)"><i>Suggested answer (one reasonable view):</i> On the facts in the case alone, an immediate region-wide retail launch carries serious risk. Installation is complex, the service model is built for predictable, scripted work, building skilled staff takes months, customers tolerate only about 24 hours of breakdown, and the pilot is too small to prove readiness. A stronger recommendation is option C or D: act as wholesaler now, and launch retail in stages with clear go/no-go gates (installation success rate, time to resolve faults, staff trained, systems integrated, satisfaction at “Very good” or above). This protects BCPC’s core differentiator while still responding to demand and competition. If groups that heard all the role information chose differently from groups that did not, that difference is the main lesson.</div>
+<div><i>Gợi ý trả lời (một quan điểm hợp lý):</i> Chỉ dựa trên các dữ kiện trong tình huống, việc ra mắt bán lẻ toàn khu vực ngay mang rủi ro lớn. Việc lắp đặt phức tạp, mô hình dịch vụ được xây cho công việc dự đoán được và theo kịch bản, xây dựng đội ngũ có kỹ năng mất nhiều tháng, khách hàng chỉ chịu được sự cố khoảng 24 giờ, và đợt thử nghiệm quá nhỏ để chứng minh sự sẵn sàng. Khuyến nghị mạnh hơn là phương án C hoặc D: làm nhà bán buôn ngay, và ra mắt bán lẻ theo từng giai đoạn với các cổng quyết định rõ ràng (tỷ lệ lắp đặt thành công, thời gian xử lý sự cố, số nhân viên đã đào tạo, mức tích hợp hệ thống, mức hài lòng từ “Rất tốt” trở lên). Cách này bảo vệ lợi thế khác biệt cốt lõi của BCPC mà vẫn đáp ứng nhu cầu và áp lực cạnh tranh. Nếu các nhóm nghe được đầy đủ thông tin trong phiếu vai chọn khác với các nhóm không nghe được, sự khác biệt đó chính là bài học chính.</div>
+<div style="color:var(--en,#56665a)"><b>Q4.4</b> How can you judge the quality of a decision before you know the outcome?</div>
+<div><b>Câu 4.4</b> Làm sao đánh giá chất lượng một quyết định khi chưa biết kết quả?</div>
+<div style="color:var(--en,#56665a)"><i>Direction:</i> Judge the process: Was all relevant information surfaced? Were at least three options considered? Were assumptions made explicit? Was dissent heard and recorded? Does everyone understand and commit to the decision, including those who disagreed? Good process does not guarantee a good outcome, but it makes one far more likely and makes the team easier to align afterwards.</div>
+<div><i>Hướng thảo luận:</i> Đánh giá quy trình: Mọi thông tin liên quan đã được đưa ra chưa? Có ít nhất ba phương án được cân nhắc không? Các giả định đã được nói rõ chưa? Ý kiến khác biệt có được lắng nghe và ghi lại không? Mọi người, kể cả người không đồng ý, có hiểu và cam kết với quyết định không? Quy trình tốt không bảo đảm kết quả tốt, nhưng làm kết quả tốt có khả năng cao hơn nhiều và giúp nhóm dễ đồng thuận về sau.</div>
+</div>
+</section>
+
+<section id="s11" data-screen-label="11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 11</span>
+<span style="color:#86958a">Debrief and observer sheet</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Personal reflection after the exercise</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Suy ngẫm cá nhân sau bài tập</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li>How much of your role’s information did you share? What held you back?</li><li>When did you change your mind, and what made you change it?</li><li>Did the job titles on the name cards affect how much weight you gave to what people said?</li><li>Was the final decision a real agreement, or did some people simply stop arguing?</li><li>Where do you see this pattern in your own cross-functional meetings?</li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li>Bạn đã chia sẻ bao nhiêu phần thông tin trong phiếu vai? Điều gì khiến bạn giữ lại?</li><li>Bạn đổi ý vào lúc nào, và điều gì khiến bạn đổi ý?</li><li>Chức danh trên thẻ tên có ảnh hưởng đến mức độ bạn coi trọng lời người khác nói không?</li><li>Quyết định cuối cùng là sự đồng thuận thật, hay chỉ là một số người thôi tranh luận?</li><li>Bạn thấy khuôn mẫu này ở đâu trong các cuộc họp liên chức năng của chính mình?</li></ol></div>
+<div style="color:var(--en,#56665a)"><b>Observer sheet</b> — tally during the team meeting:<ul style="margin:0;padding-left:18px"><li>Speaking time by role (rough share).</li><li>Number of advocacy statements vs. inquiry questions.</li><li>When each unique fact was first mentioned, and whether anyone followed up.</li><li>Moments when someone was interrupted, dismissed or went quiet.</li><li>How the final decision was reached (vote, leader’s call, consensus, fatigue).</li></ul></div>
+<div><b>Bảng ghi của người quan sát</b> — đánh dấu trong lúc nhóm họp:<ul style="margin:0;padding-left:18px"><li>Thời lượng phát biểu theo từng vai (ước lượng tỷ lệ).</li><li>Số câu trình bày quan điểm so với số câu hỏi tìm hiểu.</li><li>Thời điểm mỗi dữ kiện riêng được nêu lần đầu, và có ai hỏi tiếp không.</li><li>Những lúc có người bị ngắt lời, bị gạt đi hoặc im lặng.</li><li>Quyết định cuối cùng được đưa ra bằng cách nào (biểu quyết, trưởng nhóm chốt, đồng thuận, hay vì mệt).</li></ul></div>
+</div>
+</section>
+
+<section id="s12" data-screen-label="12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 12</span>
+<span style="color:#86958a">Key takeaways and commitment</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Key takeaways</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Những điểm rút ra</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>In cross-functional teams, the information needed for a good decision is usually spread across people. Alignment depends on surfacing it.</li><li>Groups naturally focus on what everyone already knows. Leaders must deliberately draw out what only one person knows.</li><li>Advocacy without inquiry creates positions; inquiry without advocacy creates confusion. High-quality discussion needs both.</li><li>Hierarchy silences information. The leader’s process — framing, sequencing, speaking last — counteracts it.</li><li>Alignment is agreement on the problem, the criteria and the reasons, not only on the answer.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Trong nhóm liên chức năng, thông tin cần cho một quyết định tốt thường nằm rải rác ở nhiều người. Sự đồng thuận phụ thuộc vào việc đưa được thông tin đó ra.</li><li>Nhóm thường tập trung vào điều ai cũng đã biết. Người lãnh đạo phải chủ động khơi ra điều chỉ một người biết.</li><li>Trình bày mà không tìm hiểu tạo ra phe phái; tìm hiểu mà không trình bày tạo ra mơ hồ. Thảo luận chất lượng cần cả hai.</li><li>Cấp bậc khiến thông tin bị im lặng. Quy trình của người lãnh đạo — định khung, sắp thứ tự phát biểu, nói sau cùng — giúp hoá giải điều đó.</li><li>Đồng thuận là thống nhất về vấn đề, tiêu chí và lý do, không chỉ về đáp án.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>My commitment.</b> In my next cross-functional meeting, I will:<ol style="margin:4px 0 0;padding-left:20px"><li>One thing I will do before the meeting: ______</li><li>One question I will ask to surface unique information: ______</li><li>One habit I will change in how I share my own view: ______</li></ol></div>
+<div><b>Cam kết của tôi.</b> Trong cuộc họp liên chức năng tới, tôi sẽ:<ol style="margin:4px 0 0;padding-left:20px"><li>Một việc tôi sẽ làm trước cuộc họp: ______</li><li>Một câu hỏi tôi sẽ đặt để khơi ra thông tin riêng: ______</li><li>Một thói quen tôi sẽ thay đổi khi chia sẻ quan điểm của mình: ______</li></ol></div>
+</div>
+</section>
+
+<section id="s13" data-screen-label="13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Phần 13</span>
+<span style="color:#86958a">References</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">References</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tài liệu tham khảo</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Edmondson, A. C., &amp; Feldman, L. R. (2003, rev. 2016). The BCPC Internet Strategy Team: An Exercise. Harvard Business School, 604-035.</li><li>Stasser, G., &amp; Titus, W. (1985). Pooling of unshared information in group decision making. <i>Journal of Personality and Social Psychology</i>.</li><li>Argyris, C., &amp; Schön, D. (1978). <i>Organizational Learning: A Theory of Action Perspective</i>.</li><li>Senge, P. (1990). <i>The Fifth Discipline</i>.</li><li>Edmondson, A. C. (2018). <i>The Fearless Organization</i>.</li></ul></div>
+<div><span style="color:#68786b">Giữ nguyên tên tài liệu gốc.</span><ul style="margin:0;padding-left:18px"><li>Edmondson &amp; Feldman (2003, sửa 2016). Nhóm Chiến lược Internet của BCPC: Bài tập tình huống.</li><li>Stasser &amp; Titus (1985). Tổng hợp thông tin không được chia sẻ trong ra quyết định nhóm.</li><li>Argyris &amp; Schön (1978). Học tập trong tổ chức.</li><li>Senge (1990). Nguyên tắc thứ năm.</li><li>Edmondson (2018). Tổ chức không sợ hãi.</li></ul></div>
+</div>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 14 · Creating Alignment for High-Performing Teams</span>
+<span>Tài liệu thảo luận tình huống · Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Về tài liệu này","lv":0,"en":"Translation notes","vi":"Về tài liệu này"},
+  {"id":"s01","num":"01","label":"Tổng quan","lv":0,"en":"Overview","vi":"Tổng quan"},
+  {"id":"s02","num":"02","label":"Mục tiêu học tập","lv":0,"en":"Learning Outcomes for Topic 14","vi":"Mục tiêu học tập của Chủ đề 14"},
+  {"id":"ban-dich","num":"","label":"Bản dịch toàn văn tình huống","lv":0,"en":"The BCPC Internet Strategy Team: An Exercise","vi":"Nhóm Chiến lược Internet của BCPC: Bài tập tình huống"},
+  {"id":"a1","num":"T1","label":"Giới thiệu · Bối cảnh cạnh tranh","lv":1,"en":"The BCPC Internet Strategy Team: An Exercise","vi":"Nhóm Chiến lược Internet của BCPC: Bài tập tình huống"},
+  {"id":"a2","num":"T2","label":"Văn hoá dịch vụ · Nhân sự","lv":1,"en":"Văn hoá dịch vụ · Nhân sự","vi":""},
+  {"id":"a3","num":"T3","label":"HIP · Nhóm","lv":1,"en":"HIP · Nhóm","vi":""},
+  {"id":"a4","num":"T4","label":"Phụ lục 1","lv":1,"en":"Phụ lục 1","vi":""},
+  {"id":"s03","num":"03","label":"Tóm tắt tình huống","lv":0,"en":"The BCPC Internet Strategy Team — case at a glance","vi":"Nhóm Chiến lược Internet của BCPC — tóm tắt tình huống"},
+  {"id":"s04","num":"04","label":"Các dữ kiện then chốt","lv":0,"en":"Facts in the case and what they imply","vi":"Các dữ kiện trong tình huống và ý nghĩa của chúng"},
+  {"id":"s05","num":"05","label":"Sáu vai trong nhóm","lv":0,"en":"Six roles, six lenses","vi":"Sáu vai, sáu lăng kính"},
+  {"id":"s06","num":"06","label":"Tiến trình buổi học","lv":0,"en":"Suggested flow (about 105 minutes)","vi":"Tiến trình gợi ý (khoảng 105 phút)"},
+  {"id":"s07","num":"07","label":"MT1 · Góc nhìn, ưu tiên, thông tin","lv":0,"en":"LO1 — How perspectives, priorities and incomplete information shape the decision","vi":"MT1 — Góc nhìn, ưu tiên và thông tin không đầy đủ định hình quyết định thế nào"},
+  {"id":"s08","num":"08","label":"MT2 · Trình bày và tìm hiểu","lv":0,"en":"LO2 — Balancing advocacy and inquiry","vi":"MT2 — Cân bằng giữa trình bày quan điểm và tìm hiểu"},
+  {"id":"s09","num":"09","label":"MT3 · Hành vi lãnh đạo","lv":0,"en":"LO3 — What Chris could have done differently","vi":"MT3 — Chris lẽ ra có thể làm khác đi như thế nào"},
+  {"id":"s10","num":"10","label":"MT4 · Kết hợp góc nhìn","lv":0,"en":"LO4 — From diverse perspectives to decision quality","vi":"MT4 — Từ góc nhìn đa dạng đến chất lượng quyết định"},
+  {"id":"s11","num":"11","label":"Suy ngẫm · Bảng quan sát","lv":0,"en":"Personal reflection after the exercise","vi":"Suy ngẫm cá nhân sau bài tập"},
+  {"id":"s12","num":"12","label":"Điểm rút ra · Cam kết","lv":0,"en":"Key takeaways","vi":"Những điểm rút ra"},
+  {"id":"s13","num":"13","label":"Tài liệu tham khảo","lv":0,"en":"References","vi":"Tài liệu tham khảo"}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || '') || '#', slideOp: (this.props.slideUrl || '') ? '1' : '.5', slideTitle: (this.props.slideUrl || '') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || '')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

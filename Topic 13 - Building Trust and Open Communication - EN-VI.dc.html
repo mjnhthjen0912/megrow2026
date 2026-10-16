@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 13 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Building Trust &amp; Open Communication in Teams</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 13: Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Building Trust &amp; Open Communication in Teams — bản đối chiếu Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">TS. Justin Xavier · 30 slide</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide là một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ. Chữ nằm trong hình đồ hoạ của slide cũng được dịch. Khẩu hiệu “Ready for what’s next” và logo RMIT lặp lại ở chân mọi slide nên không nhắc lại. Số slide theo thứ tự trang của file PDF.</p>
+<p style="margin:0 0 8px">Phần mô tả hình ảnh và các ghi chú về slide gốc được ghi bằng chữ nghiêng màu xám. Các khung “Giải thích thêm” và phần “Gợi ý trả lời” cho tình huống ở slide 26 do bản dịch bổ sung, không có trên slide gốc.</p>
+<p style="margin:0">Tên riêng, tên mô hình và trích dẫn nguồn giữ nguyên. <i>Psychological safety</i> là “an toàn tâm lý”; <i>Trust Equation</i> là “Phương trình niềm tin”; <i>Inclusive Leadership</i> là “lãnh đạo hoà nhập”. Khung TRUST: <i>Transparency</i> – “Minh bạch”, <i>Reliability</i> – “Đáng tin cậy”, <i>Understanding</i> – “Thấu hiểu”, <i>Safety</i> – “An toàn”, <i>Team First</i> – “Đội nhóm trên hết”. Phương trình niềm tin: <i>Credibility</i> – “Uy tín”, <i>Reliability</i> – “Độ tin cậy”, <i>Intimacy</i> – “Sự gần gũi”, <i>Self-Orientation</i> – “Mức độ vị kỷ”. Bốn vùng của Edmondson: <i>Comfort</i> – “Thoải mái”, <i>Learning</i> – “Học hỏi”, <i>Apathy</i> – “Thờ ơ”, <i>Anxiety</i> – “Lo âu”.</p>
+</div>
+
+<section id="s01" data-screen-label="01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Building Trust &amp; Open Communication In Teams</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm</h3>
+<div style="color:var(--en,#56665a)">Dr Justin Xavier</div>
+<div>TS. Justin Xavier</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide bìa có logo RMIT.</i></p></section>
+<section id="s02" data-screen-label="02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">Opening image</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Text in the image:</b><br />Screen: “Building Trust &amp; Open Communication in Teams” — Trust · Respect · Inclusion · Collaboration · Growth — “Stronger Communication. Stronger Teams. Better Results.”<br />Flipchart: “What builds trust?” — Keep commitments · Be consistent · Communicate openly · Show empathy · Give credit · Follow through<br />Banner: “Great teams are built on trust and open communication.”<br />Table card: “Our team norms” — Listen actively · Be respectful · Challenge ideas, not people · Assume good intent · Share the air · Own &amp; learn</div>
+<div><b>Chữ trong ảnh:</b><br /><span>Màn hình: “Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm” — Niềm tin · Tôn trọng · Hoà nhập · Hợp tác · Phát triển — “Giao tiếp tốt hơn. Đội nhóm mạnh hơn. Kết quả tốt hơn.”</span><br /><span>Bảng giấy: “Điều gì xây dựng niềm tin?” — Giữ cam kết · Nhất quán · Giao tiếp cởi mở · Thể hiện sự thấu cảm · Ghi nhận công lao · Làm đến nơi đến chốn</span><br /><span>Băng rôn: “Đội nhóm xuất sắc được xây dựng trên niềm tin và giao tiếp cởi mở.”</span><br /><span>Thẻ trên bàn: “Chuẩn mực của nhóm chúng ta” — Lắng nghe tích cực · Tôn trọng · Phản biện ý tưởng, không công kích con người · Giả định thiện ý · Chia sẻ cơ hội phát biểu · Nhận trách nhiệm &amp; học hỏi</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide chỉ có một bức ảnh: một nhóm đang thảo luận quanh bàn, người hướng dẫn đứng cạnh bảng giấy; trên tường có bảng “Inclusive Leadership” và bảng ghi chú “How can we support each other?” (Chúng ta có thể hỗ trợ nhau thế nào?).</i></p></section>
+<section id="s03" data-screen-label="03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">Agenda</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">What we will cover</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nội dung chúng ta sẽ đề cập</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:20px"><li>Why Trust Matters</li><li>Building Trust</li><li>Psychological Safety</li><li>Trust Equation</li><li>Inclusive Leadership</li><li>Application</li></ol></div>
+<div><ol style="margin:0;padding-left:20px"><li>Vì sao niềm tin quan trọng</li><li>Xây dựng niềm tin</li><li>An toàn tâm lý</li><li>Phương trình niềm tin</li><li>Lãnh đạo hoà nhập</li><li>Ứng dụng</li></ol></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm hai ảnh minh hoạ. Dòng “Ready for what’s next” ở chân slide là khẩu hiệu của RMIT, lặp lại trên mọi slide.</i></p></section>
+<section id="s04" data-screen-label="04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">Learning outcomes</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">What we expect to learn</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Những gì chúng ta kỳ vọng sẽ học được</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Apply psychological safety principles</li><li>Build trust through leadership behaviours and foster inclusive communication</li><li>Create team norms that encourage speaking up and collaboration</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Áp dụng các nguyên tắc an toàn tâm lý</li><li>Xây dựng niềm tin thông qua hành vi lãnh đạo và thúc đẩy giao tiếp hoà nhập</li><li>Tạo ra các chuẩn mực nhóm khuyến khích lên tiếng và hợp tác</li></ul></div>
+</div>
+</section>
+<section id="s05" data-screen-label="05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 05</span>
+<span style="color:#86958a">Part 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">PART 1: Why TRUST Matters</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">PHẦN 1: Vì sao NIỀM TIN quan trọng</h3>
+<div style="color:var(--en,#56665a)">Building Trust &amp; Open Communication In Teams</div>
+<div>Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm</div>
+</div>
+</section>
+<section id="s06" data-screen-label="06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06</span>
+<span style="color:#86958a">Why trust matters</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Why TRUST Matters</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Vì sao NIỀM TIN quan trọng</h3>
+<div style="color:var(--en,#56665a)"><b>TRUST is the foundation of high-performing teams.</b></div>
+<div><b>NIỀM TIN là nền tảng của các đội nhóm hiệu suất cao.</b></div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Trust is more than a positive workplace feeling → critical organisational asset that shapes how people communicate, collaborate and perform.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Niềm tin không chỉ là một cảm giác tích cực nơi làm việc → đó là tài sản quan trọng của tổ chức, định hình cách mọi người giao tiếp, hợp tác và làm việc.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>When trust is present, employees are more willing to:</b><ul style="margin:0;padding-left:18px"><li>Share ideas and raise concerns openly.</li><li>Collaborate across teams and functions.</li><li>Take initiative without waiting for direction.</li><li>Admit mistakes and learn from them.</li><li>Support organisational change and innovation.</li></ul></div>
+<div><b>Khi có niềm tin, nhân viên sẵn sàng hơn để:</b><ul style="margin:0;padding-left:18px"><li>Chia sẻ ý tưởng và nêu ra mối lo ngại một cách cởi mở.</li><li>Hợp tác giữa các nhóm và các bộ phận.</li><li>Chủ động hành động mà không chờ chỉ đạo.</li><li>Thừa nhận sai lầm và học hỏi từ đó.</li><li>Ủng hộ thay đổi và đổi mới trong tổ chức.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>When trust is absent, employees are more likely to:</b><ul style="margin:0;padding-left:18px"><li>Remain silent during meetings.</li><li>Avoid difficult conversations.</li><li>Withhold information or feedback.</li><li>Focus on self-protection rather than team success.</li><li>Resist change and innovation.</li></ul></div>
+<div><b>Khi thiếu niềm tin, nhân viên dễ có xu hướng:</b><ul style="margin:0;padding-left:18px"><li>Im lặng trong các cuộc họp.</li><li>Né tránh những cuộc trò chuyện khó.</li><li>Giữ lại thông tin hoặc phản hồi.</li><li>Tập trung tự bảo vệ mình thay vì thành công của nhóm.</li><li>Chống lại thay đổi và đổi mới.</li></ul></div>
+<div style="color:var(--en,#56665a)">“Trust is the glue of life. It is the foundational principle that holds all relationships.” — Stephen M.R. Covey</div>
+<div>“Niềm tin là chất keo của cuộc sống. Đó là nguyên tắc nền tảng gắn kết mọi mối quan hệ.” — Stephen M.R. Covey</div>
+<div style="color:var(--en,#56665a)"><b>Key Leadership Insight</b><ul style="margin:0;padding-left:18px"><li>Managers influence trust every day through their behaviours, decisions and communication practices.</li><li>Trust is not built through authority or position, but it is earned through consistent actions over time.</li></ul></div>
+<div><b>Góc nhìn lãnh đạo then chốt</b><ul style="margin:0;padding-left:18px"><li>Người quản lý tác động đến niềm tin mỗi ngày thông qua hành vi, quyết định và cách giao tiếp của mình.</li><li>Niềm tin không được xây dựng bằng quyền hạn hay chức vụ, mà phải được tạo dựng qua những hành động nhất quán theo thời gian.</li></ul></div>
+</div>
+</section>
+<section id="s07" data-screen-label="07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 07</span>
+<span style="color:#86958a">Low vs high trust</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Why TRUST Matters — Trust is NOT a soft skill → Business performance driver</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Vì sao NIỀM TIN quan trọng — Niềm tin KHÔNG phải kỹ năng mềm → mà là động lực của hiệu quả kinh doanh</h3>
+<div style="color:var(--en,#56665a)"><b>Business Cost of Low Trust vs. Business Benefits of High Trust</b></div>
+<div><b>Cái giá kinh doanh của niềm tin thấp so với Lợi ích kinh doanh của niềm tin cao</b></div>
+<div style="color:var(--en,#56665a)"><b>LOW TRUST</b><br />Employees remain silent even when they have concerns.<br />Common behaviours:<ul style="margin:0;padding-left:18px"><li>Information is withheld or delayed</li><li>Employees fear making mistakes</li><li>Teams operate in silos</li><li>Decisions are slower</li><li>Blame is common</li><li>Engagement declines</li><li>People resist change</li></ul></div>
+<div><b>NIỀM TIN THẤP</b><br /><span>Nhân viên im lặng ngay cả khi có điều lo ngại.</span><br /><span>Hành vi thường gặp:</span><ul style="margin:0;padding-left:18px"><li>Thông tin bị giữ lại hoặc chậm trễ</li><li>Nhân viên sợ mắc sai lầm</li><li>Các nhóm làm việc tách biệt</li><li>Ra quyết định chậm hơn</li><li>Đổ lỗi là chuyện thường</li><li>Mức độ gắn kết giảm</li><li>Mọi người chống lại thay đổi</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>HIGH TRUST</b><br />Employees communicate openly and contribute ideas.<br />Common behaviours:<ul style="margin:0;padding-left:18px"><li>Knowledge is shared freely</li><li>Learning is encouraged</li><li>Teams collaborate effectively</li><li>Decisions are faster</li><li>Accountability increases</li><li>Engagement improves</li><li>Innovation flourishes</li></ul></div>
+<div><b>NIỀM TIN CAO</b><br /><span>Nhân viên giao tiếp cởi mở và đóng góp ý tưởng.</span><br /><span>Hành vi thường gặp:</span><ul style="margin:0;padding-left:18px"><li>Kiến thức được chia sẻ tự do</li><li>Việc học hỏi được khuyến khích</li><li>Các nhóm hợp tác hiệu quả</li><li>Ra quyết định nhanh hơn</li><li>Tinh thần trách nhiệm tăng</li><li>Mức độ gắn kết cải thiện</li><li>Đổi mới phát triển mạnh</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Centre:</b> TRUST — Leadership behaviours shape trust</div>
+<div><b>Ở giữa:</b> NIỀM TIN — Hành vi lãnh đạo định hình niềm tin</div>
+<div style="color:var(--en,#56665a)">“A team is not a group of people who work together. A team is a group of people who trust each other.” — Simon Sinek</div>
+<div>“Một đội nhóm không phải là một nhóm người làm việc cùng nhau. Một đội nhóm là một nhóm người tin tưởng lẫn nhau.” — Simon Sinek</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Hai cột “Low Trust” và “High Trust” đặt hai bên một vòng tròn ở giữa.</i></p></section>
+<section id="s08" data-screen-label="08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 08</span>
+<span style="color:#86958a">Fast-growth organisations</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Why TRUST Matters — TRUST in fast-growth organisations</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Vì sao NIỀM TIN quan trọng — NIỀM TIN trong các tổ chức tăng trưởng nhanh</h3>
+<div style="color:var(--en,#56665a)"><b>Why TRUST becomes more important as organisations grow:</b><ul style="margin:0;padding-left:18px"><li>Teams become larger and more geographically dispersed</li><li>New employees join without established relationships</li><li>Decision-making is pushed closer to the front line</li><li>Cross-functional collaboration becomes more important</li><li>Change occurs more frequently and at a faster pace</li></ul></div>
+<div><b>Vì sao NIỀM TIN càng quan trọng khi tổ chức lớn lên:</b><ul style="margin:0;padding-left:18px"><li>Các nhóm lớn hơn và phân tán về địa lý hơn</li><li>Nhân viên mới gia nhập khi chưa có các mối quan hệ sẵn có</li><li>Việc ra quyết định được đẩy xuống gần tuyến đầu hơn</li><li>Hợp tác liên chức năng trở nên quan trọng hơn</li><li>Thay đổi diễn ra thường xuyên hơn và nhanh hơn</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>The Leadership Challenge</b><ul style="margin:0;padding-left:18px"><li>Communication breakdowns</li><li>Information silos</li><li>Slower decision-making</li><li>Reduced collaboration</li><li>Resistance to change</li><li>Lower innovation</li></ul></div>
+<div><b>Thách thức lãnh đạo</b><ul style="margin:0;padding-left:18px"><li>Đứt gãy trong giao tiếp</li><li>Thông tin bị cô lập</li><li>Ra quyết định chậm hơn</li><li>Hợp tác giảm sút</li><li>Chống lại thay đổi</li><li>Đổi mới thấp hơn</li></ul></div>
+<div style="color:var(--en,#56665a)">Managers cannot rely solely on process, hierarchy or direct supervision → TRUST allows organisations to move quickly while remaining aligned.</div>
+<div>Người quản lý không thể chỉ dựa vào quy trình, thứ bậc hay giám sát trực tiếp → NIỀM TIN giúp tổ chức di chuyển nhanh mà vẫn giữ được sự đồng thuận.</div>
+<div style="color:var(--en,#56665a)"><b>The Leadership Opportunity</b><ul style="margin:0;padding-left:18px"><li>Faster execution</li><li>Greater ownership</li><li>Better collaboration</li><li>Higher engagement</li><li>More innovation</li><li>Improved adaptability</li></ul></div>
+<div><b>Cơ hội lãnh đạo</b><ul style="margin:0;padding-left:18px"><li>Thực thi nhanh hơn</li><li>Tinh thần làm chủ cao hơn</li><li>Hợp tác tốt hơn</li><li>Gắn kết cao hơn</li><li>Đổi mới nhiều hơn</li><li>Khả năng thích ứng tốt hơn</li></ul></div>
+<div style="color:var(--en,#56665a)">Growth creates opportunities, but it also places pressure on communication, collaboration and trust.</div>
+<div>Tăng trưởng tạo ra cơ hội, nhưng cũng gây áp lực lên giao tiếp, hợp tác và niềm tin.</div>
+</div>
+</section>
+<section id="s09" data-screen-label="09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 09</span>
+<span style="color:#86958a">Part 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">PART 2: Building TRUST</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">PHẦN 2: Xây dựng NIỀM TIN</h3>
+<div style="color:var(--en,#56665a)">Building Trust &amp; Open Communication In Teams</div>
+<div>Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm</div>
+</div>
+</section>
+<section id="s10" data-screen-label="10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">TRUST Framework</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">TRUST Framework</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Khung TRUST</h3>
+<div style="color:var(--en,#56665a)">Building Trust &amp; Open Communication in Teams — Trust is built through consistent leadership behaviours</div>
+<div>Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm — Niềm tin được xây dựng qua những hành vi lãnh đạo nhất quán</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide 10–12 hiện dần cùng một hình đồ hoạ: slide 10 chỉ có phần đầu với năm chữ cái T – R – U – S – T; slide 11 hiện thêm năm cột; slide 12 là toàn bộ hình. Nội dung đầy đủ được dịch ở slide 12.</i></p></section>
+<section id="s11" data-screen-label="11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">TRUST Framework</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">TRUST Framework</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Khung TRUST</h3>
+<div style="color:var(--en,#56665a)">Transparency · Reliability · Understanding · Safety · Team First — with a short description and four behaviours for each.</div>
+<div>Minh bạch · Đáng tin cậy · Thấu hiểu · An toàn · Đội nhóm trên hết — mỗi yếu tố có một câu mô tả và bốn hành vi.</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Tiêu đề “TRUST Framework” đặt trong một vòng tròn bên trái; hình đồ hoạ được cắt ở phần trên. Xem bản dịch đầy đủ ở slide 12.</i></p></section>
+<section id="s12" data-screen-label="12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 12</span>
+<span style="color:#86958a">TRUST Framework</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Building Trust &amp; Open Communication in Teams</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm</h3>
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid">
+<div style="background:#1d4fb8;color:#fff;padding:6px 14px;text-align:center;max-width:620px;margin:0 auto 12px;line-height:1.4"><div style="font-weight:700;letter-spacing:.03em">TRUST IS BUILT THROUGH CONSISTENT LEADERSHIP BEHAVIOURS</div><div style="font-weight:600">NIỀM TIN ĐƯỢC XÂY DỰNG QUA NHỮNG HÀNH VI LÃNH ĐẠO NHẤT QUÁN</div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,135px),1fr));gap:10px">
+<div style="border:1px solid #dae4d6;display:flex;flex-direction:column;break-inside:avoid"><div style="padding:10px 11px 0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px"><div style="width:34px;height:34px;border-radius:50%;background:#1d4fb8;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center">T</div><div style="line-height:1.3"><div style="font-weight:700;color:#1d4fb8">TRANSPARENCY</div><div style="font-weight:700">MINH BẠCH</div></div><div style="font-size:12.5px;line-height:1.45"><div style="color:var(--en,#56665a)">Communicate openly and honestly. Share context behind decisions and acknowledge uncertainty when it exists.</div><div style="margin-top:3px">Giao tiếp cởi mở và trung thực. Chia sẻ bối cảnh đằng sau các quyết định và thừa nhận sự chưa chắc chắn khi có.</div></div></div><ul style="margin:8px 11px 0;padding:8px 0 0 16px;border-top:1px dotted #1d4fb8;flex:1;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Explain decisions</span><br /><span>Giải thích quyết định</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Share information early</span><br /><span>Chia sẻ thông tin sớm</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Clarify expectations</span><br /><span>Làm rõ kỳ vọng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Be honest about challenges</span><br /><span>Trung thực về khó khăn</span></li></ul><div style="background:#e8eefb;margin-top:9px;padding:8px 11px;font-size:12.5px;line-height:1.4"><div style="font-weight:700;color:#1d4fb8">Communicate clearly. Build confidence. Create trust.</div><div style="font-weight:700">Giao tiếp rõ ràng. Tạo sự tự tin. Tạo dựng niềm tin.</div></div></div>
+<div style="border:1px solid #dae4d6;display:flex;flex-direction:column;break-inside:avoid"><div style="padding:10px 11px 0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px"><div style="width:34px;height:34px;border-radius:50%;background:#0f7372;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center">R</div><div style="line-height:1.3"><div style="font-weight:700;color:#0f7372">RELIABILITY</div><div style="font-weight:700">ĐÁNG TIN CẬY</div></div><div style="font-size:12.5px;line-height:1.45"><div style="color:var(--en,#56665a)">Trust grows when leaders consistently do what they say they will do.</div><div style="margin-top:3px">Niềm tin lớn dần khi người lãnh đạo luôn làm đúng những gì mình nói sẽ làm.</div></div></div><ul style="margin:8px 11px 0;padding:8px 0 0 16px;border-top:1px dotted #0f7372;flex:1;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Keep commitments</span><br /><span>Giữ cam kết</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Follow through</span><br /><span>Làm đến nơi đến chốn</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Meet deadlines</span><br /><span>Đúng hạn</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Demonstrate accountability</span><br /><span>Thể hiện tinh thần trách nhiệm</span></li></ul><div style="background:#e2f1f0;margin-top:9px;padding:8px 11px;font-size:12.5px;line-height:1.4"><div style="font-weight:700;color:#0f7372">Keep commitments. Build credibility. Earn trust.</div><div style="font-weight:700">Giữ cam kết. Xây dựng uy tín. Giành được niềm tin.</div></div></div>
+<div style="border:1px solid #dae4d6;display:flex;flex-direction:column;break-inside:avoid"><div style="padding:10px 11px 0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px"><div style="width:34px;height:34px;border-radius:50%;background:#5b2d8e;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center">U</div><div style="line-height:1.3"><div style="font-weight:700;color:#5b2d8e">UNDERSTANDING</div><div style="font-weight:700">THẤU HIỂU</div></div><div style="font-size:12.5px;line-height:1.45"><div style="color:var(--en,#56665a)">Seek to understand before being understood. Listen deeply and empathetically.</div><div style="margin-top:3px">Tìm cách hiểu người khác trước khi mong được hiểu. Lắng nghe sâu sắc và thấu cảm.</div></div></div><ul style="margin:8px 11px 0;padding:8px 0 0 16px;border-top:1px dotted #5b2d8e;flex:1;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Listen actively</span><br /><span>Lắng nghe tích cực</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Ask curious questions</span><br /><span>Đặt câu hỏi với sự tò mò</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Show empathy</span><br /><span>Thể hiện sự thấu cảm</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Explore perspectives</span><br /><span>Tìm hiểu các góc nhìn</span></li></ul><div style="background:#efe8f6;margin-top:9px;padding:8px 11px;font-size:12.5px;line-height:1.4"><div style="font-weight:700;color:#5b2d8e">Listen deeply. Empathise. Understand others.</div><div style="font-weight:700">Lắng nghe sâu. Thấu cảm. Hiểu người khác.</div></div></div>
+<div style="border:1px solid #dae4d6;display:flex;flex-direction:column;break-inside:avoid"><div style="padding:10px 11px 0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px"><div style="width:34px;height:34px;border-radius:50%;background:#b85600;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center">S</div><div style="line-height:1.3"><div style="font-weight:700;color:#b85600">SAFETY</div><div style="font-weight:700">AN TOÀN</div></div><div style="font-size:12.5px;line-height:1.45"><div style="color:var(--en,#56665a)">Create an environment where people feel safe to speak up, challenge ideas and learn from mistakes.</div><div style="margin-top:3px">Tạo môi trường nơi mọi người cảm thấy an toàn để lên tiếng, phản biện ý tưởng và học từ sai lầm.</div></div></div><ul style="margin:8px 11px 0;padding:8px 0 0 16px;border-top:1px dotted #b85600;flex:1;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Invite feedback</span><br /><span>Mời góp ý</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Encourage diverse views</span><br /><span>Khuyến khích quan điểm đa dạng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Respond respectfully</span><br /><span>Phản hồi một cách tôn trọng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Treat mistakes as learning opportunities</span><br /><span>Xem sai lầm là cơ hội học hỏi</span></li></ul><div style="background:#fdf0e3;margin-top:9px;padding:8px 11px;font-size:12.5px;line-height:1.4"><div style="font-weight:700;color:#b85600">Speak openly. Learn openly. Improve together.</div><div style="font-weight:700">Nói cởi mở. Học cởi mở. Cùng nhau tiến bộ.</div></div></div>
+<div style="border:1px solid #dae4d6;display:flex;flex-direction:column;break-inside:avoid"><div style="padding:10px 11px 0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px"><div style="width:34px;height:34px;border-radius:50%;background:#1d4fb8;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center">T</div><div style="line-height:1.3"><div style="font-weight:700;color:#1d4fb8">TEAM FIRST</div><div style="font-weight:700">ĐỘI NHÓM TRÊN HẾT</div></div><div style="font-size:12.5px;line-height:1.45"><div style="color:var(--en,#56665a)">Place collective success ahead of personal recognition and encourage collaboration across boundaries.</div><div style="margin-top:3px">Đặt thành công chung lên trên sự ghi nhận cá nhân và khuyến khích hợp tác vượt qua ranh giới.</div></div></div><ul style="margin:8px 11px 0;padding:8px 0 0 16px;border-top:1px dotted #1d4fb8;flex:1;display:flex;flex-direction:column;gap:5px;font-size:12.5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Share credit</span><br /><span>Chia sẻ công lao</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Break down silos</span><br /><span>Phá bỏ sự cô lập giữa các nhóm</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Support others</span><br /><span>Hỗ trợ người khác</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Focus on shared goals</span><br /><span>Tập trung vào mục tiêu chung</span></li></ul><div style="background:#e8eefb;margin-top:9px;padding:8px 11px;font-size:12.5px;line-height:1.4"><div style="font-weight:700;color:#1d4fb8">Collaborate openly. Succeed together.</div><div style="font-weight:700">Hợp tác cởi mở. Cùng nhau thành công.</div></div></div>
+</div>
+<div style="background:#1d4fb8;color:#fff;margin-top:10px;padding:9px 12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,130px),1fr));gap:8px"><div style="line-height:1.35;font-size:12.5px"><div style="font-weight:700;text-transform:uppercase;letter-spacing:.02em">Communication improves</div><div>Giao tiếp cải thiện</div></div><div style="line-height:1.35;font-size:12.5px"><div style="font-weight:700;text-transform:uppercase;letter-spacing:.02em">Collaboration strengthens</div><div>Hợp tác bền chặt hơn</div></div><div style="line-height:1.35;font-size:12.5px"><div style="font-weight:700;text-transform:uppercase;letter-spacing:.02em">Innovation grows</div><div>Đổi mới phát triển</div></div><div style="line-height:1.35;font-size:12.5px"><div style="font-weight:700;text-transform:uppercase;letter-spacing:.02em">Performance accelerates</div><div>Hiệu suất tăng tốc</div></div><div style="line-height:1.35;font-size:12.5px"><div style="font-weight:700;text-transform:uppercase;letter-spacing:.02em">People thrive</div><div>Con người phát triển</div></div></div>
+<div style="border:1px solid #1d4fb8;border-radius:999px;margin-top:10px;padding:7px 18px;text-align:center;line-height:1.45"><div style="color:var(--en,#56665a)">Trust is built through behaviours, strengthened through relationships, and reflected in performance.</div><div>Niềm tin được xây dựng qua hành vi, được củng cố qua các mối quan hệ và được phản ánh qua hiệu suất.</div></div>
+</div>
+<figure style="margin:12px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t13/trust-framework.jpg" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình đồ hoạ “Building Trust &amp; Open Communication in Teams”: năm cột T – R – U – S – T, mỗi cột có biểu tượng, câu mô tả, bốn hành vi và khẩu hiệu ở cuối.</figcaption>
+</figure><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Giải thích thêm</b></p><p style="margin:0 0 6px">Khung TRUST biến niềm tin thành năm nhóm hành vi quan sát được. Mỗi chữ cái trả lời một câu hỏi mà nhân viên tự đặt ra về người lãnh đạo: Tôi có được biết điều gì đang diễn ra không (<b>Minh bạch</b>)? Lời hứa có được giữ không (<b>Đáng tin cậy</b>)? Tôi có được lắng nghe không (<b>Thấu hiểu</b>)? Nói ra có an toàn không (<b>An toàn</b>)? Người lãnh đạo vì nhóm hay vì bản thân (<b>Đội nhóm trên hết</b>)?</p><p style="margin:0">Khung này được dùng lại trong hoạt động ở slide 20 và trong câu hỏi số 3 của tình huống ở slide 26.</p></div></section>
+<section id="s13" data-screen-label="13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 13</span>
+<span style="color:#86958a">Part 3</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">PART 3: Psychological Safety</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">PHẦN 3: An toàn tâm lý</h3>
+<div style="color:var(--en,#56665a)">Building Trust &amp; Open Communication In Teams</div>
+<div>Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm</div>
+</div>
+</section>
+<section id="s14" data-screen-label="14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 14</span>
+<span style="color:#86958a">Psychological safety</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Psychological Safety</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">An toàn tâm lý</h3>
+<div style="color:var(--en,#56665a)">“Psychological safety [is] a <b>shared belief</b> held by members of a team <b>that the team is safe for interpersonal risk taking</b>.” — Amy Edmondson</div>
+<div>“An toàn tâm lý [là] một <b>niềm tin chung</b> của các thành viên trong nhóm <b>rằng nhóm là nơi an toàn để chấp nhận rủi ro trong quan hệ giữa người với người</b>.” — Amy Edmondson</div>
+<div style="color:var(--en,#56665a)">“a belief that <b>one will not be punished or humiliated for speaking up</b> with ideas, questions, concerns, or mistakes, and that <b>the team is safe for</b> interpersonal risk-taking.” — Amy Edmondson</div>
+<div>“niềm tin rằng <b>một người sẽ không bị trừng phạt hay bị bẽ mặt khi lên tiếng</b> với ý tưởng, câu hỏi, mối lo ngại hay sai lầm, và rằng <b>nhóm là nơi an toàn để</b> chấp nhận rủi ro trong quan hệ giữa người với người.” — Amy Edmondson</div>
+<div style="color:var(--en,#56665a)"><b>Book cover:</b> <i>The Fearless Organization: Creating Psychological Safety in the Workplace for Learning, Innovation, and Growth</i> — Amy C. Edmondson, Harvard Business School (Wiley).</div>
+<div><b>Bìa sách:</b> <i>The Fearless Organization</i> (Tổ chức không sợ hãi): Tạo dựng an toàn tâm lý nơi làm việc để học hỏi, đổi mới và phát triển — Amy C. Edmondson, Trường Kinh doanh Harvard (Wiley).</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide gồm bìa sách, hai thẻ trích dẫn và một bản sketchnote tóm tắt cuốn sách với các cụm từ như “fear” (nỗi sợ), “culture of silence = dangerous culture” (văn hoá im lặng = văn hoá nguy hiểm), “it’s not being nice” (không phải là dễ dãi), “lowering standards” (hạ thấp chuẩn mực), “candor” (thẳng thắn), “learning, engagement, performance” (học hỏi, gắn kết, hiệu suất) và “trust” (niềm tin). Chữ trong sketchnote quá nhỏ để dịch đầy đủ.</i></p></section>
+<section id="s15" data-screen-label="15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 15</span>
+<span style="color:#86958a">Video</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Psychological Safety</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">An toàn tâm lý</h3>
+<div style="color:var(--en,#56665a)">THE HBR GUIDE: What exactly is psychological safety? — Harvard Business Review</div>
+<div>HƯỚNG DẪN CỦA HBR: An toàn tâm lý chính xác là gì? — Harvard Business Review</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide là ảnh thu nhỏ của một video Harvard Business Review, có Amy Edmondson xuất hiện. Nội dung video không có trong file PDF.</i></p></section>
+<section id="s16" data-screen-label="16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 16</span>
+<span style="color:#86958a">Psychological safety</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Psychological Safety</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">An toàn tâm lý</h3>
+<div style="color:var(--en,#56665a)"><b>How psychological safety relates to performance standards</b> — Amy Edmondson</div>
+<div><b>An toàn tâm lý liên quan thế nào đến chuẩn mực hiệu suất</b> — Amy Edmondson</div>
+<div style="grid-column:1/-1;display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;margin:14px 0 4px;break-inside:avoid;border:1.5px solid #9fb8a2;border-radius:10px;background:#fbfdf9;padding:14px 16px 12px 10px">
+<div style="display:grid;grid-template-rows:1fr 1fr;gap:8px"><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>An toàn tâm lý cao</span> · High safety</span></div><div style="display:flex;align-items:center;justify-content:center"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>An toàn tâm lý thấp</span> · Low safety</span></div></div>
+<div style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:1fr;gap:8px">
+<div style="background:#eef4ea;border:1px solid #d3dfd0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">VÙNG THOẢI MÁI</b></div>
+<div style="font-size:13px;line-height:1.55">Mọi người cởi mở và thân thiện nhưng không bị thử thách. Trong nhóm, họ không tạo được bước tiến lớn.</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #d3dfd0;padding-top:6px"><b>COMFORT ZONE</b> People are open and collegial but not challenged. On teams, they fail to make major strides.</div>
+</div>
+<div style="background:#dcebd3;border:1px solid #9fc49a;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">VÙNG HỌC HỎI</b></div>
+<div style="font-size:13px;line-height:1.55">Mọi người hợp tác và học hỏi để đạt hiệu suất cao, hoàn thành những công việc phức tạp và mang tính đổi mới.</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #9fc49a;padding-top:6px"><b>LEARNING ZONE</b> People collaborate and learn in the service of high performance, getting complex and innovative work done.</div>
+</div>
+<div style="background:#f2f2ee;border:1px solid #dcdcd4;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">VÙNG THỜ Ơ</b></div>
+<div style="font-size:13px;line-height:1.55">Mọi người có mặt ở nơi làm việc nhưng tâm trí để ở nơi khác; chọn tự bảo vệ thay vì nỗ lực.</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #dcdcd4;padding-top:6px"><b>APATHY ZONE</b> People show up at work with their hearts and minds elsewhere; choosing self protection over exertion.</div>
+</div>
+<div style="background:#f9eee3;border:1px solid #e6cdb3;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:14px;line-height:1.35">VÙNG LO ÂU</b></div>
+<div style="font-size:13px;line-height:1.55">Mọi người ngần ngại đưa ra ý tưởng, thử điều mới hay xin giúp đỡ, khiến công việc gặp rủi ro.</div>
+<div style="font-size:12px;line-height:1.5;color:var(--en,#56665a);border-top:1px solid #e6cdb3;padding-top:6px"><b>ANXIETY ZONE</b> People are reluctant to offer ideas, try new things, or ask for help, putting the work at risk.</div>
+</div>
+
+</div>
+<div></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;border-top:1.5px solid #86958a;padding-top:6px"><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Chuẩn mực thấp</span> · Low standards</span><span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#56665a;font-weight:700;text-align:center"><span>Chuẩn mực cao</span> · High standards</span></div>
+</div>
+
+<div style="color:var(--en,#56665a)"><b>What’s the diff? Trust and Psychological Safety</b><br />Psychological safety is the belief that your environment is safe for interpersonal risk-taking. It’s similar, but slightly different from, trust.</div>
+<div><b>Khác nhau ở đâu? Niềm tin và An toàn tâm lý</b><br /><span>An toàn tâm lý là niềm tin rằng môi trường của bạn an toàn để chấp nhận rủi ro trong quan hệ giữa người với người. Nó gần giống, nhưng hơi khác so với niềm tin.</span></div>
+<div style="color:var(--en,#56665a)"><b>TRUST:</b> Will <b>YOU</b> give others the benefit of the doubt when you take a risk?<br />“Bob is probably going to freak out if I disagree with him.”</div>
+<div><b>NIỀM TIN:</b> <b>BẠN</b><span> có sẵn lòng tin vào thiện ý của người khác khi bạn chấp nhận rủi ro không?</span><br /><span>“Chắc Bob sẽ nổi đoá nếu mình không đồng ý với anh ấy.”</span></div>
+<div style="color:var(--en,#56665a)"><b>PSYCHOLOGICAL SAFETY:</b> Will <b>OTHERS</b> give you the benefit of the doubt when you take a risk?<br />“My team expects me to speak up. It’s how we do things.”</div>
+<div><b>AN TOÀN TÂM LÝ:</b> <b>NGƯỜI KHÁC</b><span> có sẵn lòng tin vào thiện ý của bạn khi bạn chấp nhận rủi ro không?</span><br /><span>“Nhóm của tôi mong tôi lên tiếng. Đó là cách chúng tôi làm việc.”</span></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;align-items:start"><figure style="margin:12px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t13/ps-zones.jpg" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Sketchnote của Tanmay Vora (QAspire.com) theo Amy Edmondson. Trục dọc: Psychological Safety (An toàn tâm lý); trục ngang: Performance Standards (Chuẩn mực hiệu suất), từ thấp đến cao.</figcaption>
+</figure><figure style="margin:12px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t13/trust-vs-ps.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Infographic của Wendy Hirsch. Nguồn ghi trên hình: Edmondson (2002); Frazier và cộng sự (2017), Personnel Psychology, 70(1), 113–165.</figcaption>
+</figure></div><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Giải thích thêm</b></p><p style="margin:0 0 6px">Ma trận của Edmondson cho thấy an toàn tâm lý không có nghĩa là hạ thấp yêu cầu. Nhóm chỉ vào được <b>Vùng học hỏi</b> khi có cả hai: chuẩn mực cao và an toàn để lên tiếng. Chuẩn mực cao mà thiếu an toàn sẽ đẩy nhóm vào <b>Vùng lo âu</b>: mọi người vẫn cố gắng nhưng giấu vấn đề.</p><p style="margin:0">Sự khác biệt giữa hai khái niệm nằm ở hướng nhìn. <b>Niềm tin</b> là cách tôi nhìn một người cụ thể. <b>An toàn tâm lý</b> là điều tôi tin về cách cả nhóm sẽ phản ứng khi tôi lên tiếng, nên nó là đặc điểm của nhóm chứ không của từng cá nhân.</p></div></section>
+<section id="s17" data-screen-label="17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 17</span>
+<span style="color:#86958a">Part 4</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">PART 4: Trust Equation</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">PHẦN 4: Phương trình niềm tin</h3>
+<div style="color:var(--en,#56665a)">Building Trust &amp; Open Communication In Teams</div>
+<div>Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm</div>
+</div>
+</section>
+<section id="s18" data-screen-label="18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">How people decide</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">How do people decide whether to Trust us?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Mọi người quyết định có tin chúng ta hay không bằng cách nào?</h3>
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid;max-width:620px;box-sizing:border-box">
+<div style="text-align:center;line-height:1.35;margin-bottom:10px"><div style="font-weight:700;color:var(--en,#56665a)">The TRUST Equation <span style="font-weight:400">by David Maister</span></div><div style="font-weight:700">Phương trình NIỀM TIN <span style="font-weight:400">của David Maister</span></div></div>
+<div style="border:1px solid #dae4d6;padding:12px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;color:var(--en,#56665a)"><span style="font-weight:700;font-size:22px;color:#138aa3">TRUST</span><span style="font-weight:700">=</span><span style="display:inline-flex;flex-direction:column;align-items:center;font-weight:600"><span style="padding:0 4px 3px">Credibility + Reliability + Intimacy</span><span style="border-top:2px solid #138aa3;padding:3px 4px 0;align-self:stretch;text-align:center">Self-Orientation</span></span></div>
+<div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;"><span style="font-weight:700;font-size:22px;color:#0e6a7e">NIỀM TIN</span><span style="font-weight:700">=</span><span style="display:inline-flex;flex-direction:column;align-items:center;font-weight:600"><span style="padding:0 4px 3px">Uy tín + Độ tin cậy + Sự gần gũi</span><span style="border-top:2px solid #138aa3;padding:3px 4px 0;align-self:stretch;text-align:center">Mức độ vị kỷ</span></span></div>
+</div>
+</div>
+<figure style="margin:12px 0 0;max-width:520px;break-inside:avoid">
+<img src="assets/t13/trust-equation.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">The TRUST Equation (Phương trình niềm tin) của David Maister: tử số là Credibility + Reliability + Intimacy, mẫu số là Self-Orientation.</figcaption>
+</figure><p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i><span>Bên cạnh là ảnh một nhóm đang họp, trên bảng trắng có “Team norms” (chuẩn mực nhóm) và các ghi chú Keep doing</span> / Start doing<span> / Stop doing. Slide gốc còn sót dòng chữ mẫu “Body text here”.</span></i></p></section>
+<section id="s19" data-screen-label="19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 19</span>
+<span style="color:#86958a">Trust Equation</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Trust Equation — Understanding the Four Components of Trust</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Phương trình niềm tin — Hiểu bốn thành phần của niềm tin</h3>
+<div style="color:var(--en,#56665a)">“Trust is earned in droplets and lost in buckets.” — David Maister</div>
+<div>“Niềm tin được vun đắp từng giọt và mất đi từng xô.” — David Maister</div>
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid">
+<div style="border:1.5px solid #0b5ed7;padding:7px 14px;text-align:center;max-width:620px;margin:0 auto 12px"><div style="font-weight:700;color:var(--en,#56665a)">TRUST = (Credibility + Reliability + Intimacy) ÷ Self-Orientation</div><div style="font-weight:700">NIỀM TIN = (Uy tín + Độ tin cậy + Sự gần gũi) ÷ Mức độ vị kỷ</div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px">
+<div style="border:1px solid #dae4d6;display:flex;flex-direction:column;break-inside:avoid"><div style="background:#0b5ed7;color:#fff;padding:9px 11px"><div style="font-weight:700;letter-spacing:.03em;line-height:1.3">CREDIBILITY<span style="font-weight:600;opacity:.85"> · UY TÍN</span></div><div style="font-size:12px;line-height:1.4;margin-top:3px">Can I believe what you say?</div><div style="font-size:12px;line-height:1.4;font-style:italic">Tôi có thể tin điều bạn nói không?</div></div><ul style="margin:0;padding:9px 11px 9px 27px;flex:1;display:flex;flex-direction:column;gap:5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Expertise</span><br /><span>Chuyên môn</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Knowledge</span><br /><span>Kiến thức</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Sound judgement</span><br /><span>Phán đoán vững vàng</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Clear communication</span><br /><span>Giao tiếp rõ ràng</span></li></ul><div style="border-top:1px solid #dae4d6;padding:7px 11px;line-height:1.4"><b style="color:#0b5ed7">Builds: Confidence</b><br /><b>Tạo ra: Sự tự tin</b></div></div>
+<div style="border:1px solid #dae4d6;display:flex;flex-direction:column;break-inside:avoid"><div style="background:#1e7f46;color:#fff;padding:9px 11px"><div style="font-weight:700;letter-spacing:.03em;line-height:1.3">RELIABILITY<span style="font-weight:600;opacity:.85"> · ĐỘ TIN CẬY</span></div><div style="font-size:12px;line-height:1.4;margin-top:3px">Can I depend on you?</div><div style="font-size:12px;line-height:1.4;font-style:italic">Tôi có thể trông cậy vào bạn không?</div></div><ul style="margin:0;padding:9px 11px 9px 27px;flex:1;display:flex;flex-direction:column;gap:5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Keep commitments</span><br /><span>Giữ cam kết</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Follow through</span><br /><span>Làm đến nơi đến chốn</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Consistency</span><br /><span>Nhất quán</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Accountability</span><br /><span>Tinh thần trách nhiệm</span></li></ul><div style="border-top:1px solid #dae4d6;padding:7px 11px;line-height:1.4"><b style="color:#1e7f46">Builds: Dependability</b><br /><b>Tạo ra: Sự đáng trông cậy</b></div></div>
+<div style="border:1px solid #dae4d6;display:flex;flex-direction:column;break-inside:avoid"><div style="background:#7b3fa0;color:#fff;padding:9px 11px"><div style="font-weight:700;letter-spacing:.03em;line-height:1.3">INTIMACY<span style="font-weight:600;opacity:.85"> · SỰ GẦN GŨI</span></div><div style="font-size:12px;line-height:1.4;margin-top:3px">Can I be honest with you?</div><div style="font-size:12px;line-height:1.4;font-style:italic">Tôi có thể thành thật với bạn không?</div></div><ul style="margin:0;padding:9px 11px 9px 27px;flex:1;display:flex;flex-direction:column;gap:5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Listen actively</span><br /><span>Lắng nghe tích cực</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Show empathy</span><br /><span>Thể hiện sự thấu cảm</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Build relationships</span><br /><span>Xây dựng mối quan hệ</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Respect confidentiality</span><br /><span>Tôn trọng tính bảo mật</span></li></ul><div style="border-top:1px solid #dae4d6;padding:7px 11px;line-height:1.4"><b style="color:#7b3fa0">Builds: Connection</b><br /><b>Tạo ra: Sự kết nối</b></div></div>
+<div style="border:1px solid #dae4d6;display:flex;flex-direction:column;break-inside:avoid"><div style="background:#b85c00;color:#fff;padding:9px 11px"><div style="font-weight:700;letter-spacing:.03em;line-height:1.3">SELF-ORIENTATION<span style="font-weight:600;opacity:.85"> · MỨC ĐỘ VỊ KỶ</span></div><div style="font-size:12px;line-height:1.4;margin-top:3px">Who are you serving?</div><div style="font-size:12px;line-height:1.4;font-style:italic">Bạn đang phục vụ ai?</div></div><ul style="margin:0;padding:9px 11px 9px 27px;flex:1;display:flex;flex-direction:column;gap:5px"><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Share credit</span><br /><span>Chia sẻ công lao</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Focus on others</span><br /><span>Tập trung vào người khác</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Humility</span><br /><span>Khiêm tốn</span></li><li style="line-height:1.35"><span style="color:var(--en,#56665a)">Team success</span><br /><span>Thành công của nhóm</span></li></ul><div style="border-top:1px solid #dae4d6;padding:7px 11px;line-height:1.4"><b style="color:#b85c00">Builds: Intentions</b><br /><b>Tạo ra: Thiện ý</b></div></div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:12px">
+<div style="color:var(--en,#56665a)">Trust grows when Credibility, Reliability and Intimacy increase. Trust declines when Self-Orientation becomes the focus.</div>
+<div>Niềm tin tăng khi Uy tín, Độ tin cậy và Sự gần gũi tăng lên. Niềm tin giảm khi bản thân trở thành trọng tâm.</div>
+</div>
+<figure style="margin:12px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t13/four-components.png" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Bốn thẻ màu: Credibility (xanh dương), Reliability (xanh lá), Intimacy (tím), Self-Orientation (cam). Các gạch đầu dòng dưới Self-Orientation là những hành vi giúp giảm mức độ vị kỷ.</figcaption>
+</figure><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Giải thích thêm</b></p><p style="margin:0 0 6px">Phương trình gồm ba yếu tố cộng ở tử số và một yếu tố chia ở mẫu số. Vì vậy mức độ vị kỷ cao có thể xoá đi phần lớn những gì uy tín, độ tin cậy và sự gần gũi đã tạo ra: một người giỏi chuyên môn và luôn đúng hạn vẫn khó được tin nếu người khác cảm thấy họ chủ yếu làm vì bản thân.</p><p style="margin:0"><i>Intimacy</i> ở đây không mang nghĩa quan hệ riêng tư. Nó chỉ mức độ một người cảm thấy an toàn khi nói thật, chia sẻ lo ngại hoặc thông tin nhạy cảm với bạn. Phương trình xuất phát từ cuốn <i>The Trusted Advisor</i> (Maister, Green &amp; Galford, 2000).</p></div></section>
+<section id="s20" data-screen-label="20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 20</span>
+<span style="color:#86958a">Activity</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động</h3>
+<div style="color:var(--en,#56665a)">To increase trust in my team, I will focus on improving:<ol style="margin:0;padding-left:20px"><li></li><li></li><li></li><li></li><li></li></ol></div>
+<div>Để tăng niềm tin trong nhóm, tôi sẽ tập trung cải thiện:<ol style="margin:0;padding-left:20px"><li></li><li></li><li></li><li></li><li></li></ol></div>
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid">
+<div style="text-align:center;line-height:1.35;margin-bottom:12px"><div style="font-weight:700;font-size:16px;letter-spacing:.03em;color:#1f4d3a">THE TRUST EQUATION</div><div style="font-weight:700">PHƯƠNG TRÌNH NIỀM TIN</div></div>
+<div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px">
+<div style="flex:1 1 130px;min-width:0;text-align:center;line-height:1.4"><div style="font-weight:700;color:#1f4d3a">CREDIBILITY</div><div style="font-weight:700">UY TÍN</div><div style="font-size:12.5px;margin-top:4px;color:var(--en,#56665a)">Be authentic, competent and stand by your values</div><div style="font-size:12.5px">Chân thực, có năng lực và giữ vững giá trị của mình</div></div><div style="flex:0 0 auto;font-weight:700;font-size:20px;color:#1f4d3a;padding-top:2px">+</div>
+<div style="flex:1 1 130px;min-width:0;text-align:center;line-height:1.4"><div style="font-weight:700;color:#1f4d3a">RELIABILITY</div><div style="font-weight:700">ĐỘ TIN CẬY</div><div style="font-size:12.5px;margin-top:4px;color:var(--en,#56665a)">Do what you say, consistently and dependably</div><div style="font-size:12.5px">Làm đúng điều mình nói, nhất quán và đáng trông cậy</div></div><div style="flex:0 0 auto;font-weight:700;font-size:20px;color:#1f4d3a;padding-top:2px">+</div>
+<div style="flex:1 1 130px;min-width:0;text-align:center;line-height:1.4"><div style="font-weight:700;color:#1f4d3a">INTIMACY</div><div style="font-weight:700">SỰ GẦN GŨI</div><div style="font-size:12.5px;margin-top:4px;color:var(--en,#56665a)">Show you care, listen and build meaningful connections</div><div style="font-size:12.5px">Thể hiện sự quan tâm, lắng nghe và xây dựng kết nối có ý nghĩa</div></div><div style="flex:0 0 auto;font-weight:700;font-size:20px;color:#1f4d3a;padding-top:2px">÷</div>
+<div style="flex:1 1 130px;min-width:0;text-align:center;line-height:1.4"><div style="font-weight:700;color:#1f4d3a">LOW SELF-ORIENTATION</div><div style="font-weight:700">MỨC ĐỘ VỊ KỶ THẤP</div><div style="font-size:12.5px;margin-top:4px;color:var(--en,#56665a)">Put others first, stay humble and focus on their success</div><div style="font-size:12.5px">Đặt người khác lên trước, giữ sự khiêm tốn và tập trung vào thành công của họ</div></div><div style="flex:0 0 auto;font-weight:700;font-size:20px;color:#1f4d3a;padding-top:2px">=</div>
+<div style="flex:0 1 auto;text-align:center;line-height:1.3;padding:0 6px"><div style="font-weight:700;font-size:18px;color:#1f4d3a">TRUST</div><div style="font-weight:700;font-size:16px">NIỀM TIN</div></div>
+</div>
+</div>
+<figure style="margin:12px 0 0;max-width:100%;break-inside:avoid">
+<img src="assets/t13/trust-equation-banner.jpg" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Hình “The Trust Equation”: các bàn tay nắm chặt nhau tạo thành một cây cầu, phía trên là bốn yếu tố và phép tính dẫn tới TRUST.</figcaption>
+</figure><p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide kèm lại hình đồ hoạ khung TRUST (xem slide 12) để người học chọn năm hành vi cần cải thiện. Năm dòng trống để người học tự điền.</i></p></section>
+<section id="s21" data-screen-label="21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 21</span>
+<span style="color:#86958a">Part 5</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">PART 5: Inclusive Leadership</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">PHẦN 5: Lãnh đạo hoà nhập</h3>
+<div style="color:var(--en,#56665a)">Building Trust &amp; Open Communication In Teams</div>
+<div>Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm</div>
+</div>
+</section>
+<section id="s22" data-screen-label="22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 22</span>
+<span style="color:#86958a">Inclusive leadership</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Inclusive Leadership — 6 Signature Traits of An Inclusive Leader</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lãnh đạo hoà nhập — 6 đặc điểm nổi bật của nhà lãnh đạo hoà nhập</h3>
+<div style="color:var(--en,#56665a)">“Inclusive leaders create environments where people feel they belong and where their uniqueness is valued.”</div>
+<div>“Nhà lãnh đạo hoà nhập tạo ra môi trường nơi mọi người cảm thấy mình thuộc về và sự khác biệt của họ được trân trọng.”</div>
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:14px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:14px"><div style="display:flex;gap:9px;align-items:flex-start;"><span style="flex:0 0 auto;width:14px;height:14px;border-radius:50%;background:#9a7400;margin-top:4px"></span><div style="line-height:1.4"><div style="font-weight:700;color:#9a7400">Cognizance</div><div style="font-weight:700">Nhận thức (về thiên kiến)</div><div style="font-size:12.5px;color:var(--en,#56665a)">Because bias is a leader’s Achilles’ heel</div><div style="font-size:12.5px">Vì thiên kiến là gót chân Achilles của người lãnh đạo</div></div></div><div style="display:flex;gap:9px;align-items:flex-start;"><span style="flex:0 0 auto;width:14px;height:14px;border-radius:50%;background:#d0690a;margin-top:4px"></span><div style="line-height:1.4"><div style="font-weight:700;color:#d0690a">Courage</div><div style="font-weight:700">Can đảm</div><div style="font-size:12.5px;color:var(--en,#56665a)">Because talking about imperfections involves personal risk-taking</div><div style="font-size:12.5px">Vì nói về những điểm chưa hoàn hảo đòi hỏi chấp nhận rủi ro cá nhân</div></div></div><div style="display:flex;gap:9px;align-items:flex-start;"><span style="flex:0 0 auto;width:14px;height:14px;border-radius:50%;background:#b3202a;margin-top:4px"></span><div style="line-height:1.4"><div style="font-weight:700;color:#b3202a">Commitment</div><div style="font-weight:700">Cam kết</div><div style="font-size:12.5px;color:var(--en,#56665a)">Because staying the course is hard</div><div style="font-size:12.5px">Vì kiên định theo đuổi đến cùng là điều khó</div></div></div></div>
+<div style="justify-self:center;width:150px;height:150px;border-radius:50%;border:2px dashed #b9c2bb;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.3;padding:10px;box-sizing:border-box"><div style="font-weight:700;color:#2a3a8c">The six signature traits</div><div style="font-weight:700;margin-top:4px">Sáu đặc điểm nổi bật</div></div>
+<div style="display:flex;flex-direction:column;gap:14px"><div style="display:flex;gap:9px;align-items:flex-start;"><span style="flex:0 0 auto;width:14px;height:14px;border-radius:50%;background:#2e8b3a;margin-top:4px"></span><div style="line-height:1.4"><div style="font-weight:700;color:#2e8b3a">Curiosity</div><div style="font-weight:700">Tò mò</div><div style="font-size:12.5px;color:var(--en,#56665a)">Because different ideas and experiences enable growth</div><div style="font-size:12.5px">Vì những ý tưởng và trải nghiệm khác biệt giúp phát triển</div></div></div><div style="display:flex;gap:9px;align-items:flex-start;"><span style="flex:0 0 auto;width:14px;height:14px;border-radius:50%;background:#1565b0;margin-top:4px"></span><div style="line-height:1.4"><div style="font-weight:700;color:#1565b0">Cultural intelligence</div><div style="font-weight:700">Trí tuệ văn hoá</div><div style="font-size:12.5px;color:var(--en,#56665a)">Because not everyone sees the world through the same cultural frame</div><div style="font-size:12.5px">Vì không phải ai cũng nhìn thế giới qua cùng một lăng kính văn hoá</div></div></div><div style="display:flex;gap:9px;align-items:flex-start;"><span style="flex:0 0 auto;width:14px;height:14px;border-radius:50%;background:#6a2c91;margin-top:4px"></span><div style="line-height:1.4"><div style="font-weight:700;color:#6a2c91">Collaboration</div><div style="font-weight:700">Hợp tác</div><div style="font-size:12.5px;color:var(--en,#56665a)">Because a diverse-thinking team is greater than the sum of its parts</div><div style="font-size:12.5px">Vì một nhóm có tư duy đa dạng mạnh hơn tổng các thành viên cộng lại</div></div></div></div>
+</div>
+</div>
+<figure style="margin:12px 0 0;max-width:520px;break-inside:avoid">
+<img src="assets/t13/six-traits.jpg" alt="" style="display:block;width:100%;height:auto;box-sizing:border-box;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">“The six signature traits” (Sáu đặc điểm nổi bật). Đồ hoạ: Deloitte University Press, DUPress.com.</figcaption>
+</figure><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Giải thích thêm</b></p><p style="margin:0">Sáu đặc điểm đến từ nghiên cứu của Juliet Bourke và Bernadette Dillon tại Deloitte (2016), thường được gọi là “6C”. Hai slide tiếp theo chia chúng thành hai nhóm: <b>Nhận thức, Tò mò, Hợp tác</b> để khai thác các góc nhìn đa dạng (slide 23), và <b>Trí tuệ văn hoá, Can đảm, Cam kết</b> để giao tiếp với nhiều phong cách làm việc khác nhau (slide 24).</p></div></section>
+<section id="s23" data-screen-label="23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 23</span>
+<span style="color:#86958a">Diverse perspectives</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Inclusive Leadership — Managing Diverse Perspectives</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lãnh đạo hoà nhập — Quản lý các góc nhìn đa dạng</h3>
+<div style="color:var(--en,#56665a)">Harnessing cognitive diversity through inclusive leadership behaviours</div>
+<div>Khai thác sự đa dạng trong tư duy thông qua các hành vi lãnh đạo hoà nhập</div>
+<div style="color:var(--en,#56665a)"><b>Cognizance of Bias (The Foundation)</b><ul style="margin:0;padding-left:18px"><li><b>Check the Mirror:</b> Actively identify your own blind spots to prevent favouritism.</li><li><b>Build Fair Processes:</b> Set structured, data-driven rules so every voice gets an objective hearing.</li></ul></div>
+<div><b>Nhận thức về thiên kiến (Nền tảng)</b><ul style="margin:0;padding-left:18px"><li><b>Soi gương:</b> Chủ động nhận ra điểm mù của chính mình để tránh thiên vị.</li><li><b>Xây dựng quy trình công bằng:</b> Đặt ra quy tắc có cấu trúc, dựa trên dữ liệu để mọi tiếng nói đều được lắng nghe khách quan.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Curiosity (The Catalyst)</b><ul style="margin:0;padding-left:18px"><li><b>Listen to Learn:</b> Practice active listening instead of listening just to reply or judge.</li><li><b>Seek Friction:</b> Comfortably sit with ambiguity and welcome respectful pushback.</li></ul></div>
+<div><b>Tò mò (Chất xúc tác)</b><ul style="margin:0;padding-left:18px"><li><b>Nghe để học:</b> Thực hành lắng nghe tích cực thay vì nghe chỉ để đáp lại hay phán xét.</li><li><b>Tìm đến sự cọ xát:</b> Thoải mái chấp nhận sự mơ hồ và đón nhận ý kiến phản bác một cách tôn trọng.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Collaboration (The Environment)</b><ul style="margin:0;padding-left:18px"><li><b>Ensure Psychological Safety:</b> Create a culture where people can speak up without fear of negative consequences.</li><li><b>Design for Diversity:</b> Purposely mix team composition to break down silos and cliquey subgroups.</li></ul></div>
+<div><b>Hợp tác (Môi trường)</b><ul style="margin:0;padding-left:18px"><li><b>Bảo đảm an toàn tâm lý:</b> Tạo văn hoá nơi mọi người có thể lên tiếng mà không sợ hậu quả tiêu cực.</li><li><b>Thiết kế cho sự đa dạng:</b> Chủ ý pha trộn thành phần nhóm để phá bỏ sự cô lập và các nhóm nhỏ khép kín.</li></ul></div>
+</div>
+</section>
+<section id="s24" data-screen-label="24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 24</span>
+<span style="color:#86958a">Work styles</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Inclusive Leadership — Communication Across Different Work Styles</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Lãnh đạo hoà nhập — Giao tiếp với các phong cách làm việc khác nhau</h3>
+<div style="color:var(--en,#56665a)">Adapting leadership behaviors to connect, align, and empower every individual.</div>
+<div>Điều chỉnh hành vi lãnh đạo để kết nối, tạo đồng thuận và trao quyền cho từng cá nhân.</div>
+<div style="color:var(--en,#56665a)"><b>Cultural Intelligence</b><ul style="margin:0;padding-left:18px"><li><b>Flex Your Approach:</b> Learn how your team members prefer to receive information (e.g., direct vs. indirect, written vs. verbal).</li><li><b>Check Assumptions:</b> Recognize that your own communication style is not the “default” or only right way to work.</li></ul></div>
+<div><b>Trí tuệ văn hoá</b><ul style="margin:0;padding-left:18px"><li><b>Linh hoạt cách tiếp cận:</b> Tìm hiểu thành viên trong nhóm thích nhận thông tin theo cách nào (ví dụ: trực tiếp hay gián tiếp, bằng văn bản hay bằng lời).</li><li><b>Kiểm tra giả định:</b> Nhận ra rằng phong cách giao tiếp của bạn không phải là “mặc định” hay cách làm việc đúng duy nhất.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Courage</b><ul style="margin:0;padding-left:18px"><li><b>Invite Vulnerability:</b> Model deep humility by admitting when you don’t have all the answers, opening the door for others to speak up.</li><li><b>Address Misalignment:</b> Gently but directly address communication friction before it turns into conflict.</li></ul></div>
+<div><b>Can đảm</b><ul style="margin:0;padding-left:18px"><li><b>Mời gọi sự cởi mở:</b> Làm gương về sự khiêm tốn bằng cách thừa nhận khi mình không có mọi câu trả lời, mở đường cho người khác lên tiếng.</li><li><b>Xử lý sự lệch nhau:</b> Nhẹ nhàng nhưng thẳng thắn giải quyết những va chạm trong giao tiếp trước khi chúng thành xung đột.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Commitment</b><ul style="margin:0;padding-left:18px"><li><b>Set Clear Team Norms:</b> Establish collective rules for meetings, deadlines, and updates to accommodate different paces.</li><li><b>Unify the Group:</b> Focus on shared, common goals to prevent the team from fracturing into communication silos.</li></ul></div>
+<div><b>Cam kết</b><ul style="margin:0;padding-left:18px"><li><b>Đặt chuẩn mực nhóm rõ ràng:</b> Thống nhất quy tắc chung cho cuộc họp, thời hạn và cập nhật công việc để phù hợp với nhịp độ khác nhau của mỗi người.</li><li><b>Gắn kết cả nhóm:</b> Tập trung vào mục tiêu chung để nhóm không bị chia cắt thành những ốc đảo giao tiếp.</li></ul></div>
+</div>
+</section>
+<section id="s25" data-screen-label="25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 25</span>
+<span style="color:#86958a">Part 6</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">PART 6: Application</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">PHẦN 6: Ứng dụng</h3>
+<div style="color:var(--en,#56665a)">Building Trust &amp; Open Communication In Teams</div>
+<div>Xây dựng niềm tin &amp; giao tiếp cởi mở trong đội nhóm</div>
+</div>
+</section>
+<section id="s26" data-screen-label="26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 26</span>
+<span style="color:#86958a">Case study</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Application Activity — Case Study: The Silent Team</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động ứng dụng — Tình huống: Nhóm im lặng</h3>
+<div style="color:var(--en,#56665a)">Linh was recently promoted to lead a product development team. The team consists of experienced employees from different departments who have worked together for nearly two years. Although the team is technically strong, several issues have emerged:<ul style="margin:0;padding-left:18px"><li>Team members rarely challenge ideas during meetings.</li><li>Most discussions are dominated by two senior employees.</li><li>Several mistakes have only been identified at the last minute.</li><li>Employees often discuss concerns privately after meetings rather than raising them openly.</li><li>Newer team members contribute very little.</li><li>One team member recently told HR: “It is easier to remain quiet than risk saying the wrong thing.”</li></ul></div>
+<div>Linh vừa được thăng chức để dẫn dắt một nhóm phát triển sản phẩm. Nhóm gồm những nhân viên giàu kinh nghiệm đến từ các phòng ban khác nhau, đã làm việc cùng nhau gần hai năm. Dù nhóm giỏi về kỹ thuật, một số vấn đề đã xuất hiện:<ul style="margin:0;padding-left:18px"><li>Các thành viên hiếm khi phản biện ý tưởng trong cuộc họp.</li><li>Phần lớn cuộc thảo luận do hai nhân viên kỳ cựu chi phối.</li><li>Một số sai sót chỉ được phát hiện vào phút chót.</li><li>Nhân viên thường bàn riêng về các mối lo ngại sau cuộc họp thay vì nêu ra công khai.</li><li>Các thành viên mới hầu như không đóng góp.</li><li>Một thành viên gần đây nói với HR: “Im lặng thì dễ hơn là liều nói sai.”</li></ul></div>
+<div style="color:var(--en,#56665a)">Linh is frustrated because she believes he has created an open environment. He frequently asks: “Does anyone have any questions or concerns?” Yet the team remains unusually quiet. The organisation expects the team to deliver a major new product within six months.</div>
+<div>Linh thấy bực bội vì tin rằng mình đã tạo ra một môi trường cởi mở. Linh thường hỏi: “Có ai có câu hỏi hay lo ngại gì không?” Vậy mà cả nhóm vẫn im lặng một cách khác thường. Tổ chức kỳ vọng nhóm sẽ ra mắt một sản phẩm mới quan trọng trong vòng sáu tháng.</div>
+<div style="color:var(--en,#56665a)"><b>Group Task:</b> Assume you are Linh’s leadership team. Using the concepts from today’s session and discuss the following questions:<ul style="margin:0;padding-left:18px"><li>What warning signs suggest that trust may be low within this team? Identify at least three.</li><li>Using Amy Edmondson’s framework, which zone is this team likely operating in? Apathy; Anxiety; Comfort; Learning Zone. Why?</li><li>Which TRUST behaviour requires the most immediate attention? Transparency; Reliability; Understanding; Safety; Team First. Explain your reasoning.</li><li>Looking at the Trust Equation, which component appears weakest? Credibility; Reliability; Intimacy; Self-Orientation. Why?</li><li>If you were Linh, what three specific actions would you take in the next 30 days?</li></ul></div>
+<div><b>Nhiệm vụ nhóm:</b> Giả sử bạn là đội ngũ lãnh đạo của Linh. Sử dụng các khái niệm trong buổi học hôm nay và thảo luận các câu hỏi sau:<ul style="margin:0;padding-left:18px"><li>Những dấu hiệu cảnh báo nào cho thấy niềm tin trong nhóm này có thể đang thấp? Nêu ít nhất ba dấu hiệu.</li><li>Theo mô hình của Amy Edmondson, nhóm này nhiều khả năng đang ở vùng nào: Thờ ơ, Lo âu, Thoải mái hay Học hỏi? Vì sao?</li><li>Hành vi nào trong khung TRUST cần được chú ý ngay nhất: Minh bạch, Đáng tin cậy, Thấu hiểu, An toàn hay Đội nhóm trên hết? Giải thích lý do.</li><li>Dựa vào Phương trình niềm tin, thành phần nào có vẻ yếu nhất: Uy tín, Độ tin cậy, Sự gần gũi hay Mức độ vị kỷ? Vì sao?</li><li>Nếu bạn là Linh, bạn sẽ thực hiện ba hành động cụ thể nào trong 30 ngày tới?</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bản gốc dùng lẫn “she” và “he” cho Linh trong cùng một đoạn; bản dịch gọi là “Linh” để giữ trung tính.</i></p><h4 style="margin:16px 0 8px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ac,#2f6b45)"><span>Gợi ý trả lời</span> · Suggested answers</h4><p style="margin:0 0 10px;font-size:12px;line-height:1.55;color:#86958a"><i>Phần này do bản dịch bổ sung, không có trên slide gốc. Đây là quan điểm của người biên soạn, dùng để tham khảo và mở đầu thảo luận, không phải đáp án duy nhất.</i></p><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>1. Warning signs</b><br />The case lists six, and any three answer the question: ideas are rarely challenged; two senior employees dominate; mistakes surface only at the last minute; concerns are discussed privately after meetings instead of in them; newer members contribute very little; and one member told HR it is “easier to remain quiet than risk saying the wrong thing”. A seventh sign is Linh’s own view. She believes the environment is open, but the team’s behaviour says otherwise, so the leader’s perception and the team’s experience do not match.</div>
+<div><b>1. Dấu hiệu cảnh báo</b><br /><span>Tình huống nêu sáu dấu hiệu, chọn ba bất kỳ là đủ: hiếm khi có ai phản biện ý tưởng; hai nhân viên kỳ cựu chiếm phần lớn cuộc thảo luận; sai sót chỉ lộ ra vào phút chót; mối lo ngại được bàn riêng sau cuộc họp thay vì trong cuộc họp; thành viên mới hầu như không đóng góp; và một thành viên nói với HR rằng “im lặng dễ hơn là liều nói sai”. Dấu hiệu thứ bảy là chính nhận định của Linh. Linh tin môi trường đã cởi mở, nhưng hành vi của nhóm cho thấy điều ngược lại, nghĩa là cảm nhận của người lãnh đạo và trải nghiệm của nhóm không khớp nhau.</span></div>
+<div style="color:var(--en,#56665a)"><b>2. Edmondson zone</b><br />Most likely the <b>Anxiety Zone</b>. Performance standards are high: an experienced, technically strong team must deliver a major new product in six months. Psychological safety is low: people stay quiet, and problems appear late. Apathy is less likely because people clearly still care; they talk about their concerns after meetings. They have not stopped caring, they have stopped speaking up in the meeting.</div>
+<div><b>2. Vùng theo mô hình Edmondson</b><br /><span>Nhiều khả năng là </span><b>Vùng lo âu</b>. Chuẩn mực hiệu suất cao: một nhóm giàu kinh nghiệm, giỏi kỹ thuật phải ra mắt một sản phẩm lớn trong sáu tháng. An toàn tâm lý thấp: mọi người im lặng, vấn đề lộ ra muộn. Vùng thờ ơ ít khả năng hơn vì mọi người rõ ràng vẫn quan tâm; họ vẫn bàn về các lo ngại sau cuộc họp. Họ không hết quan tâm, họ chỉ thôi lên tiếng trong cuộc họp.</div>
+<div style="color:var(--en,#56665a)"><b>3. Most urgent TRUST behaviour</b><br /><b>Safety.</b> The core problem is that speaking up feels risky. Information is not missing (Transparency) and promises are not being broken (Reliability). The Safety behaviours match the symptoms directly: invite feedback, encourage diverse views, respond respectfully and treat mistakes as learning. Team First is a close second, because the two dominant seniors and the silent newcomers suggest the group is not operating as one team.</div>
+<div><b>3. Hành vi TRUST cần ưu tiên</b><br /><b>An toàn.</b> Vấn đề cốt lõi là lên tiếng bị xem là rủi ro. Thông tin không thiếu (Minh bạch) và lời hứa không bị phá vỡ (Đáng tin cậy). Các hành vi của yếu tố An toàn khớp trực tiếp với triệu chứng: mời góp ý, khuyến khích quan điểm đa dạng, phản hồi tôn trọng và xem sai lầm là cơ hội học hỏi. Đội nhóm trên hết đứng thứ hai, vì việc hai người kỳ cựu lấn át và người mới im lặng cho thấy nhóm chưa vận hành như một khối thống nhất.</div>
+<div style="color:var(--en,#56665a)"><b>4. Weakest component of the Trust Equation</b><br /><b>Intimacy</b>, defined on slide 19 as “Can I be honest with you?”. Team members do not feel safe being honest in front of Linh and their colleagues. Credibility and Reliability are not in question in the case. Self-Orientation is worth checking: Linh is frustrated and sure she has already created an open environment. If the team reads that as concern for her own image rather than for them, it will lower trust further.</div>
+<div><b>4. Thành phần yếu nhất trong Phương trình niềm tin</b><br /><b>Sự gần gũi</b>, được định nghĩa ở slide 19 là “Tôi có thể thành thật với bạn không?”. Các thành viên không cảm thấy an toàn để nói thật trước mặt Linh và đồng nghiệp. Uy tín và Độ tin cậy không bị đặt vấn đề trong tình huống. Mức độ vị kỷ cũng nên được xem lại: Linh thất vọng và chắc chắn rằng mình đã tạo ra môi trường cởi mở. Nếu nhóm hiểu điều đó là Linh lo cho hình ảnh của bản thân hơn là cho họ, niềm tin sẽ càng giảm.</div>
+<div style="color:var(--en,#56665a)"><b>5. Three actions for the next 30 days</b><br />(1) <b>Hold one-to-one conversations</b> with every team member in the first two weeks, starting with the newer members. Ask specific questions such as “What is one risk on this product that no one is talking about?” and act visibly on at least one answer. (2) <b>Change how meetings run.</b> Send the agenda and pre-work 24 hours ahead; collect written input before open discussion; replace “Does anyone have any questions?” with “What am I missing?”; ask the two senior members to speak last. (3) <b>Model fallibility and reward candour.</b> Share one of her own mistakes or uncertainties, thank people publicly when they raise a problem early, and run a blameless review of the recent late-found mistakes that ends with agreed team norms such as “challenge ideas, not people”.</div>
+<div><b>5. Ba hành động trong 30 ngày tới</b><br />(1) <b>Trò chuyện 1:1</b> với từng thành viên trong hai tuần đầu, bắt đầu từ những người mới. Hỏi câu hỏi cụ thể như “Có rủi ro nào của sản phẩm này mà chưa ai nhắc tới?” và hành động công khai với ít nhất một câu trả lời. (2) <b>Thay đổi cách điều hành cuộc họp.</b> Gửi chương trình và tài liệu chuẩn bị trước 24 giờ; thu ý kiến bằng văn bản trước khi thảo luận mở; thay câu “Có ai có câu hỏi gì không?” bằng “Tôi đang bỏ sót điều gì?”; đề nghị hai thành viên kỳ cựu phát biểu sau cùng. (3) <b>Làm gương về sự không hoàn hảo và khen thưởng sự thẳng thắn.</b> Chia sẻ một sai lầm hoặc điều chưa chắc chắn của chính mình, cảm ơn công khai khi có người nêu vấn đề sớm, và tổ chức một buổi rút kinh nghiệm không đổ lỗi về các sai sót gần đây, kết thúc bằng các chuẩn mực nhóm được thống nhất như “phản biện ý tưởng, không công kích con người”.</div>
+<div style="color:var(--en,#56665a)"><b>5. Short version</b><br />(1) Hold 1:1s with every team member, newer members first. (2) Run meetings differently: written input first, ask “What am I missing?”, seniors speak last. (3) Admit her own mistakes and thank people who raise problems early.</div>
+<div><b>5. Bản ngắn gọn</b><br /><span>(1) Trò chuyện 1:1 với từng thành viên, ưu tiên người mới. (2) Đổi cách họp: thu ý kiến bằng văn bản trước, hỏi “Tôi đang bỏ sót điều gì?”, người kỳ cựu nói sau cùng. (3) Tự nhận sai lầm của mình và cảm ơn người nêu vấn đề sớm.</span></div>
+</div></section>
+<section id="s27" data-screen-label="27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 27</span>
+<span style="color:#86958a">Commitment</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Personal Leadership Commitment</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Cam kết lãnh đạo cá nhân</h3>
+<div style="color:var(--en,#56665a)">What are behaviours I will STOP/START/CONTINUE doing?</div>
+<div>Những hành vi nào tôi sẽ DỪNG / BẮT ĐẦU / TIẾP TỤC?</div>
+<div style="color:var(--en,#56665a)"><b>STOP</b> — E.g.<ul style="margin:0;padding-left:18px"><li>I will stop relying on the same 2–3 “go-to” people for quick feedback during projects.</li><li>I will stop interrupting or filling silent gaps in meetings, giving internal processors time to speak up.</li></ul></div>
+<div><b>DỪNG</b> — Ví dụ:<ul style="margin:0;padding-left:18px"><li>Tôi sẽ thôi chỉ dựa vào cùng 2–3 người “quen thuộc” để xin phản hồi nhanh trong các dự án.</li><li>Tôi sẽ thôi ngắt lời hoặc lấp đầy những khoảng lặng trong cuộc họp, để những người cần thời gian suy nghĩ có cơ hội lên tiếng.</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>START</b> — E.g.<ul style="margin:0;padding-left:18px"><li>I will start sending meeting agendas and pre-work 24 hours in advance to equalize the playing field.</li><li>I will start asking open-ended questions like, “What am I missing here?” or “Who has a completely different view?”</li></ul></div>
+<div><b>BẮT ĐẦU</b> — Ví dụ:<ul style="margin:0;padding-left:18px"><li>Tôi sẽ bắt đầu gửi chương trình họp và tài liệu chuẩn bị trước 24 giờ để mọi người có cơ hội ngang nhau.</li><li>Tôi sẽ bắt đầu đặt câu hỏi mở như “Tôi đang bỏ sót điều gì?” hay “Ai có góc nhìn hoàn toàn khác?”</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>SUSTAIN/CONTINUE</b> — E.g.<ul style="margin:0;padding-left:18px"><li>I will continue meeting my staff individually once a month.</li><li>I will continue encouraging respectful discussion and differing viewpoints within my team.</li></ul></div>
+<div><b>DUY TRÌ / TIẾP TỤC</b> — Ví dụ:<ul style="margin:0;padding-left:18px"><li>Tôi sẽ tiếp tục gặp riêng từng nhân viên mỗi tháng một lần.</li><li>Tôi sẽ tiếp tục khuyến khích thảo luận tôn trọng và những quan điểm khác biệt trong nhóm.</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide là một bảng ba cột với các dòng trống để người học tự điền; các ví dụ nằm ở cuối mỗi cột.</i></p></section>
+<section id="s28" data-screen-label="28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 28</span>
+<span style="color:#86958a">Final thoughts</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Final Thoughts</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Suy ngẫm cuối</h3>
+<div style="color:var(--en,#56665a)">“Trust is the glue of life. It is the foundational principle that holds all relationships.” – Stephen M.R. Covey</div>
+<div>“Niềm tin là chất keo của cuộc sống. Đó là nguyên tắc nền tảng gắn kết mọi mối quan hệ.” – Stephen M.R. Covey</div>
+<div style="color:var(--en,#56665a)">“Psychological safety is not about being nice.” – Amy Edmondson</div>
+<div>“An toàn tâm lý không phải là chuyện tử tế cho qua.” – Amy Edmondson</div>
+<div style="color:var(--en,#56665a)">“Trust is earned in droplets and lost in buckets.” – David Maister</div>
+<div>“Niềm tin được vun đắp từng giọt và mất đi từng xô.” – David Maister</div>
+<div style="color:var(--en,#56665a)">“A team is not a group of people who work together. A team is a group of people who trust each other.” – Simon Sinek</div>
+<div>“Một đội nhóm không phải là một nhóm người làm việc cùng nhau. Một đội nhóm là một nhóm người tin tưởng lẫn nhau.” – Simon Sinek</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Nền slide là ảnh một buổi thảo luận nhóm.</i></p></section>
+<section id="s29" data-screen-label="29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 29</span>
+<span style="color:#86958a">References</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">References</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tài liệu tham khảo</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Bourke (2016). Six Signature Traits of Inclusive Leadership.</li><li>Edmondson, A. C. (2018). The Fearless Organization: Creating Psychological Safety in the Workplace for Learning, Innovation, and Growth.</li><li>Maister, D. H., Green, C. H., &amp; Galford, R. M. (2000). The Trusted Advisor.</li><li>Mayer, R.C., Davis, J.H., &amp; Schoorman, F.D. (1995). An Integrative Model of Organizational Trust.</li><li>Randel, A.E. et al. (2018). Inclusive Leadership: Realizing Positive Outcomes Through Belongingness and Being Valued for Uniqueness.</li></ul></div>
+<div><span style="color:#68786b">Giữ nguyên tên tài liệu gốc.</span><ul style="margin:0;padding-left:18px"><li>Bourke (2016). Sáu đặc điểm nổi bật của lãnh đạo hoà nhập.</li><li>Edmondson (2018). Tổ chức không sợ hãi: Tạo dựng an toàn tâm lý nơi làm việc để học hỏi, đổi mới và phát triển.</li><li>Maister, Green &amp; Galford (2000). Người cố vấn đáng tin cậy.</li><li>Mayer, Davis &amp; Schoorman (1995). Một mô hình tích hợp về niềm tin trong tổ chức.</li><li>Randel và cộng sự (2018). Lãnh đạo hoà nhập: Đạt kết quả tích cực nhờ cảm giác thuộc về và được trân trọng vì sự khác biệt.</li></ul></div>
+</div>
+</section>
+<section id="s30" data-screen-label="30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 30</span>
+<span style="color:#86958a">Thank you</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Thank you!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xin cảm ơn!</h3>
+<div style="color:var(--en,#56665a)">Dr Justin Xavier Batinadan<br />Senior Manager, International &amp; Projects<br />xavier.batinadan@rmit.edu.vn</div>
+<div><span>TS. Justin Xavier Batinadan</span><br /><span>Quản lý cấp cao, Quốc tế &amp; Dự án</span><br />xavier.batinadan@rmit.edu.vn</div>
+</div>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 13 · Building Trust &amp; Open Communication in Teams</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t13.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Xây dựng niềm tin & giao tiếp cởi mở trong đội nhóm","lv":0,"en":"Building Trust & Open Communication In Teams","vi":"Xây dựng niềm tin & giao tiếp cởi mở trong đội nhóm"},
+  {"id":"s02","num":"02","label":"Opening image","lv":0,"en":"Opening image","vi":""},
+  {"id":"s03","num":"03","label":"Nội dung chúng ta sẽ đề cập","lv":0,"en":"What we will cover","vi":"Nội dung chúng ta sẽ đề cập"},
+  {"id":"s04","num":"04","label":"Những gì chúng ta kỳ vọng sẽ học được","lv":0,"en":"What we expect to learn","vi":"Những gì chúng ta kỳ vọng sẽ học được"},
+  {"id":"s05","num":"05","label":"PHẦN 1: Vì sao NIỀM TIN quan trọng","lv":0,"en":"PART 1: Why TRUST Matters","vi":"PHẦN 1: Vì sao NIỀM TIN quan trọng"},
+  {"id":"s06","num":"06","label":"Vì sao NIỀM TIN quan trọng","lv":0,"en":"Why TRUST Matters","vi":"Vì sao NIỀM TIN quan trọng"},
+  {"id":"s07","num":"07","label":"Vì sao NIỀM TIN quan trọng — Niềm tin KHÔNG phải kỹ năng mềm → mà là động lực của hiệu q…","lv":0,"en":"Why TRUST Matters — Trust is NOT a soft skill → Business performance driver","vi":"Vì sao NIỀM TIN quan trọng — Niềm tin KHÔNG phải kỹ năng mềm → mà là động lực của hiệu quả kinh doanh"},
+  {"id":"s08","num":"08","label":"Vì sao NIỀM TIN quan trọng — NIỀM TIN trong các tổ chức tăng trưởng nhanh","lv":0,"en":"Why TRUST Matters — TRUST in fast-growth organisations","vi":"Vì sao NIỀM TIN quan trọng — NIỀM TIN trong các tổ chức tăng trưởng nhanh"},
+  {"id":"s09","num":"09","label":"PHẦN 2: Xây dựng NIỀM TIN","lv":0,"en":"PART 2: Building TRUST","vi":"PHẦN 2: Xây dựng NIỀM TIN"},
+  {"id":"s10","num":"10","label":"Khung TRUST","lv":0,"en":"TRUST Framework","vi":"Khung TRUST"},
+  {"id":"s11","num":"11","label":"Khung TRUST","lv":0,"en":"TRUST Framework","vi":"Khung TRUST"},
+  {"id":"s12","num":"12","label":"Xây dựng niềm tin & giao tiếp cởi mở trong đội nhóm","lv":0,"en":"Building Trust & Open Communication in Teams","vi":"Xây dựng niềm tin & giao tiếp cởi mở trong đội nhóm"},
+  {"id":"s13","num":"13","label":"PHẦN 3: An toàn tâm lý","lv":0,"en":"PART 3: Psychological Safety","vi":"PHẦN 3: An toàn tâm lý"},
+  {"id":"s14","num":"14","label":"An toàn tâm lý","lv":0,"en":"Psychological Safety","vi":"An toàn tâm lý"},
+  {"id":"s15","num":"15","label":"An toàn tâm lý","lv":0,"en":"Psychological Safety","vi":"An toàn tâm lý"},
+  {"id":"s16","num":"16","label":"An toàn tâm lý","lv":0,"en":"Psychological Safety","vi":"An toàn tâm lý"},
+  {"id":"s17","num":"17","label":"PHẦN 4: Phương trình niềm tin","lv":0,"en":"PART 4: Trust Equation","vi":"PHẦN 4: Phương trình niềm tin"},
+  {"id":"s18","num":"18","label":"Mọi người quyết định có tin chúng ta hay không bằng cách nào?","lv":0,"en":"How do people decide whether to Trust us?","vi":"Mọi người quyết định có tin chúng ta hay không bằng cách nào?"},
+  {"id":"s19","num":"19","label":"Phương trình niềm tin — Hiểu bốn thành phần của niềm tin","lv":0,"en":"Trust Equation — Understanding the Four Components of Trust","vi":"Phương trình niềm tin — Hiểu bốn thành phần của niềm tin"},
+  {"id":"s20","num":"20","label":"Hoạt động","lv":0,"en":"Activity","vi":"Hoạt động"},
+  {"id":"s21","num":"21","label":"PHẦN 5: Lãnh đạo hoà nhập","lv":0,"en":"PART 5: Inclusive Leadership","vi":"PHẦN 5: Lãnh đạo hoà nhập"},
+  {"id":"s22","num":"22","label":"Lãnh đạo hoà nhập — 6 đặc điểm nổi bật của nhà lãnh đạo hoà nhập","lv":0,"en":"Inclusive Leadership — 6 Signature Traits of An Inclusive Leader","vi":"Lãnh đạo hoà nhập — 6 đặc điểm nổi bật của nhà lãnh đạo hoà nhập"},
+  {"id":"s23","num":"23","label":"Lãnh đạo hoà nhập — Quản lý các góc nhìn đa dạng","lv":0,"en":"Inclusive Leadership — Managing Diverse Perspectives","vi":"Lãnh đạo hoà nhập — Quản lý các góc nhìn đa dạng"},
+  {"id":"s24","num":"24","label":"Lãnh đạo hoà nhập — Giao tiếp với các phong cách làm việc khác nhau","lv":0,"en":"Inclusive Leadership — Communication Across Different Work Styles","vi":"Lãnh đạo hoà nhập — Giao tiếp với các phong cách làm việc khác nhau"},
+  {"id":"s25","num":"25","label":"PHẦN 6: Ứng dụng","lv":0,"en":"PART 6: Application","vi":"PHẦN 6: Ứng dụng"},
+  {"id":"s26","num":"26","label":"Hoạt động ứng dụng — Tình huống: Nhóm im lặng","lv":0,"en":"Application Activity — Case Study: The Silent Team","vi":"Hoạt động ứng dụng — Tình huống: Nhóm im lặng"},
+  {"id":"s27","num":"27","label":"Cam kết lãnh đạo cá nhân","lv":0,"en":"Personal Leadership Commitment","vi":"Cam kết lãnh đạo cá nhân"},
+  {"id":"s28","num":"28","label":"Suy ngẫm cuối","lv":0,"en":"Final Thoughts","vi":"Suy ngẫm cuối"},
+  {"id":"s29","num":"29","label":"Tài liệu tham khảo","lv":0,"en":"References","vi":"Tài liệu tham khảo"},
+  {"id":"s30","num":"30","label":"Xin cảm ơn!","lv":0,"en":"Thank you!","vi":"Xin cảm ơn!"}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t13.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t13.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t13.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t13.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

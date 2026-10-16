@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 3 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">Audit Mindset &amp; Biases</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Tư duy kiểm toán &amp; thiên kiến</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="19">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 3: Tư duy kiểm toán &amp; thiên kiến</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Topic 3: Audit Mindset &amp; Biases — bản đối chiếu Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">TS. Thu Nguyễn (Nguyễn Thị Minh Thu) · 31 slide (bản cập nhật)</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide là một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ.</p>
+<p style="margin:0">Thuật ngữ chuyên môn được dịch sang tiếng Việt kèm nguyên bản tiếng Anh trong ngoặc ở lần xuất hiện đầu tiên. Tên riêng, tên tổ chức và trích dẫn học thuật (Kahneman, Yukl &amp; Tracey, Mayer, Davis &amp; Schoorman, RMIT, Zalo) giữ nguyên.</p>
+</div>
+
+<section id="s01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Topic 2: Audit Mindset &amp; Biases</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chủ đề 2: Tư duy kiểm toán &amp; thiên kiến</h3>
+<div style="color:var(--en,#56665a)">Dr Thu Nguyen</div>
+<div>TS. Thu Nguyễn</div>
+</div>
+<p style="margin:8px 0 0;font-size:11px;color:#86958a">Bản gốc đánh số slide là “Topic 2”; giữ nguyên theo nguyên bản. Trong bộ tài liệu này vẫn xếp là Chủ đề 3.</p>
+</section>
+
+<section id="s02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">Meet the Facilitator</span>
+</div>
+<div style="display:grid;grid-template-columns:1fr 118px;gap:20px;align-items:start">
+<div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Meet the Facilitator — Dr Thu Nguyen</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Giới thiệu giảng viên — TS. Thu Nguyễn</h3>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:22%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Current role</span><br /><span>Vai trò hiện tại</span></td><td style="padding:7px 8px;vertical-align:top;width:39%;color:var(--en,#56665a)">Senior Program Manager and Lecturer in Entrepreneurship at RMIT University Vietnam</td><td style="padding:7px 0 7px 8px;vertical-align:top">Senior Program Manager và Giảng viên ngành Khởi nghiệp tại Đại học RMIT Việt Nam</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Qualifications</span><br /><span>Bằng cấp</span></td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">PhD in Management Sciences (France); MA in Consultancy &amp; Entrepreneurship (The Netherlands)</td><td style="padding:7px 0 7px 8px;vertical-align:top">Tiến sĩ Khoa học Quản lý (Pháp); Thạc sĩ Tư vấn &amp; Khởi nghiệp (Hà Lan)</td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600"><span>Experience</span><br /><span>Kinh nghiệm</span></td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)">Over 20 years of combined industry and academic expertise</td><td style="padding:7px 0 7px 8px;vertical-align:top">Hơn 20 năm kinh nghiệm kết hợp giữa thực tiễn doanh nghiệp và học thuật</td></tr>
+</tbody>
+</table>
+</div>
+<figure style="margin:0">
+<img src="assets/t3/photo-facilitator.png" alt="Dr Thu Nguyen" style="display:block;width:100%;height:auto" />
+<figcaption style="margin-top:5px;font-size:10px;line-height:1.4;color:#86958a">TS. Thu Nguyễn</figcaption>
+</figure>
+</div>
+</section>
+
+<section id="s03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">Agenda</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Agenda — At the end of this session, you will…</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chương trình — Kết thúc buổi học, bạn sẽ…</h3>
+<div style="color:var(--en,#56665a)"><ol style="margin:0;padding-left:18px"><li style="margin:0 0 4px">Catch your own biases</li><li style="margin:0 0 4px">Own a 5-step routine to audit any judgment</li><li style="margin:0 0 4px">Hear how bias leaks into what you say</li><li style="margin:0">Adapt one message to two very different audiences</li></ol></div>
+<div><ol style="margin:0;padding-left:18px"><li style="margin:0 0 4px">Nhận ra thiên kiến (bias) của chính mình</li><li style="margin:0 0 4px">Nắm vững quy trình 5 bước để rà soát bất kỳ phán đoán nào</li><li style="margin:0 0 4px">Nghe được cách thiên kiến rò rỉ vào lời mình nói</li><li style="margin:0">Điều chỉnh cùng một thông điệp cho hai nhóm người nghe rất khác nhau</li></ol></div>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;width:8%;color:var(--ac,#2f6b45);font-weight:700">9:10</td><td style="padding:6px 8px;vertical-align:top;width:44%;color:var(--en,#56665a)">Activity 1: Estimation warm-up</td><td style="padding:6px 0 6px 8px;vertical-align:top">Hoạt động 1: Khởi động ước lượng</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">9:30</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">Fast &amp; slow thinking</td><td style="padding:6px 0 6px 8px;vertical-align:top">Tư duy nhanh &amp; tư duy chậm</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">9:45</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">Activity 2: Case Audit the Algorithm</td><td style="padding:6px 0 6px 8px;vertical-align:top">Hoạt động 2: Tình huống “Rà soát thuật toán”</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">10:20</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">Break</td><td style="padding:6px 0 6px 8px;vertical-align:top">Giải lao</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">10:35</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">Activity 3: The Leak</td><td style="padding:6px 0 6px 8px;vertical-align:top">Hoạt động 3: Sự rò rỉ</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">10:55</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">Activity 4: The Influence Lab (optional)</td><td style="padding:6px 0 6px 8px;vertical-align:top">Hoạt động 4: Phòng thí nghiệm gây ảnh hưởng (không bắt buộc)</td></tr>
+<tr><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">11:40</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">Your Bias Audit Card</td><td style="padding:6px 0 6px 8px;vertical-align:top">Thẻ rà soát thiên kiến của bạn</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">Activity 1A · Warm-up</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Give me a LOW and a HIGH</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hãy đưa ra một mức THẤP và một mức CAO</h3>
+<div style="color:var(--en,#56665a)"><b>Two questions</b> — Write both numbers on paper.</div>
+<div><b>Hai câu hỏi</b> — Viết cả hai con số ra giấy.</div>
+<div style="color:var(--en,#56665a)"><b>Your range</b> — LOW and HIGH, so you are 90% confident the truth sits inside.</div>
+<div><b>Khoảng của bạn</b> — Mức THẤP và mức CAO sao cho bạn tin chắc 90% rằng con số đúng nằm trong khoảng đó.</div>
+<div style="color:var(--en,#56665a)"><b>No gaming</b> — Don't play safe with an unreasonably wide range. Honest 90%.</div>
+<div><b>Không lách luật</b> — Đừng chọn an toàn bằng một khoảng rộng vô lý. Phải là 90% trung thực.</div>
+<div style="color:var(--en,#56665a)"><b>Worked example</b> — “Height of Mount Everest?” MY LOW: 7,000 m · MY HIGH: 10,000 m. “I'm 90% sure the true height is inside that range.”</div>
+<div><b>Ví dụ mẫu</b> — “Đỉnh Everest cao bao nhiêu?” MỨC THẤP: 7.000 m · MỨC CAO: 10.000 m. “Tôi chắc 90% rằng chiều cao thật nằm trong khoảng đó.”</div>
+</div>
+</section>
+
+<section id="s05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 05</span>
+<span style="color:#86958a">Activity 1A · The questions</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Two questions about Zalo</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hai câu hỏi về Zalo</h3>
+<div style="color:var(--en,#56665a)"><b>A1</b> How many people worked at this company exactly five years ago?</div>
+<div><b>A1</b> Đúng năm năm trước, công ty này có bao nhiêu người làm việc?</div>
+<div style="color:var(--en,#56665a)"><b>A2</b> What percentage of our engineers joined in the last two years?</div>
+<div><b>A2</b> Bao nhiêu phần trăm kỹ sư của chúng ta gia nhập trong hai năm gần đây?</div>
+<div style="color:var(--en,#56665a)">Write your LOW and your HIGH for each. 60 seconds.</div>
+<div>Viết mức THẤP và mức CAO cho từng câu. 60 giây.</div>
+</div>
+</section>
+
+<section id="s06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06</span>
+<span style="color:#86958a">And now</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Hands up if you are 90% confident the truth is inside your range.</div>
+<div>Giơ tay nếu bạn tin chắc 90% rằng con số đúng nằm trong khoảng của mình.</div>
+<div style="color:var(--en,#56665a)">Keep your hand up only if you'd bet 500,000₫ on your range.</div>
+<div>Chỉ giữ tay giơ lên nếu bạn sẵn sàng đặt cược 500.000₫ vào khoảng đó.</div>
+</div>
+</section>
+
+<section id="s07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 07</span>
+<span style="color:#86958a">Activity 1A · The reveal</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">You claimed 90%.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bạn đã tuyên bố là 90%.</h3>
+<div style="color:var(--en,#56665a)"><b>A1</b> 1097</div>
+<div><b>A1</b> 1.097</div>
+<div style="color:var(--en,#56665a)"><b>A2</b> 18.82%</div>
+<div><b>A2</b> 18,82%</div>
+<div style="color:var(--en,#56665a)">“Hands up if your range contained it”</div>
+<div>“Giơ tay nếu khoảng của bạn chứa con số đó”</div>
+</div>
+</section>
+
+<section id="s08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 08</span>
+<span style="color:#86958a">Activity 1B</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Alex, a mid-level engineer</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Alex, một kỹ sư bậc trung</h3>
+<div style="color:var(--en,#56665a)"><b>On your table</b> — One page. A promotion-readiness summary for a mid-level engineer on the payments platform team.</div>
+<div><b>Trên bàn của bạn</b> — Một trang giấy. Bản tóm tắt mức độ sẵn sàng thăng chức của một kỹ sư bậc trung thuộc nhóm nền tảng thanh toán.</div>
+<div style="color:var(--en,#56665a)"><b>1</b> Turn it over and read – alone. 2 minutes. No discussion yet.</div>
+<div><b>1</b> Lật lại và đọc một mình. 2 phút. Chưa thảo luận.</div>
+<div style="color:var(--en,#56665a)"><b>2</b> Rate: how ready is Alex? 1 = not ready at all · 10 = fully ready now</div>
+<div><b>2</b> Chấm điểm: Alex sẵn sàng đến mức nào? 1 = hoàn toàn chưa sẵn sàng · 10 = sẵn sàng ngay lập tức</div>
+<div style="color:var(--en,#56665a)"><b>3</b> Give your rating number, then stop. Trust your first read. Don't revise it.</div>
+<div><b>3</b> Đưa ra con số của bạn rồi dừng lại. Tin vào cảm nhận đầu tiên. Đừng sửa lại.</div>
+</div>
+</section>
+
+<section id="s09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 09</span>
+<span style="color:#86958a">Activity 1B</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Same engineer. Two ratings</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Cùng một kỹ sư. Hai mức điểm</h3>
+<div style="color:var(--en,#56665a)">▲ <b>[X]</b> “top graduate of an elite CS programme”</div>
+<div>▲ <b>[X]</b> “thủ khoa của một chương trình khoa học máy tính danh giá”</div>
+<div style="color:var(--en,#56665a)">● <b>[Y]</b> “hired after failing the first interview round”</div>
+<div>● <b>[Y]</b> “được tuyển sau khi trượt vòng phỏng vấn đầu tiên”</div>
+</div>
+</section>
+
+<section id="s10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">Your table's flipchart</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Start your bias map</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bắt đầu bản đồ thiên kiến của nhóm</h3>
+</div>
+<table style="margin-top:10px;font-size:11.5px;line-height:1.45">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:25%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">What we just experienced</th>
+<th style="text-align:left;padding:5px 6px;width:25%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">What it's called</th>
+<th style="text-align:left;padding:5px 6px;width:25%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">The System 1 shortcut behind it</th>
+<th style="text-align:left;padding:5px 0 5px 6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">Where it costs us at work</th>
+</tr>
+</thead>
+<tbody>
+<tr><td style="padding:7px 6px 7px 0;vertical-align:top">Điều chúng ta vừa trải qua</td><td style="padding:7px 6px;vertical-align:top">Tên gọi của nó <span style="color:#86958a">(tên nhóm đặt / tên trong nghiên cứu)</span></td><td style="padding:7px 6px;vertical-align:top">Lối tắt của Hệ thống 1 đứng sau nó <span style="color:#86958a">(không bắt buộc)</span></td><td style="padding:7px 0 7px 6px;vertical-align:top">Nơi nó gây tổn thất trong công việc</td></tr>
+</tbody>
+</table>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6);margin-top:10px">
+<div style="color:var(--en,#56665a)">Fill two rows on the left now – the two things that just happened to you. We'll add more later.</div>
+<div>Điền hai dòng ở cột bên trái ngay bây giờ – hai điều vừa xảy ra với bạn. Chúng ta sẽ bổ sung thêm sau.</div>
+</div>
+</section>
+
+<section id="s11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">—</span>
+</div>
+<div style="display:flex;align-items:baseline;gap:16px;break-inside:avoid">
+<div style="font-family:Newsreader,serif;font-size:40px;font-weight:600;line-height:1">25 x 14</div>
+<div style="font-size:11px;line-height:1.5;color:#86958a">Slide chỉ gồm một phép tính nhẩm, dùng để cho thấy Hệ thống 2 phải được gọi ra một cách có chủ đích.</div>
+</div>
+</section>
+
+<section id="s12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 12</span>
+<span style="color:#86958a">Mini-input · Kahneman</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Two systems, one brain</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hai hệ thống, một bộ não</h3>
+<div style="color:var(--en,#56665a)"><b>System 1 – fast</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Automatic, effortless, always on</li><li style="margin:0 0 3px">Runs on shortcuts and patterns</li><li style="margin:0">Brilliant under routine – predictably wrong under pressure</li></ul></div>
+<div><b>Hệ thống 1 – nhanh</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Tự động, không tốn sức, luôn hoạt động</li><li style="margin:0 0 3px">Chạy bằng lối tắt và khuôn mẫu</li><li style="margin:0">Xuất sắc trong việc quen tay – nhưng sai một cách có thể đoán trước khi bị áp lực</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>System 2 – slow</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Deliberate, logical, effortful</li><li style="margin:0 0 3px">Lazy: engages only when summoned</li><li style="margin:0">The system your routine will summon on purpose</li></ul></div>
+<div><b>Hệ thống 2 – chậm</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">Có chủ đích, logic, tốn công sức</li><li style="margin:0 0 3px">Lười: chỉ vào cuộc khi được gọi</li><li style="margin:0">Chính là hệ thống mà quy trình của bạn sẽ chủ động gọi ra</li></ul></div>
+<div style="color:var(--en,#56665a)">Bias is built-in, not character.</div>
+<div>Thiên kiến là thứ được cài sẵn, không phải vấn đề nhân cách.</div>
+</div>
+</section>
+
+<section id="s13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 13</span>
+<span style="color:#86958a">Answer in 30 seconds</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Answer in 30 second</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Trả lời trong 30 giây</h3>
+<div style="color:var(--en,#56665a)">A bat and ball cost $1.10. The bat costs one dollar more than the ball. How much does the ball cost?</div>
+<div>Một cây gậy và một quả bóng có giá 1,10 USD. Cây gậy đắt hơn quả bóng một đô-la. Quả bóng giá bao nhiêu?</div>
+<div style="color:var(--en,#56665a)">All roses are flowers. Some flowers fade quickly. Therefore some roses fade quickly.</div>
+<div>Mọi hoa hồng đều là hoa. Một số loài hoa tàn rất nhanh. Vậy nên một số hoa hồng tàn rất nhanh.</div>
+<div style="color:var(--en,#56665a)">Note your bias on flip chart</div>
+<div>Ghi lại thiên kiến của bạn lên bảng giấy</div>
+</div>
+</section>
+
+<section id="s14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 14</span>
+<span style="color:#86958a">The one that matters here</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Expert bias</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thiên kiến chuyên gia (expert bias)</h3>
+<div style="color:var(--en,#56665a)">Over-trusting technical/expert judgment where it doesn't apply: reading people, weighing effort, judging who's underperforming.</div>
+<div>Quá tin vào phán đoán kỹ thuật/chuyên môn ở những chỗ nó không áp dụng được: đọc con người, đánh giá mức độ nỗ lực, phán xét ai đang làm việc kém.</div>
+<div style="color:var(--en,#56665a)"><b>It sounds like</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">“If she were really trying, it would be done by now”</li><li style="margin:0 0 3px">“It's faster if I do it myself.”</li><li style="margin:0">“I don't need to ask – I can see the quality isn't there.”</li></ul></div>
+<div><b>Nghe sẽ giống như</b><ul style="margin:4px 0 0;padding-left:17px"><li style="margin:0 0 3px">“Nếu cô ấy thực sự cố gắng thì giờ đã xong rồi”</li><li style="margin:0 0 3px">“Tôi tự làm thì nhanh hơn.”</li><li style="margin:0">“Tôi không cần hỏi – tôi nhìn là biết chất lượng chưa đạt.”</li></ul></div>
+</div>
+</section>
+
+<section id="s15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 15</span>
+<span style="color:#86958a">—</span>
+</div>
+<figure style="margin:0;break-inside:avoid">
+<img src="assets/t3/audit-mindset-compass.png" alt="Bridging the Gap: The Audit Mindset" style="display:block;width:100%;height:auto;border:1px solid #dae4d6" />
+<figcaption style="margin-top:6px;font-size:10.5px;line-height:1.5;color:#86958a">Slide chỉ có hình minh hoạ: <i>Bridging the Gap — The Audit Mindset</i>. Định nghĩa: tư duy kiểm toán là khoảng dừng có chủ đích giữa kích thích và phản ứng — chuyển từ Hệ thống 1 sang Hệ thống 2. Mục tiêu: chuyển từ phản ứng với triệu chứng sang chẩn đoán nguyên nhân gốc.</figcaption>
+</figure>
+</section>
+
+<section id="s16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 16</span>
+<span style="color:#86958a">From problem to solution</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The Audit Mindset</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tư duy kiểm toán (audit mindset)</h3>
+<div style="color:var(--en,#56665a)">Auditors can't remove bias either. So, they built a discipline.</div>
+<div>Kiểm toán viên cũng không loại bỏ được thiên kiến. Vì vậy, họ xây dựng một kỷ luật nghề nghiệp.</div>
+<div style="color:var(--en,#56665a)">Questioning mind · Suspension of judgment · Search for evidence</div>
+<div>Tư duy hoài nghi · Tạm hoãn phán xét · Tìm kiếm bằng chứng</div>
+<div style="color:var(--en,#56665a)">Turned inward, it becomes a leadership tool.</div>
+<div>Khi hướng vào chính mình, nó trở thành một công cụ lãnh đạo.</div>
+</div>
+</section>
+
+<section id="s17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 17</span>
+<span style="color:#86958a">Your routine</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The 5-Step Bias Self-Audit</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Quy trình 5 bước tự rà soát thiên kiến</h3>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:5%;color:var(--ac,#2f6b45);font-weight:700">1</td><td style="padding:7px 8px;vertical-align:top;width:44%;color:var(--en,#56665a)"><b>Pause</b> — Is this System 1 talking? What's my time pressure?</td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Dừng lại</b> — Đây có phải Hệ thống 1 đang lên tiếng? Mình đang chịu áp lực thời gian ra sao?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">2</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)"><b>Evidence</b> — What supports my view? What would change my mind? Am I answering the question actually asked?</td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Bằng chứng</b> — Điều gì ủng hộ quan điểm của mình? Điều gì sẽ khiến mình đổi ý? Mình có đang trả lời đúng câu hỏi được đặt ra không?</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">3</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)"><b>Opposite</b> — Argue the other side for 60 seconds.</td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Phía đối lập</b> — Lập luận cho phía ngược lại trong 60 giây.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">4</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)"><b>Outside view</b> — What would a neutral colleague say?</td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Góc nhìn bên ngoài</b> — Một đồng nghiệp trung lập sẽ nói gì?</td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">5</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)"><b>Decide &amp; log</b> — Make the call; note your weak assumption.</td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Quyết định &amp; ghi lại</b> — Ra quyết định; ghi chú giả định yếu nhất của mình.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">Activity 2 · Table groups</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Audit the Algorithm</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Rà soát thuật toán</h3>
+<div style="color:var(--en,#56665a)"><b>The decision</b> — Priya, Product Engineer. Your AI assistant drafted her review – and recommends moving the critical Q4 module off her, to a senior engineer or to you, to protect the deadline. Confidence: HIGH</div>
+<div><b>Quyết định</b> — Priya, Product Engineer. Trợ lý AI của bạn đã soạn bản đánh giá của cô ấy – và đề xuất chuyển module quan trọng của quý 4 khỏi cô ấy, giao cho một kỹ sư cấp cao hoặc cho chính bạn, nhằm bảo vệ hạn chót. Mức độ tin cậy: CAO</div>
+<div style="color:var(--en,#56665a)"><b>1 · 4 min · alone</b> Read it. Privately rate: how likely are you to move this work off Priya?</div>
+<div><b>1 · 4 phút · làm một mình</b> Đọc tình huống. Tự chấm điểm riêng: khả năng bạn chuyển phần việc này khỏi Priya là bao nhiêu?</div>
+<div style="color:var(--en,#56665a)"><b>2 · 13 min · table discussion</b> Run the 5-step routine on the recommendation. Audit it like an auditor audits accounts. Note your table average rate before discussion.</div>
+<div><b>2 · 13 phút · thảo luận nhóm</b> Áp dụng quy trình 5 bước lên đề xuất đó. Rà soát nó như kiểm toán viên rà soát sổ sách. Ghi lại điểm trung bình của nhóm trước khi thảo luận.</div>
+<div style="color:var(--en,#56665a)"><b>3 · 4 min · re-rate</b> Rate again. Post your table's before/after on the flip chart.</div>
+<div><b>3 · 4 phút · chấm lại</b> Chấm điểm lần nữa. Dán kết quả trước/sau của nhóm lên bảng giấy.</div>
+</div>
+</section>
+
+<section id="s19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 19</span>
+<span style="color:#86958a">Debrief</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Four flaws</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bốn lỗ hổng</h3>
+
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:5%;color:var(--ac,#2f6b45);font-weight:700">1</td><td style="padding:7px 8px;vertical-align:top;width:44%;color:var(--en,#56665a)"><b>Visible ≠ valuable</b> — Slack counts and ticket rank stood in for performance.<br /><span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a">recency · availability</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Thấy được ≠ có giá trị</b> — Số tin nhắn Slack và thứ hạng ticket được dùng thay cho hiệu suất thật.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:5%;color:var(--ac,#2f6b45);font-weight:700">2</td><td style="padding:7px 8px;vertical-align:top;width:44%;color:var(--en,#56665a)"><b>One voice, echoed</b> — One reviewer, quoted once – replayed into “a well-established pattern”.<br /><span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a">single-source confirmation</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Một tiếng nói, được vang lại</b> — Một người đánh giá, được dẫn một lần – rồi phát lại thành “một khuôn mẫu đã được xác lập rõ”.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:5%;color:var(--ac,#2f6b45);font-weight:700">3</td><td style="padding:7px 8px;vertical-align:top;width:44%;color:var(--en,#56665a)"><b>The invisible leave</b> — Jan–Apr “zero contribution” was a maternity leave. Not in the AI's data.<br /><span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a">data artifact</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Kỳ nghỉ vô hình</b> — “Không đóng góp gì” từ tháng 1 đến tháng 4 thực chất là kỳ nghỉ thai sản. Dữ liệu của AI không có thông tin đó.</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:5%;color:var(--ac,#2f6b45);font-weight:700">4</td><td style="padding:7px 8px;vertical-align:top;width:44%;color:var(--en,#56665a)"><b>Fluent ≠ right</b> — “Confidence: HIGH” and decisive prose recruit System 1 trust.<br /><span style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a">automation bias</span></td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Trôi chảy ≠ đúng</b> — “Mức độ tin cậy: CAO” và lối viết dứt khoát khiến Hệ thống 1 tin ngay.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 20</span>
+<span style="color:#86958a">The question underneath</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">Suppose you reassign. Priya keeps her job. The deadline is protected. Nobody complains.</div>
+<div>Giả sử bạn chuyển việc. Priya vẫn giữ được công việc. Hạn chót được bảo vệ. Không ai phàn nàn.</div>
+<div style="color:var(--en,#56665a)">What did it cost – and when does that cost appear?</div>
+<div>Cái giá phải trả là gì – và cái giá đó xuất hiện khi nào?</div>
+<div style="color:var(--en,#56665a)">An unaudited judgment delivered with great conversation technique is still an unfair conversation.</div>
+<div>Một phán đoán chưa được rà soát, dù được truyền đạt bằng kỹ thuật trò chuyện xuất sắc, vẫn là một cuộc trò chuyện thiếu công bằng.</div>
+</div>
+</section>
+
+<section id="s21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 21</span>
+<span style="color:#86958a">Break</span>
+</div>
+<div style="float:right;width:56px;height:56px;margin:2px 0 10px 18px;background:#1b2a20;display:flex;align-items:center;justify-content:center"><img src="assets/t3/icon-break.png" alt="" style="width:34px;height:34px;object-fit:contain" /></div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Take a 15-Minute Break — Back at 11:00</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Nghỉ giải lao 15 phút — Quay lại lúc 11:00</h3>
+</div>
+</section>
+
+<section id="s22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 22</span>
+<span style="color:#86958a">Activity 3 · Tables, then pairs</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The Leak</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Sự rò rỉ</h3>
+<div style="color:var(--en,#56665a)">Bias doesn't stay in your head. It leaks into what you say, what you leave unsaid, and who you ask.</div>
+<div>Thiên kiến không nằm yên trong đầu bạn. Nó rò rỉ vào những gì bạn nói, những gì bạn không nói và cả việc bạn hỏi ai.</div>
+<div style="color:var(--en,#56665a)"><b>8 min · table</b> Lines managers say. Which bias produced it? What does the listener hear? Mark the two you hear most here.</div>
+<div><b>8 phút · nhóm bàn</b> Những câu quản lý hay nói. Thiên kiến nào tạo ra câu đó? Người nghe sẽ hiểu thế nào? Đánh dấu hai câu bạn nghe nhiều nhất ở đây.</div>
+<div style="color:var(--en,#56665a)"><b>5 min · table</b> Rewrite your two – same standard, same honesty, without the bias.</div>
+<div><b>5 phút · nhóm bàn</b> Viết lại hai câu đó – vẫn giữ nguyên chuẩn mực, vẫn thẳng thắn như vậy, nhưng không còn thiên kiến.</div>
+<div style="color:var(--en,#56665a)"><b>7 min · pairs</b> One sentence you actually said last month. Read it aloud. Your partner offers one rewrite.</div>
+<div><b>7 phút · làm theo cặp</b> Một câu bạn đã thực sự nói trong tháng trước. Đọc to lên. Người cùng cặp đề xuất một cách viết lại.</div>
+<div style="color:var(--en,#56665a)">Nothing leaves your pair unless you choose to share it.</div>
+<div>Không điều gì ra khỏi phạm vi cặp của bạn trừ khi bạn chủ động chia sẻ.</div>
+</div>
+</section>
+
+<section id="s23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 23</span>
+<span style="color:#86958a">The Leak · The six lines</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Which of these do you hear here?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bạn nghe thấy câu nào trong số này ở đây?</h3>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;width:5%;color:var(--ac,#2f6b45);font-weight:700">1</td><td style="padding:6px 8px;vertical-align:top;width:44%;color:var(--en,#56665a)">“Just send it to me, I'll fix it quickly.”</td><td style="padding:6px 0 6px 8px;vertical-align:top">“Cứ gửi cho tôi, tôi sửa nhanh thôi.”</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">2</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">“I already know what the problem is – we just need to execute.”</td><td style="padding:6px 0 6px 8px;vertical-align:top">“Tôi biết vấn đề là gì rồi – giờ chỉ cần làm thôi.”</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">3</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">“Let me review it before it goes out.” (every time, forever)</td><td style="padding:6px 0 6px 8px;vertical-align:top">“Để tôi xem lại trước khi gửi đi.” (lần nào cũng vậy, mãi mãi)</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">4</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">“She goes quiet in meetings – she’s probably not confident.”</td><td style="padding:6px 0 6px 8px;vertical-align:top">“Cô ấy im lặng trong các cuộc họp – chắc là thiếu tự tin.”</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">5</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">“Business never understands technical constraints.”</td><td style="padding:6px 0 6px 8px;vertical-align:top">“Bên kinh doanh chẳng bao giờ hiểu các ràng buộc kỹ thuật.”</td></tr>
+<tr><td style="padding:6px 8px 6px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">6</td><td style="padding:6px 8px;vertical-align:top;color:var(--en,#56665a)">“It's faster if I do it myself.”</td><td style="padding:6px 0 6px 8px;vertical-align:top">“Tôi tự làm thì nhanh hơn.”</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 24</span>
+<span style="color:#86958a">The Leak · Answers</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">The six lines, audited</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Sáu câu nói, đã được rà soát</h3>
+
+</div>
+<table style="margin-top:10px;font-size:11px;line-height:1.4">
+<thead>
+<tr style="border-bottom:1px solid #1b2a20">
+<th style="text-align:left;padding:5px 6px 5px 0;width:4%;font-size:10px;color:#86958a;font-weight:600">#</th>
+<th style="text-align:left;padding:5px 6px;width:24%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">The line<span> / Câu nói</span></th>
+<th style="text-align:left;padding:5px 6px;width:22%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">The bias underneath<span> / Thiên kiến bên dưới</span></th>
+<th style="text-align:left;padding:5px 6px;width:24%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">What the listener hears<span> / Người nghe hiểu là</span></th>
+<th style="text-align:left;padding:5px 6px;width:26%;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;font-weight:600">A rewrite that keeps the standard<span> / Cách nói lại vẫn giữ chuẩn mực</span></th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">1</td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"Just send it to me, I'll fix it quickly"</span><br /><span>“Cứ gửi cho tôi, tôi sửa nhanh thôi”</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Expert bias (quality-standard drift)</span><br /><span>Thiên kiến chuyên gia (chuẩn chất lượng bị đẩy lệch)</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"My work isn't good enough and I won't get better"</span><br /><span>“Việc của tôi không đủ tốt, và tôi sẽ không khá hơn”</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"Walk me through your approach – I'll flag the two riskiest parts and you fix them"</span><br /><span>“Hãy trình bày cách bạn định làm – tôi sẽ chỉ ra hai phần rủi ro nhất và bạn sửa”</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">2</td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">“I already know what the problem is – we just need to execute"</span><br /><span>“Tôi biết vấn đề là gì rồi – giờ chỉ cần làm thôi”</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Confirmation bias (jumping to how before what / why)</span><br /><span>Thiên kiến xác nhận (nhảy sang “làm thế nào” trước khi rõ “cái gì / vì sao”)</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"Don't bring me evidence. Don't tell me I'm solving the wrong problem"</span><br /><span>“Đừng mang bằng chứng đến. Đừng nói với tôi rằng tôi đang giải sai vấn đề”</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"Here's my hypothesis. What would prove me wrong?"</span><br /><span>“Đây là giả thuyết của tôi. Điều gì sẽ chứng minh tôi sai?”</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">3</td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"Let me review it before it goes out" (every time)</span><br /><span>“Để tôi xem lại trước khi gửi đi” (lần nào cũng vậy)</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Control of how rather than management of outputs</span><br /><span>Kiểm soát cách làm thay vì quản lý kết quả đầu ra</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"I am not trusted, and I never will be"</span><br /><span>“Tôi không được tin, và sẽ không bao giờ được tin”</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"Here's what 'done well' means for this. I'll review exceptions, not everything."</span><br /><span>“Đây là định nghĩa ‘làm tốt’ cho việc này. Tôi chỉ xem các trường hợp ngoại lệ, không xem tất cả.”</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">4</td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">“She goes quiet in meetings, she's probably not confident"</span><br /><span>“Cô ấy im lặng trong các cuộc họp, chắc là thiếu tự tin”</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Fundamental attribution error (single-signal reading)</span><br /><span>Lỗi quy gán cơ bản (đọc người qua một tín hiệu duy nhất)</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">(She never hears it; and that's the problem)</span><br /><span>(Cô ấy không bao giờ nghe được câu đó; và đó chính là vấn đề)</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"I've noticed you're quiet in design reviews; what makes it easier or harder to jump in?"</span><br /><span>“Tôi thấy bạn khá im lặng trong các buổi review thiết kế; điều gì làm bạn dễ hoặc khó lên tiếng hơn?”</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">5</td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"Business never understands technical constraints"</span><br /><span>“Bên kinh doanh chẳng bao giờ hiểu các ràng buộc kỹ thuật”</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Out-group stereotyping / curse of knowledge</span><br /><span>Định kiến với nhóm ngoài / lời nguyền tri thức</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"This manager has already decided we're the obstacle"</span><br /><span>“Người quản lý này đã kết luận rằng chúng tôi là vật cản”</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"What does Business measure? Which of our constraints changes their number?"</span><br /><span>“Bên kinh doanh đo lường bằng chỉ số nào? Ràng buộc nào của chúng ta làm thay đổi con số đó?”</span></td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 6px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">6</td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"It's faster if I do it myself"</span><br /><span>“Tôi tự làm thì nhanh hơn”</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">Self-serving attribution / short-horizon bias</span><br /><span>Quy gán vị kỷ / thiên kiến tầm nhìn ngắn</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"My growth is not part of the plan"</span><br /><span>“Sự phát triển của tôi không nằm trong kế hoạch”</span></td><td style="padding:7px 6px;vertical-align:top"><span style="color:var(--en,#56665a)">"It's faster this once. What does it cost me by Q4, and who should own this by then?"</span><br /><span>“Lần này thì nhanh hơn thật. Nhưng đến quý 4 nó khiến tôi trả giá gì, và khi đó ai nên là người phụ trách?”</span></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 25</span>
+<span style="color:#86958a">The Leak · Debrief</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Bias doesn't stay private.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thiên kiến không chỉ nằm riêng trong đầu bạn.</h3>
+<div style="color:var(--en,#56665a)">Your listener never hears the judgment – only the sentence.</div>
+<div>Người nghe không bao giờ nghe được phán đoán của bạn – họ chỉ nghe câu bạn nói.</div>
+<div style="color:var(--en,#56665a)">As a technical expert, your judgment was the product.</div>
+<div>Khi còn là chuyên gia kỹ thuật, phán đoán của bạn chính là sản phẩm.</div>
+<div style="color:var(--en,#56665a)">As a manager, your judgment is an input – what you say is the product.</div>
+<div>Khi làm quản lý, phán đoán chỉ là đầu vào – điều bạn nói ra mới là sản phẩm.</div>
+</div>
+</section>
+
+<section id="s26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 26</span>
+<span style="color:#86958a">Mini-input</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Tactics fit the audience – and the direction</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chiến thuật phải khớp với người nghe – và với hướng tác động</h3>
+<div style="color:var(--en,#56665a)">Rational persuasion, consultation and inspirational appeals beat pressure. Upward ≠ downward ≠ lateral. <span style="color:#86958a">Yukl &amp; Tracey, 1992</span></div>
+<div>Thuyết phục bằng lý lẽ, tham vấn và khơi gợi cảm hứng hiệu quả hơn gây áp lực. Tác động lên cấp trên ≠ xuống cấp dưới ≠ ngang cấp. <span style="color:#86958a">Yukl &amp; Tracey, 1992</span></div>
+<div style="color:var(--en,#56665a)">Trust = Ability · Benevolence · Integrity. Credibility is granted by the audience, never assumed. Audit it per relationship. <span style="color:#86958a">Mayer, Davis &amp; Schoorman, 1995</span></div>
+<div>Niềm tin = Năng lực · Thiện chí · Chính trực. Uy tín là thứ người nghe trao cho bạn, không bao giờ được mặc định là có. Hãy rà soát nó theo từng mối quan hệ. <span style="color:#86958a">Mayer, Davis &amp; Schoorman, 1995</span></div>
+<div style="color:var(--en,#56665a)">The bias to beat: “what convinces me will convince them.”</div>
+<div>Thiên kiến cần vượt qua: “điều thuyết phục được tôi thì cũng sẽ thuyết phục được họ.”</div>
+</div>
+</section>
+
+<section id="s27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 27</span>
+<span style="color:#86958a">Activity 4 · The Influence Lab (optional)</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)"><b>Round 1 · Pitch down — The Messy Migration</b><br />Assign a boring, high-difficulty task to a skeptical Gen Z developer – without ordering them. <i>Watch for: expert bias</i></div>
+<div><b>Vòng 1 · Thuyết phục xuống dưới — Cuộc di chuyển hệ thống rối rắm</b><br /><span>Giao một nhiệm vụ nhàm chán, độ khó cao cho một lập trình viên Gen Z đang hoài nghi – mà không ra lệnh. </span><i>Lưu ý: thiên kiến chuyên gia</i></div>
+<div style="color:var(--en,#56665a)"><b>Round 2 · Pitch up — The Bottleneck</b><br />Persuade a busy Department Head to lend you a senior designer for two weeks. <i>Watch for: overconfidence</i></div>
+<div><b>Vòng 2 · Thuyết phục lên trên — Điểm nghẽn</b><br /><span>Thuyết phục một Trưởng bộ phận đang rất bận cho bạn mượn một designer cấp cao trong hai tuần. </span><i>Lưu ý: sự tự tin thái quá (overconfidence)</i></div>
+<div style="color:var(--en,#56665a)">Read your role · 2' → Have the conversation · 6' → Observer names the bias · 4'. Observer watches the manager's bias.</div>
+<div>Đọc vai của bạn · 2 phút → Thực hiện cuộc trò chuyện · 6 phút → Người quan sát gọi tên thiên kiến · 4 phút. Người quan sát theo dõi thiên kiến của người quản lý.</div>
+</div>
+</section>
+
+<section id="s28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 28</span>
+<span style="color:#86958a">Closing</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Your Bias Audit Card</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thẻ rà soát thiên kiến của bạn</h3>
+</div>
+<table style="margin-top:10px;font-size:12px;line-height:1.45">
+<tbody>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;width:5%;color:var(--ac,#2f6b45);font-weight:700">1</td><td style="padding:7px 8px;vertical-align:top;width:44%;color:var(--en,#56665a)"><b>My expert bias</b> — from our table's bias map, the one that costs me most</td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Thiên kiến chuyên gia của tôi</b> — lấy từ bản đồ thiên kiến của nhóm, cái khiến tôi trả giá nhiều nhất</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">2</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)"><b>My audit trigger</b> — where I'll run the 5-step routine</td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Tín hiệu kích hoạt rà soát</b> — nơi tôi sẽ áp dụng quy trình 5 bước</td></tr>
+<tr style="border-bottom:1px solid #e6eee2"><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">3</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)"><b>My leaked line</b> — the sentence I'll stop saying – and what I'll say instead</td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Câu nói rò rỉ của tôi</b> — câu tôi sẽ ngừng nói – và câu tôi sẽ nói thay vào đó</td></tr>
+<tr><td style="padding:7px 8px 7px 0;vertical-align:top;color:var(--ac,#2f6b45);font-weight:700">4</td><td style="padding:7px 8px;vertical-align:top;color:var(--en,#56665a)"><b>Into this afternoon</b> — the bias to keep out of my next performance conversation</td><td style="padding:7px 0 7px 8px;vertical-align:top"><b>Mang sang buổi chiều</b> — thiên kiến cần giữ ngoài cuộc trao đổi hiệu suất tiếp theo của tôi</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 29</span>
+<span style="color:#86958a">Close · 10 minutes / individual</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<div style="color:var(--en,#56665a)">You were promoted because your judgment was better than most people's.</div>
+<div>Bạn được thăng chức vì phán đoán của bạn tốt hơn phần lớn mọi người.</div>
+<div style="color:var(--en,#56665a)">This morning asked you to audit it – before it becomes a decision about someone else, and before it becomes a sentence you can't take back.</div>
+<div>Buổi sáng nay yêu cầu bạn rà soát lại phán đoán đó – trước khi nó trở thành một quyết định về người khác, và trước khi nó trở thành một câu nói không thể rút lại.</div>
+<div style="color:var(--en,#56665a)"><i>“You've audited the judgment. This afternoon, you practise the conversation.”</i></div>
+<div><i>“Bạn đã rà soát phán đoán. Chiều nay, bạn luyện tập cuộc trò chuyện.”</i></div>
+</div>
+</section>
+
+<section id="s30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 30</span>
+<span style="color:#86958a">References</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">References</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tài liệu tham khảo</h3>
+</div>
+<ul style="margin:10px 0 0;padding-left:18px;font-size:11.5px;line-height:1.55;color:var(--en,#56665a)">
+<li style="margin:0 0 5px">Kahneman, D. and Egan, P., 2011. <i>Thinking, fast and slow</i> (Vol. 1, No. 0, pp. 1-5). New York: Farrar, straus and Giroux.</li>
+<li style="margin:0 0 5px">Yukl, G. and Tracey, J.B., 1992. Consequences of influence tactics used with subordinates, peers, and the boss. <i>Journal of Applied psychology</i>, 77(4), p.525.</li>
+<li style="margin:0 0 5px">Mayer, R.C., Davis, J.H. and Schoorman, F.D., 1995. An integrative model of organizational trust. <i>Academy of management review</i>, 20(3), pp.709-734.</li>
+<li style="margin:0">Manoogian III, J. (2016) <i>The Cognitive Bias Codex – 180+ biases, designed by John Manoogian III (jm3)</i>. [Online image]. (Accessed: 19 August 2026).</li>
+</ul>
+</section>
+
+<section id="s31" style="margin:0 0 10px">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 31</span>
+<span style="color:#86958a">Close</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Thank you! — Ready for what’s next</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xin cảm ơn! — Sẵn sàng cho chặng tiếp theo</h3>
+<div style="color:var(--en,#56665a)">Position title: Senior program manager | Lecturer Entrepreneurship – TBS – RMIT VN<br />Name: Thu, Nguyen Thi Minh<br />Email address: thu.nguyenthiminh@rmit.edu.vn</div>
+<div><span>Chức danh: Senior Program Manager | Giảng viên ngành Khởi nghiệp – TBS – RMIT VN</span><br /><span>Họ tên: Nguyễn Thị Minh Thu</span><br />Email: thu.nguyenthiminh@rmit.edu.vn</div>
+</div>
+</section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 3 · Audit Mindset &amp; Biases</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t3.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Chủ đề 2: Tư duy kiểm toán & thiên kiến","lv":0,"en":"Topic 2: Audit Mindset & Biases","vi":"Chủ đề 2: Tư duy kiểm toán & thiên kiến"},
+  {"id":"s02","num":"02","label":"Giới thiệu giảng viên — TS. Thu Nguyễn","lv":0,"en":"Meet the Facilitator — Dr Thu Nguyen","vi":"Giới thiệu giảng viên — TS. Thu Nguyễn"},
+  {"id":"s03","num":"03","label":"Chương trình — Kết thúc buổi học, bạn sẽ…","lv":0,"en":"Agenda — At the end of this session, you will…","vi":"Chương trình — Kết thúc buổi học, bạn sẽ…"},
+  {"id":"s04","num":"04","label":"Hãy đưa ra một mức THẤP và một mức CAO","lv":0,"en":"Give me a LOW and a HIGH","vi":"Hãy đưa ra một mức THẤP và một mức CAO"},
+  {"id":"s05","num":"05","label":"Hai câu hỏi về Zalo","lv":0,"en":"Two questions about Zalo","vi":"Hai câu hỏi về Zalo"},
+  {"id":"s06","num":"06","label":"And now","lv":0,"en":"And now","vi":""},
+  {"id":"s07","num":"07","label":"Bạn đã tuyên bố là 90%.","lv":0,"en":"You claimed 90%.","vi":"Bạn đã tuyên bố là 90%."},
+  {"id":"s08","num":"08","label":"Alex, một kỹ sư bậc trung","lv":0,"en":"Alex, a mid-level engineer","vi":"Alex, một kỹ sư bậc trung"},
+  {"id":"s09","num":"09","label":"Cùng một kỹ sư. Hai mức điểm","lv":0,"en":"Same engineer. Two ratings","vi":"Cùng một kỹ sư. Hai mức điểm"},
+  {"id":"s10","num":"10","label":"Bắt đầu bản đồ thiên kiến của nhóm","lv":0,"en":"Start your bias map","vi":"Bắt đầu bản đồ thiên kiến của nhóm"},
+  {"id":"s11","num":"11","label":"—","lv":0,"en":"—","vi":""},
+  {"id":"s12","num":"12","label":"Hai hệ thống, một bộ não","lv":0,"en":"Two systems, one brain","vi":"Hai hệ thống, một bộ não"},
+  {"id":"s13","num":"13","label":"Trả lời trong 30 giây","lv":0,"en":"Answer in 30 second","vi":"Trả lời trong 30 giây"},
+  {"id":"s14","num":"14","label":"Thiên kiến chuyên gia (expert bias)","lv":0,"en":"Expert bias","vi":"Thiên kiến chuyên gia (expert bias)"},
+  {"id":"s15","num":"15","label":"—","lv":0,"en":"—","vi":""},
+  {"id":"s16","num":"16","label":"Tư duy kiểm toán (audit mindset)","lv":0,"en":"The Audit Mindset","vi":"Tư duy kiểm toán (audit mindset)"},
+  {"id":"s17","num":"17","label":"Quy trình 5 bước tự rà soát thiên kiến","lv":0,"en":"The 5-Step Bias Self-Audit","vi":"Quy trình 5 bước tự rà soát thiên kiến"},
+  {"id":"s18","num":"18","label":"Rà soát thuật toán","lv":0,"en":"Audit the Algorithm","vi":"Rà soát thuật toán"},
+  {"id":"s19","num":"19","label":"Bốn lỗ hổng","lv":0,"en":"Four flaws","vi":"Bốn lỗ hổng"},
+  {"id":"s20","num":"20","label":"The question underneath","lv":0,"en":"The question underneath","vi":""},
+  {"id":"s21","num":"21","label":"Nghỉ giải lao 15 phút — Quay lại lúc 11:00","lv":0,"en":"Take a 15-Minute Break — Back at 11:00","vi":"Nghỉ giải lao 15 phút — Quay lại lúc 11:00"},
+  {"id":"s22","num":"22","label":"Sự rò rỉ","lv":0,"en":"The Leak","vi":"Sự rò rỉ"},
+  {"id":"s23","num":"23","label":"Bạn nghe thấy câu nào trong số này ở đây?","lv":0,"en":"Which of these do you hear here?","vi":"Bạn nghe thấy câu nào trong số này ở đây?"},
+  {"id":"s24","num":"24","label":"Sáu câu nói, đã được rà soát","lv":0,"en":"The six lines, audited","vi":"Sáu câu nói, đã được rà soát"},
+  {"id":"s25","num":"25","label":"Thiên kiến không chỉ nằm riêng trong đầu bạn.","lv":0,"en":"Bias doesn't stay private.","vi":"Thiên kiến không chỉ nằm riêng trong đầu bạn."},
+  {"id":"s26","num":"26","label":"Chiến thuật phải khớp với người nghe – và với hướng tác động","lv":0,"en":"Tactics fit the audience – and the direction","vi":"Chiến thuật phải khớp với người nghe – và với hướng tác động"},
+  {"id":"s27","num":"27","label":"Activity 4 · The Influence Lab (optional)","lv":0,"en":"Activity 4 · The Influence Lab (optional)","vi":""},
+  {"id":"s28","num":"28","label":"Thẻ rà soát thiên kiến của bạn","lv":0,"en":"Your Bias Audit Card","vi":"Thẻ rà soát thiên kiến của bạn"},
+  {"id":"s29","num":"29","label":"Close · 10 minutes / individual","lv":0,"en":"Close · 10 minutes / individual","vi":""},
+  {"id":"s30","num":"30","label":"Tài liệu tham khảo","lv":0,"en":"References","vi":"Tài liệu tham khảo"},
+  {"id":"s31","num":"31","label":"Xin cảm ơn! — Sẵn sàng cho chặng tiếp theo","lv":0,"en":"Thank you! — Ready for what’s next","vi":"Xin cảm ơn! — Sẵn sàng cho chặng tiếp theo"}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? TH.aside : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t3.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t3.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t3.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t3.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>
