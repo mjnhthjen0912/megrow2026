@@ -21,6 +21,9 @@
   window.LT_header = (t) => t.img
     ? 'linear-gradient(90deg,' + t.bar.bg + 'f2 0%,' + t.bar.bg + 'dd 55%,' + t.bar.bg + 'c8 100%),url(' + U(t.img, 1600) + ') center 40%/cover'
     : t.bar.bg;
+  window.LT_aside = (t) => t.img
+    ? 'linear-gradient(180deg,' + t.aside + 'd9 0%,' + t.aside + 'c4 100%),url(' + U(t.img, 900) + ') center 40%/cover'
+    : 'linear-gradient(180deg,' + t.tint[0] + '1f 0%,' + t.tint[1] + '14 100%),' + t.aside;
   window.LT_hero = (t) => t.img
     ? 'linear-gradient(100deg,' + t.tint[0] + 'e6 0%,' + t.tint[0] + 'b0 45%,' + t.tint[1] + '40 100%),url(' + U(t.img, 1800) + ') center 45%/cover'
     : 'linear-gradient(135deg,' + t.tint[0] + ' 0%,' + t.tint[1] + ' 100%)';

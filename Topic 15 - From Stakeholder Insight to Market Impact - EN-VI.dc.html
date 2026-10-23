@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<script src="./themes.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+body{margin:0;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#1b2a20;background:#f7faf4}
+a{color:#2f6b45}
+a:hover{color:#1f4d31}
+table{border-collapse:collapse;width:100%}
+::highlight(dcq){background-color:#f6e2a0;color:#1b2a20}
+::highlight(dcqc){background-color:#e8a23a;color:#1b2a20}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
+<div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 15 · Anh – Việt</span>
+<span style="flex:1"></span>
+<a href="{{ slideHref }}" target="_blank" rel="noopener" onClick="{{ slideClick }}" title="{{ slideTitle }}" aria-label="Mở slide gốc" style="flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border:1px solid #c4d2c1;background:#fff;font-size:11px;color:#1b2a20;text-decoration:none;cursor:pointer;opacity:{{ slideOp }}">↗</a>
+<button onClick="{{ toggle }}" style="align-items:center;height:32px;padding:0 12px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;display:{{ menuDisp }}">{{ tocLabel }}</button>
+</div>
+<div style="display:{{ titleDisp }}">
+<div style="font-family:Newsreader,serif;font-weight:600;font-size:20px;line-height:1.2;margin-top:2px;text-wrap:pretty">From Stakeholder Insight to Market Impact</div>
+<div style="font-size:12px;color:#68786b;margin-top:4px;line-height:1.4">Từ thấu hiểu các bên liên quan đến tác động thị trường</div>
+</div>
+</div>
+<div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #e1e9dd">
+<div style="display:flex;align-items:center;border:1px solid #c4d2c1;background:#fff;height:38px;box-sizing:border-box">
+<input ref="{{ inputRef }}" type="text" value="{{ q }}" onChange="{{ onChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Tìm trong tài liệu" aria-label="Tìm trong tài liệu" style="flex:1;min-width:0;height:100%;border:0;outline:none;padding:0 10px;font:inherit;font-size:14px;background:transparent;color:#1b2a20" />
+<sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clear }}" aria-label="Xoá" style="flex:none;width:34px;height:100%;border:0;background:transparent;font-size:18px;color:#68786b;cursor:pointer">×</button></sc-if>
+<sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><span style="flex:none;margin-right:8px;font-size:11px;color:#86958a;border:1px solid #d7e1d3;padding:1px 6px">/</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:6px;min-height:30px">
+<span style="flex:1;font-size:12px;color:#56665a;font-variant-numeric:tabular-nums">{{ status }}</span>
+<button onClick="{{ prev }}" aria-label="Kết quả trước" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↑</button>
+<button onClick="{{ next }}" aria-label="Kết quả tiếp" style="width:32px;height:30px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:13px;color:#1b2a20;cursor:pointer">↓</button>
+</div>
+</div>
+<nav style="flex:1;min-height:0;overflow-y:auto;padding:12px 10px 28px;display:{{ tocDisp }};max-height:{{ tocMaxH }}">
+<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#86958a;padding:2px 10px 8px">Mục lục</div>
+<sc-for list="{{ toc }}" as="item" hint-placeholder-count="20">
+<a href="{{ item.href }}" onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" onMouseLeave="{{ hideTip }}" style="display:flex;align-items:baseline;gap:10px;padding:6px 10px;text-decoration:none;font-size:13px;line-height:1.4;border-left:2px solid transparent;padding-left:{{ item.pl }};color:{{ item.color }};background:{{ item.bg }};font-weight:{{ item.fw }};border-left-color:{{ item.bar }}">
+<span style="flex:none;width:22px;font-size:10.5px;letter-spacing:.04em;color:#86958a;font-weight:400;font-variant-numeric:tabular-nums">{{ item.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.en }}</span><sc-if value="{{ item.hasVi }}" hint-placeholder-val="{{ true }}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:400;color:#86958a">{{ item.vi }}</span></sc-if></span>
+<sc-if value="{{ item.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;background:#f6e2a0;color:#1b2a20;font-variant-numeric:tabular-nums">{{ item.count }}</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</aside>
+<sc-if value="{{ tipOn }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;z-index:50;pointer-events:none;max-width:320px;padding:8px 11px;background:#1b2a20;color:#fff;font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18);left:{{ tipX }};top:{{ tipY }}"><div>{{ tipEn }}</div><sc-if value="{{ tipHasVi }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:11.5px;color:#bccbbb">{{ tipVi }}</div></sc-if></div></sc-if>
+<main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
+<div style="max-width:1100px;margin:0 auto">
+<div style="{{ vars }}">
+<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
+<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 15: Từ thấu hiểu các bên liên quan đến tác động thị trường</h1>
+<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">From Stakeholder Insight to Market Impact — bản đối chiếu Anh – Việt</p>
+<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">TS. Nguyễn Phượng · 31 slide</p>
+</div>
+
+<div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
+<p style="margin:0 0 8px"><b style="color:var(--ac,#2f6b45)">Quy ước của bản dịch.</b> Mỗi slide là một khối: cột bên trái là nguyên văn tiếng Anh (màu xám), cột bên phải là bản tiếng Việt (màu đen). Nội dung được dịch sát theo từng slide, không lược bỏ. Các hình có cấu trúc (chương trình, sơ đồ ba vòng tròn, các bước, bảng hành trình, ma trận sáng tạo) được dựng lại trong khung viền theo bố cục slide gốc. Khẩu hiệu “Ready for what’s next” và logo RMIT lặp lại ở chân mọi slide nên không nhắc lại. Số slide theo thứ tự trang của file PDF.</p>
+<p style="margin:0 0 8px">Phần mô tả hình ảnh và các ghi chú về slide gốc được ghi bằng chữ nghiêng màu xám. Các khung “Giải thích thêm” do bản dịch bổ sung, không có trên slide gốc. Hướng dẫn chi tiết cho các hoạt động nhóm và trò chơi tư duy do giảng viên đưa ra trên lớp, không có trong file PDF.</p>
+<p style="margin:0">Thuật ngữ: <i>stakeholder</i> là “bên liên quan”; <i>pain point</i> là “điểm đau”; <i>latent pain point</i> là “điểm đau tiềm ẩn”; <i>gain</i> là “điểm lợi”; <i>value break</i> là “điểm gãy giá trị”; <i>touch point</i> là “điểm chạm”; <i>Stakeholder Journey Map (SJM)</i> là “bản đồ hành trình của các bên liên quan”; <i>Design Thinking</i> là “tư duy thiết kế”; <i>divergent thinking</i> là “tư duy phân kỳ”; <i>Systematic Inventive Thinking (SIT)</i> là “tư duy sáng tạo có hệ thống”; <i>Creative Matrix</i> là “ma trận sáng tạo”. Ba tiêu chí: <i>Desirability</i> – “Mong muốn”, <i>Feasibility</i> – “Khả thi”, <i>Viability</i> – “Bền vững”. Năm công cụ SIT: <i>Task Unification</i> – “Hợp nhất nhiệm vụ”, <i>Subtraction</i> – “Loại bỏ”, <i>Division</i> – “Phân chia”, <i>Multiplication</i> – “Nhân bản”, <i>Attribute Dependency</i> – “Phụ thuộc thuộc tính”.</p>
+</div>
+
+<section id="s01" data-screen-label="01" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 01</span>
+<span style="color:#86958a">Title</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">From Stakeholder Insight to Market Impact</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Từ thấu hiểu các bên liên quan đến tác động thị trường</h3>
+<div style="color:var(--en,#56665a)">Dr. Phuong Nguyen</div>
+<div>TS. Nguyễn Phượng</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide bìa của chương trình me.grow (RMIT University Vietnam, Saigon South Campus), có logo RMIT và Zalo.</i></p></section>
+<section id="s02" data-screen-label="02" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 02</span>
+<span style="color:#86958a">Lecturer</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Dr. Phượng Nguyễn</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">TS. Nguyễn Phượng</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>15 years of working experience in Europe &amp; Asia.</li><li>Teach executive and postgraduate courses in Thailand, India &amp; Vietnam.</li><li>Former UN officer in HCMC, Vietnam and London, UK.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>15 năm kinh nghiệm làm việc tại châu Âu và châu Á.</li><li>Giảng dạy các khoá học dành cho lãnh đạo và sau đại học tại Thái Lan, Ấn Độ và Việt Nam.</li><li>Từng là cán bộ Liên Hợp Quốc tại TP. Hồ Chí Minh (Việt Nam) và London (Anh).</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm ảnh chân dung giảng viên và mã QR dẫn đến hồ sơ LinkedIn “Nguyen Q. Phuong – educator in higher education”.</i></p></section>
+<section id="s03" data-screen-label="03" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 03</span>
+<span style="color:#86958a">Agenda</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Agenda</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Chương trình</h3>
+
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px"><div style="border:1px solid #dae4d6;padding:12px;display:flex;flex-direction:column;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--ac,#2f6b45);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center">1</div><div style="line-height:1.35"><div style="color:var(--en,#56665a);font-weight:700">Divergent Thinking</div><div style="font-weight:700">Tư duy phân kỳ</div></div><div style="border-top:1px dotted #9fb8a2;padding-top:6px;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Generating ideas</div><div>Tạo ý tưởng</div></div></div><div style="border:1px solid #dae4d6;padding:12px;display:flex;flex-direction:column;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--ac,#2f6b45);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center">2</div><div style="line-height:1.35"><div style="color:var(--en,#56665a);font-weight:700">Stakeholder Journey Map</div><div style="font-weight:700">Bản đồ hành trình của các bên liên quan</div></div><div style="border-top:1px dotted #9fb8a2;padding-top:6px;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Developing Empathy</div><div>Phát triển sự thấu cảm</div></div></div><div style="border:1px solid #dae4d6;padding:12px;display:flex;flex-direction:column;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--ac,#2f6b45);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center">3</div><div style="line-height:1.35"><div style="color:var(--en,#56665a);font-weight:700">Stakeholder Pain Points</div><div style="font-weight:700">Điểm đau của các bên liên quan</div></div><div style="border-top:1px dotted #9fb8a2;padding-top:6px;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Finding where value breaks</div><div>Tìm ra nơi giá trị bị gãy</div></div></div><div style="border:1px solid #dae4d6;padding:12px;display:flex;flex-direction:column;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--ac,#2f6b45);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center">4</div><div style="line-height:1.35"><div style="color:var(--en,#56665a);font-weight:700">Systematic Inventive Thinking (SIT)</div><div style="font-weight:700">Tư duy sáng tạo có hệ thống (SIT)</div></div><div style="border-top:1px dotted #9fb8a2;padding-top:6px;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Generating structured ideas</div><div>Tạo ý tưởng có cấu trúc</div></div></div></div></div><p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide xếp bốn mục đánh số 1–4, mỗi mục có một dòng mô tả. Thứ tự trong khung được dựng lại theo lớp chữ của slide và trình tự buổi học.</i></p></section>
+<section id="s04" data-screen-label="04" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 04</span>
+<span style="color:#86958a">Activity 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity 1: divergent thinking</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động 1: tư duy phân kỳ</h3>
+<div style="color:var(--en,#56665a)"><b>Teamwork</b></div>
+<div><b>Làm việc nhóm</b></div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Instructions will be given by the lecturer.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Giảng viên sẽ hướng dẫn trên lớp.</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm ảnh toà nhà RMIT.</i></p></section>
+<section id="s05" data-screen-label="05" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 05</span>
+<span style="color:#86958a">Activity 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Activity 2: group discussion</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Hoạt động 2: thảo luận nhóm</h3>
+<div style="color:var(--en,#56665a)"><b>Teamwork</b></div>
+<div><b>Làm việc nhóm</b></div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Instructions will be given by the lecturer.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Giảng viên sẽ hướng dẫn trên lớp.</li></ul></div>
+</div>
+</section>
+<section id="s06" data-screen-label="06" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 06</span>
+<span style="color:#86958a">Innovation</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">What is Innovation?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Đổi mới sáng tạo là gì?</h3>
+<div style="color:var(--en,#56665a)">Innovation is a product, service, process or business model that has 2 characteristics:<ul style="margin:0;padding-left:18px"><li>Novel</li><li>Useful</li></ul></div>
+<div>Đổi mới sáng tạo là một sản phẩm, dịch vụ, quy trình hoặc mô hình kinh doanh có 2 đặc điểm:<ul style="margin:0;padding-left:18px"><li>Mới lạ</li><li>Hữu ích</li></ul></div>
+<div style="color:var(--en,#56665a)">A broader definition of usefulness considers desirability, feasibility and viability.</div>
+<div>Theo định nghĩa rộng hơn, tính hữu ích xét đến ba yếu tố: được mong muốn, khả thi và bền vững về kinh doanh.</div>
+</div>
+</section>
+<section id="s07" data-screen-label="07" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 07</span>
+<span style="color:#86958a">Useful innovation</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">What makes an innovation useful?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điều gì làm cho một đổi mới sáng tạo trở nên hữu ích?</h3>
+<div style="color:var(--en,#56665a)"><b>Desirability:</b><ul style="margin:0;padding-left:18px"><li>Is there a market for this innovation?</li><li>Will people want and need it?</li></ul></div>
+<div><b>Mong muốn (Desirability):</b><ul style="margin:0;padding-left:18px"><li>Có thị trường cho đổi mới sáng tạo này không?</li><li>Mọi người có muốn và cần nó không?</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Feasibility:</b><ul style="margin:0;padding-left:18px"><li>Is this innovation functionally possible?</li><li>Is this innovation technically possible?</li><li>Will laws and regulations allow it?</li></ul></div>
+<div><b>Khả thi (Feasibility):</b><ul style="margin:0;padding-left:18px"><li>Đổi mới sáng tạo này có thực hiện được về mặt chức năng không?</li><li>Đổi mới sáng tạo này có thực hiện được về mặt kỹ thuật không?</li><li>Luật pháp và quy định có cho phép không?</li></ul></div>
+<div style="color:var(--en,#56665a)"><b>Viability:</b><ul style="margin:0;padding-left:18px"><li>Can we offer this product profitably?</li><li>Can we produce/deliver this innovation over a long period of time (financially sustainable)?</li></ul></div>
+<div><b>Bền vững (Viability):</b><ul style="margin:0;padding-left:18px"><li>Chúng ta có thể cung cấp sản phẩm này mà vẫn có lãi không?</li><li>Chúng ta có thể sản xuất/cung cấp đổi mới sáng tạo này trong thời gian dài không (bền vững về tài chính)?</li></ul></div>
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="position:relative;width:min(100%,420px);aspect-ratio:1/0.92;margin:0 auto"><div style="position:absolute;left:21%;top:0;width:58%;aspect-ratio:1;border-radius:50%;background:#1d4fb81f;border:1.5px solid #1d4fb8;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:17% 12% 0;text-align:center;line-height:1.3"><div style="font-weight:700;letter-spacing:.04em;color:#1d4fb8;font-size:13px">DESIRABILITY</div><div style="font-weight:700;font-size:13px">MONG MUỐN</div></div><div style="position:absolute;left:0;top:37%;width:58%;aspect-ratio:1;border-radius:50%;background:#0f73721f;border:1.5px solid #0f7372;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 12% 15%;text-align:center;line-height:1.3"><div style="font-weight:700;letter-spacing:.04em;color:#0f7372;font-size:13px">FEASIBILITY</div><div style="font-weight:700;font-size:13px">KHẢ THI</div></div><div style="position:absolute;left:42%;top:37%;width:58%;aspect-ratio:1;border-radius:50%;background:#b856001f;border:1.5px solid #b85600;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 12% 15%;text-align:center;line-height:1.3"><div style="font-weight:700;letter-spacing:.04em;color:#b85600;font-size:13px">VIABILITY</div><div style="font-weight:700;font-size:13px">BỀN VỮNG</div></div></div></div><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Giải thích thêm</b></p><p style="margin:0 0 6px">Ba vòng tròn là ba câu hỏi mà một ý tưởng phải vượt qua: khách hàng có muốn không (<b>Mong muốn</b>), chúng ta có làm được không (<b>Khả thi</b>), và làm có lãi lâu dài không (<b>Bền vững</b>). Ý tưởng đáng theo đuổi nằm ở vùng giao của cả ba.</p><p style="margin:0">Các phần sau của buổi học bắt đầu từ vòng <b>Mong muốn</b>: bản đồ hành trình và điểm đau giúp xác định điều các bên liên quan thực sự cần, trước khi xét đến tính khả thi và bền vững.</p></div></section>
+<section id="s08" data-screen-label="08" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 08</span>
+<span style="color:#86958a">Design Thinking</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Ok, so we need to innovate…</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Vậy là chúng ta cần đổi mới sáng tạo…</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>What options are out there?</li><li>What is Design Thinking and why should you care about it?</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Có những lựa chọn nào?</li><li>Tư duy thiết kế (Design Thinking) là gì và vì sao bạn nên quan tâm?</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm ảnh một sinh viên trong khuôn viên RMIT.</i></p></section>
+<section id="s09" data-screen-label="09" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 09</span>
+<span style="color:#86958a">Design Thinking</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">How is Design Thinking implemented when tackling business challenges?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tư duy thiết kế được triển khai thế nào khi giải quyết các thách thức kinh doanh?</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Slide chỉ có tiêu đề; nội dung được trình bày trên lớp.</i></p></section>
+<section id="s10" data-screen-label="10" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 10</span>
+<span style="color:#86958a">Pain points</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Customer’s Pain Point?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điểm đau của khách hàng?</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Pain Points are moments in time when a consumer experiences frustration, difficulty or uncertainty.</li><li>Opposite of Pain Point is Gain.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Điểm đau (Pain Point) là những thời điểm người tiêu dùng cảm thấy bực bội, gặp khó khăn hoặc không chắc chắn.</li><li>Ngược lại với Điểm đau là Điểm lợi (Gain).</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm ảnh chiếc chuông gọi phục vụ trên quầy lễ tân.</i></p></section>
+<section id="s11" data-screen-label="11" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 11</span>
+<span style="color:#86958a">Latent pain points</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Pain points &amp; latent pain points</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Điểm đau &amp; điểm đau tiềm ẩn</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li><b>Explicit Pain Points</b> are those which the customer/stakeholder can easily describe.</li><li><b>Customer/stakeholder’s Latent Pain Points:</b> are hidden from their own awareness on how the experience could be better.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li><b>Điểm đau hiển hiện</b> là những điểm đau mà khách hàng/bên liên quan có thể dễ dàng mô tả.</li><li><b>Điểm đau tiềm ẩn của khách hàng/bên liên quan:</b> là những điều nằm ngoài nhận thức của chính họ về việc trải nghiệm có thể tốt hơn như thế nào.</li></ul></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm ảnh một hình nhân gỗ màu cam đứng giữa các hình nhân màu trắng.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Giải thích thêm</b></p><p style="margin:0">Điểm đau tiềm ẩn không xuất hiện trong khảo sát hay phỏng vấn trực tiếp, vì khách hàng đã quen với trải nghiệm hiện tại. Chúng thường lộ ra khi quan sát họ làm gì ở từng bước, và đó là vai trò của bản đồ hành trình ở các slide 13–17.</p></div></section>
+<section id="s12" data-screen-label="12" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 12</span>
+<span style="color:#86958a">Menti</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Menti</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Menti</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>QR code will be given on the day.</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Mã QR sẽ được cung cấp vào ngày học.</li></ul></div>
+</div>
+</section>
+<section id="s13" data-screen-label="13" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 13</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Stakeholder Journey Maps (SJM)</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bản đồ hành trình của các bên liên quan (SJM)</h3>
+
+</div>
+</section>
+<section id="s14" data-screen-label="14" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 14</span>
+<span style="color:#86958a">SJM</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Stakeholder Journey Map</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bản đồ hành trình của các bên liên quan</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Help you collect and organise what you know</li><li>Are about knowing what your customers/stakeholders do and why they do it</li><li>Are also about identifying pain points and gains</li><li>Are representations of a customer/stakeholder’s experience as they encounter a problem or interact with a product</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Giúp bạn thu thập và sắp xếp những gì mình biết</li><li>Là việc hiểu khách hàng/các bên liên quan của bạn làm gì và vì sao họ làm vậy</li><li>Cũng là việc xác định điểm đau và điểm lợi</li><li>Là hình ảnh thể hiện trải nghiệm của khách hàng/bên liên quan khi họ gặp một vấn đề hoặc tương tác với một sản phẩm</li></ul></div>
+</div>
+</section>
+<section id="s15" data-screen-label="15" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 15</span>
+<span style="color:#86958a">How to map</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Journey map: how?</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bản đồ hành trình: thực hiện thế nào?</h3>
+
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="display:flex;flex-direction:column;gap:6px"><div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;border:1px solid #dae4d6;padding:7px 10px"><div style="width:26px;height:26px;border-radius:50%;background:var(--ac,#2f6b45);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center">1</div><div style="line-height:1.4"><div style="color:var(--en,#56665a)">Put yourself in the mind of the user</div><div>Đặt mình vào suy nghĩ của người dùng</div></div></div><div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;border:1px solid #dae4d6;padding:7px 10px"><div style="width:26px;height:26px;border-radius:50%;background:var(--ac,#2f6b45);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center">2</div><div style="line-height:1.4"><div style="color:var(--en,#56665a)">Define where the journey begins and ends</div><div>Xác định hành trình bắt đầu và kết thúc ở đâu</div></div></div><div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;border:1px solid #dae4d6;padding:7px 10px"><div style="width:26px;height:26px;border-radius:50%;background:var(--ac,#2f6b45);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center">3</div><div style="line-height:1.4"><div style="color:var(--en,#56665a)">Define the intermediate phases</div><div>Xác định các giai đoạn ở giữa</div></div></div><div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;border:1px solid #dae4d6;padding:7px 10px"><div style="width:26px;height:26px;border-radius:50%;background:var(--ac,#2f6b45);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center">4</div><div style="line-height:1.4"><div style="color:var(--en,#56665a)">How are we interacting with the user?</div><div>Chúng ta đang tương tác với người dùng như thế nào?</div></div></div><div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;border:1px solid #dae4d6;padding:7px 10px"><div style="width:26px;height:26px;border-radius:50%;background:var(--ac,#2f6b45);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center">5</div><div style="line-height:1.4"><div style="color:var(--en,#56665a)">Define how the user experiments each stage</div><div>Xác định người dùng trải nghiệm từng giai đoạn ra sao</div></div></div><div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;border:1px solid #dae4d6;padding:7px 10px"><div style="width:26px;height:26px;border-radius:50%;background:var(--ac,#2f6b45);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center">6</div><div style="line-height:1.4"><div style="color:var(--en,#56665a)">Measure time and/or define KPIs (optional)</div><div>Đo thời gian và/hoặc xác định KPI (không bắt buộc)</div></div></div><div style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;border:1px solid #dae4d6;padding:7px 10px"><div style="width:26px;height:26px;border-radius:50%;background:var(--ac,#2f6b45);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center">7</div><div style="line-height:1.4"><div style="color:var(--en,#56665a)">Stretch backwards and forwards</div><div>Mở rộng hành trình về phía trước và phía sau</div></div></div></div></div><p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm ảnh hai bàn tay căng sợi chỉ đỏ thành nhiều đường đan chéo.</i></p></section>
+<section id="s16" data-screen-label="16" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 16</span>
+<span style="color:#86958a">Journey map example</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Customer Journey map: example</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Bản đồ hành trình khách hàng: ví dụ</h3>
+
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="overflow-x:auto"><table style="min-width:640px;table-layout:fixed"><thead><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;width:19%;background:var(--ac,#2f6b45);color:#fff;text-align:left"><div style="font-weight:700">Stage</div><div style="font-weight:600">Giai đoạn</div></th><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:var(--ac,#2f6b45);color:#fff;text-align:left"><div style="font-weight:700">Aware</div><div style="font-weight:600">Nhận biết</div></th><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:var(--ac,#2f6b45);color:#fff;text-align:left"><div style="font-weight:700">Consider</div><div style="font-weight:600">Cân nhắc</div></th><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:var(--ac,#2f6b45);color:#fff;text-align:left"><div style="font-weight:700">Buy</div><div style="font-weight:600">Mua</div></th><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:var(--ac,#2f6b45);color:#fff;text-align:left"><div style="font-weight:700">Use</div><div style="font-weight:600">Sử dụng</div></th><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:var(--ac,#2f6b45);color:#fff;text-align:left"><div style="font-weight:700">Maintain</div><div style="font-weight:600">Duy trì</div></th></tr></thead><tbody><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;background:#eef4ea"><div style="color:var(--en,#56665a);font-weight:700">Customer activities</div><div style="margin-top:2px;font-weight:700">Hoạt động của khách hàng</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Feels traders are charging too high</div><div style="margin-top:2px">Cảm thấy thương lái tính giá quá cao</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Asks neighbours<br />Looks for options in market</div><div style="margin-top:2px">Hỏi hàng xóm<br />Tìm các lựa chọn trên thị trường</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Goes to Apps Store<br />Looks for App<br />Downloads app in Apple Store</div><div style="margin-top:2px">Vào kho ứng dụng<br />Tìm ứng dụng<br />Tải ứng dụng trên Apple Store</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Uses app<br />Calculates volume<br />Downloads report</div><div style="margin-top:2px">Dùng ứng dụng<br />Tính khối lượng<br />Tải báo cáo</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Repurchases annual fee</div><div style="margin-top:2px">Gia hạn phí thường niên</div></td></tr><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;background:#eef4ea"><div style="color:var(--en,#56665a);font-weight:700">Customer goals</div><div style="margin-top:2px;font-weight:700">Mục tiêu của khách hàng</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">None</div><div style="margin-top:2px">Không có</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Find a solution not to be ripped off</div><div style="margin-top:2px">Tìm cách để không bị “chặt chém”</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Download app in phone</div><div style="margin-top:2px">Tải ứng dụng về điện thoại</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Calculate timber volume</div><div style="margin-top:2px">Tính khối lượng gỗ</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Maintain service</div><div style="margin-top:2px">Duy trì dịch vụ</div></td></tr><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;background:#eef4ea"><div style="color:var(--en,#56665a);font-weight:700">Touch points</div><div style="margin-top:2px;font-weight:700">Điểm chạm</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">None</div><div style="margin-top:2px">Không có</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Google Ads. Blogs</div><div style="margin-top:2px">Quảng cáo Google. Blog</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">App store</div><div style="margin-top:2px">Kho ứng dụng</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Customer service</div><div style="margin-top:2px">Chăm sóc khách hàng</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">App Store</div><div style="margin-top:2px">Kho ứng dụng</div></td></tr><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;background:#eef4ea"><div style="color:var(--en,#56665a);font-weight:700">Responsible</div><div style="margin-top:2px;font-weight:700">Bộ phận phụ trách</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">None</div><div style="margin-top:2px">Không có</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Marketing Dpt.</div><div style="margin-top:2px">Phòng Marketing</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Marketing Dpt.</div><div style="margin-top:2px">Phòng Marketing</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Customer service.</div><div style="margin-top:2px">Chăm sóc khách hàng</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Marketing Dpt.</div><div style="margin-top:2px">Phòng Marketing</div></td></tr><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;background:#eef4ea"><div style="color:var(--en,#56665a);font-weight:700">Experience — Emotions and pain points</div><div style="margin-top:2px;font-weight:700">Trải nghiệm — Cảm xúc và điểm đau</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:#fdf0e3"><div style="color:var(--en,#56665a)">Feeling robbed</div><div style="margin-top:2px">Cảm thấy bị “cướp”</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:#fdf0e3"><div style="color:var(--en,#56665a)">Desperate as there is no clear place to find info</div><div style="margin-top:2px">Bế tắc vì không có nơi rõ ràng để tìm thông tin</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:#fdf0e3"><div style="color:var(--en,#56665a)">A bit overwhelmed when looking for app</div><div style="margin-top:2px">Hơi choáng ngợp khi tìm ứng dụng</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:#fdf0e3"><div style="color:var(--en,#56665a)">Hard to use</div><div style="margin-top:2px">Khó sử dụng</div></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:#fdf0e3"><div style="color:var(--en,#56665a)">Glad that was able to repurchase</div><div style="margin-top:2px">Vui vì gia hạn được</div></td></tr></tbody></table></div></div><p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ví dụ là hành trình của một khách hàng dùng ứng dụng tính khối lượng gỗ. Số trang in trên slide là 16, lệch một so với thứ tự trang của file PDF.</i></p></section>
+<section id="s17" data-screen-label="17" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 17</span>
+<span style="color:#86958a">Teamwork</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Create Zalo customer/stakeholder’s journey map</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xây dựng bản đồ hành trình khách hàng/bên liên quan của Zalo</h3>
+<div style="color:var(--en,#56665a)"><b>Teamwork: 10’</b></div>
+<div><b>Làm việc nhóm: 10 phút</b></div>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Identify who is your target stakeholder?</li><li>Create a stakeholder’s journey map.</li><li>Identify where the value breaks (stakeholder’s Pain Point).</li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Xác định bên liên quan mục tiêu của bạn là ai?</li><li>Xây dựng bản đồ hành trình của bên liên quan đó.</li><li>Xác định nơi giá trị bị gãy (điểm đau của bên liên quan).</li></ul></div>
+</div>
+</section>
+<section id="s18" data-screen-label="18" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:2px solid #1b2a20;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 18</span>
+<span style="color:#86958a">Section</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Systematic Inventive Thinking — SIT Tools</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tư duy sáng tạo có hệ thống — Các công cụ SIT</h3>
+
+</div>
+</section>
+<section id="s19" data-screen-label="19" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 19</span>
+<span style="color:#86958a">Brain games</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Brain games</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Trò chơi tư duy</h3>
+<div style="color:var(--en,#56665a)">Instructions will be given by lecturer.</div>
+<div>Giảng viên sẽ hướng dẫn trên lớp.</div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Các slide 20–23 là bốn nhận định dùng cho trò chơi, mỗi slide kèm một ảnh minh hoạ.</i></p></section>
+<section id="s20" data-screen-label="20" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 20</span>
+<span style="color:#86958a">Brain game 1</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">A hotel must have a reception desk.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Khách sạn phải có quầy lễ tân.</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ảnh: quầy lễ tân khách sạn có biển “RECEPTION”.</i></p></section>
+<section id="s21" data-screen-label="21" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 21</span>
+<span style="color:#86958a">Brain game 2</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">A gym membership must be monthly.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thẻ hội viên phòng gym phải tính theo tháng.</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ảnh: một người đang tập với dây thừng trong phòng gym.</i></p></section>
+<section id="s22" data-screen-label="22" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 22</span>
+<span style="color:#86958a">Brain game 3</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">A bank must have branches.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Ngân hàng phải có chi nhánh.</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ảnh: các toà nhà cao tầng nhìn từ dưới lên.</i></p></section>
+<section id="s23" data-screen-label="23" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 23</span>
+<span style="color:#86958a">Brain game 4</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Jewelry must be sold as a finished product.</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Trang sức phải được bán dưới dạng thành phẩm.</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ảnh: cận cảnh một chiếc nhẫn kim cương.</i></p></section>
+<section id="s24" data-screen-label="24" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 24</span>
+<span style="color:#86958a">Example</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Samsung TV frame</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">TV Samsung The Frame</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ảnh: một phòng khách có TV treo tường.</i></p><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Giải thích thêm</b></p><p style="margin:0">The Frame là dòng TV của Samsung có thể hiển thị tranh ảnh nghệ thuật khi không dùng để xem truyền hình, nên màn hình vừa là TV vừa là khung tranh. Ví dụ này minh hoạ cách một sản phẩm quen thuộc được gán thêm nhiệm vụ mới, tương ứng với công cụ <b>Hợp nhất nhiệm vụ</b> ở slide 26.</p></div></section>
+<section id="s25" data-screen-label="25" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 25</span>
+<span style="color:#86958a">Challenge</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Renovate a 30-year old football stadium in a tropical like climate</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Cải tạo một sân vận động bóng đá 30 năm tuổi ở vùng khí hậu nhiệt đới</h3>
+
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Ảnh: toàn cảnh một sân vận động bóng đá. Số trang in trên slide là 25, lệch một so với thứ tự trang của file PDF.</i></p></section>
+<section id="s26" data-screen-label="26" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 26</span>
+<span style="color:#86958a">SIT tools</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">SIT Tools</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Các công cụ SIT</h3>
+
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="display:flex;flex-direction:column;gap:6px"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:4px 14px;border:1px solid #dae4d6;border-left:4px solid #1d4fb8;padding:8px 12px;line-height:1.4"><div><div style="font-weight:700;color:#1d4fb8">Task Unification</div><div style="font-weight:700">Hợp nhất nhiệm vụ</div></div><div><div style="color:var(--en,#56665a)">What else can this do?</div><div>Thứ này còn có thể làm gì khác?</div></div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:4px 14px;border:1px solid #dae4d6;border-left:4px solid #0f7372;padding:8px 12px;line-height:1.4"><div><div style="font-weight:700;color:#0f7372">Subtraction</div><div style="font-weight:700">Loại bỏ</div></div><div><div style="color:var(--en,#56665a)">What can we remove?</div><div>Chúng ta có thể bỏ đi thành phần nào?</div></div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:4px 14px;border:1px solid #dae4d6;border-left:4px solid #5b2d8e;padding:8px 12px;line-height:1.4"><div><div style="font-weight:700;color:#5b2d8e">Division</div><div style="font-weight:700">Phân chia</div></div><div><div style="color:var(--en,#56665a)">Which component can be reorganised?</div><div>Thành phần nào có thể sắp xếp lại?</div></div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:4px 14px;border:1px solid #dae4d6;border-left:4px solid #b85600;padding:8px 12px;line-height:1.4"><div><div style="font-weight:700;color:#b85600">Multiplication</div><div style="font-weight:700">Nhân bản</div></div><div><div style="color:var(--en,#56665a)">What can we duplicate or vary?</div><div>Chúng ta có thể nhân đôi hoặc tạo biến thể cho thành phần nào?</div></div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:4px 14px;border:1px solid #dae4d6;border-left:4px solid #a03a5a;padding:8px 12px;line-height:1.4"><div><div style="font-weight:700;color:#a03a5a">Attribute Dependency</div><div style="font-weight:700">Phụ thuộc thuộc tính</div></div><div><div style="color:var(--en,#56665a)">What can change based on context?</div><div>Điều gì có thể thay đổi theo bối cảnh?</div></div></div></div></div><div style="margin:12px 0 0;border:1px solid #dae4d6;padding:12px 14px;font-size:12.5px;line-height:1.6;break-inside:avoid"><p style="margin:0 0 6px"><b style="color:var(--ac,#2f6b45)">Giải thích thêm</b></p><p style="margin:0">SIT tạo ý tưởng bằng cách thao tác trên những thành phần sẵn có của sản phẩm hoặc dịch vụ, thay vì tìm cảm hứng từ bên ngoài. Năm câu hỏi trên là năm cách thao tác như vậy. Bốn nhận định ở slide 20–23 (“phải có…”, “phải là…”) là chất liệu để thử các câu hỏi này.</p></div></section>
+<section id="s27" data-screen-label="27" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 27</span>
+<span style="color:#86958a">Creative Matrix</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Applying the Creative Matrix</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Áp dụng Ma trận sáng tạo</h3>
+
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="background:#fdf0e3;border:1px solid #e6cdb3;padding:8px 12px;margin-bottom:8px;line-height:1.4"><div style="color:var(--en,#56665a)"><b>Pain point:</b> Waiting time at crowded outlets</div><div><b>Điểm đau:</b> Thời gian chờ đợi tại các cửa hàng đông khách</div></div><table style="table-layout:fixed"><thead><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;width:34%;background:var(--ac,#2f6b45);color:#fff;text-align:left"><div style="font-weight:700">Tool</div><div style="font-weight:600">Công cụ</div></th><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:var(--ac,#2f6b45);color:#fff;text-align:left"><div style="font-weight:700">Idea Direction</div><div style="font-weight:600">Hướng ý tưởng</div></th></tr></thead><tbody><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;border-left:4px solid #0f7372"><div style="font-weight:700;color:#0f7372">Subtraction</div><div style="font-weight:700">Loại bỏ</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Remove waiting step entirely</div><div style="margin-top:2px">Bỏ hẳn bước chờ đợi</div></td></tr><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;border-left:4px solid #1d4fb8"><div style="font-weight:700;color:#1d4fb8">Task Unification</div><div style="font-weight:700">Hợp nhất nhiệm vụ</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Staff handles ordering + service</div><div style="margin-top:2px">Nhân viên đảm nhận cả nhận order lẫn phục vụ</div></td></tr><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;border-left:4px solid #b85600"><div style="font-weight:700;color:#b85600">Multiplication</div><div style="font-weight:700">Nhân bản</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Multiple ordering channels</div><div style="margin-top:2px">Nhiều kênh đặt hàng</div></td></tr><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;border-left:4px solid #a03a5a"><div style="font-weight:700;color:#a03a5a">Dependency</div><div style="font-weight:700">Phụ thuộc</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4"><div style="color:var(--en,#56665a)">Dynamic ordering based on crowd/time</div><div style="margin-top:2px">Đặt hàng linh hoạt theo mức đông khách/thời điểm</div></td></tr></tbody></table></div></section>
+<section id="s28" data-screen-label="28" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 28</span>
+<span style="color:#86958a">Generate solutions</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Generate Solutions</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Tạo giải pháp</h3>
+
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="display:flex;flex-wrap:wrap;align-items:stretch;gap:6px"><div style="flex:1 1 150px;display:flex;align-items:center;gap:6px"><div style="flex:1;border:1px solid #9fb8a2;background:#eef4ea;padding:10px 12px;line-height:1.4;align-self:stretch"><div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ac,#2f6b45)">01</div><div style="color:var(--en,#56665a)">Use your Customer Journey Map</div><div style="font-weight:600">Dùng Bản đồ hành trình khách hàng của bạn</div></div><span style="flex:none;color:#86958a;font-size:16px">→</span></div><div style="flex:1 1 150px;display:flex;align-items:center;gap:6px"><div style="flex:1;border:1px solid #9fb8a2;background:#eef4ea;padding:10px 12px;line-height:1.4;align-self:stretch"><div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ac,#2f6b45)">02</div><div style="color:var(--en,#56665a)">Select 2-3 top value breaks</div><div style="font-weight:600">Chọn 2–3 điểm gãy giá trị quan trọng nhất</div></div><span style="flex:none;color:#86958a;font-size:16px">→</span></div><div style="flex:1 1 150px;display:flex;align-items:center;gap:6px"><div style="flex:1;border:1px solid #9fb8a2;background:#eef4ea;padding:10px 12px;line-height:1.4;align-self:stretch"><div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ac,#2f6b45)">03</div><div style="color:var(--en,#56665a)">Apply the Creative Matrix</div><div style="font-weight:600">Áp dụng Ma trận sáng tạo</div></div><span style="flex:none;color:#86958a;font-size:16px">→</span></div><div style="flex:1 1 150px;display:flex;align-items:center;gap:6px"><div style="flex:1;border:1px solid #9fb8a2;background:#eef4ea;padding:10px 12px;line-height:1.4;align-self:stretch"><div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ac,#2f6b45)">04</div><div style="color:var(--en,#56665a)">Generate at least 05 ideas</div><div style="font-weight:600">Tạo ra ít nhất 05 ý tưởng</div></div></div></div></div><p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bốn bước nối tiếp nhau từ trái sang phải.</i></p></section>
+<section id="s29" data-screen-label="29" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 29</span>
+<span style="color:#86958a">Template</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Creative Matrix</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Ma trận sáng tạo</h3>
+
+</div>
+<div style="margin:var(--rg,10px) 0 0;font-size:var(--fs,13.5px);line-height:var(--lh,1.6);border:1px solid #dae4d6;padding:14px;break-inside:avoid"><div style="overflow-x:auto"><table style="min-width:520px;table-layout:fixed"><thead><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;width:25%;border-color:transparent"></th><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:var(--ac,#2f6b45);color:#fff;text-align:left"><div style="font-weight:700">Value break 1</div><div style="font-weight:600">Điểm gãy giá trị 1</div></th><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:var(--ac,#2f6b45);color:#fff;text-align:left"><div style="font-weight:700">Value break 2</div><div style="font-weight:600">Điểm gãy giá trị 2</div></th><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;background:var(--ac,#2f6b45);color:#fff;text-align:left"><div style="font-weight:700">Value break 3</div><div style="font-weight:600">Điểm gãy giá trị 3</div></th></tr></thead><tbody><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;border-left:4px solid #0f7372"><div style="font-weight:700;color:#0f7372">Subtraction</div><div style="font-weight:700">Loại bỏ</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td></tr><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;border-left:4px solid #1d4fb8"><div style="font-weight:700;color:#1d4fb8">Task Unification</div><div style="font-weight:700">Hợp nhất nhiệm vụ</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td></tr><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;border-left:4px solid #b85600"><div style="font-weight:700;color:#b85600">Multiplication</div><div style="font-weight:700">Nhân bản</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td></tr><tr><th style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;text-align:left;border-left:4px solid #a03a5a"><div style="font-weight:700;color:#a03a5a">Dependency</div><div style="font-weight:700">Phụ thuộc</div></th><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td><td style="border:1px solid #dae4d6;padding:7px 8px;vertical-align:top;font-size:12.5px;line-height:1.4;height:44px;border-style:dashed"></td></tr></tbody></table></div></div><div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;margin-top:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)"><div style="color:var(--en,#56665a)">Value breaks are the Customer/Stakeholder’s pain points (from SJM).</div>
+<div>Điểm gãy giá trị là các điểm đau của khách hàng/bên liên quan (lấy từ bản đồ hành trình SJM).</div></div><p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Bảng mẫu để trống cho các nhóm điền ý tưởng: hàng là công cụ SIT, cột là điểm gãy giá trị.</i></p></section>
+<section id="s30" data-screen-label="30" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 30</span>
+<span style="color:#86958a">Validate</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Validate your Ideas</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Thẩm định ý tưởng của bạn</h3>
+<div style="color:var(--en,#56665a)"><ul style="margin:0;padding-left:18px"><li>Teamwork: 10’</li><li>Upload your team’s Creative Matrix on Canvas.</li><li>Select your top solution from the Creative Matrix.</li><li>Focus on:<ul style="margin:0;padding-left:18px;list-style:circle"><li>One key customer/stakeholder</li><li>One key pain</li><li>One clear solution</li></ul></li></ul></div>
+<div><ul style="margin:0;padding-left:18px"><li>Làm việc nhóm: 10 phút</li><li>Tải Ma trận sáng tạo của nhóm lên Canvas.</li><li>Chọn giải pháp tốt nhất từ Ma trận sáng tạo.</li><li>Tập trung vào:<ul style="margin:0;padding-left:18px;list-style:circle"><li>Một khách hàng/bên liên quan chính</li><li>Một điểm đau chính</li><li>Một giải pháp rõ ràng</li></ul></li></ul></div>
+</div>
+</section>
+<section id="s31" data-screen-label="31" style="margin:0 0 var(--sm,22px)">
+<div style="border-top:1px solid #d3dfd0;padding-top:7px;margin-bottom:10px;display:flex;gap:10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;break-after:avoid">
+<span style="font-weight:700;color:var(--ac,#2f6b45)">Slide 31</span>
+<span style="color:#86958a">Thank you</span>
+</div>
+<div style="display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:30px;row-gap:var(--rg,10px);font-size:var(--fs,13.5px);line-height:var(--lh,1.6)">
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25;color:#68786b">Thank you!</h3>
+<h3 style="margin:0;font-family:Newsreader,serif;font-weight:600;font-size:17px;line-height:1.25">Xin cảm ơn!</h3>
+<div style="color:var(--en,#56665a)">Dr. Phuong Nguyen<br />Lecturer<br />Nguyen.phuong@rmit.edu.vn<br />LinkedIn profile:</div>
+<div><span>TS. Nguyễn Phượng</span><br /><span>Giảng viên</span><br />Nguyen.phuong@rmit.edu.vn<br /><span>Hồ sơ LinkedIn:</span></div>
+</div>
+<p style="margin:8px 0 0;font-size:12px;line-height:1.55;color:#86958a"><i>Kèm mã QR dẫn đến hồ sơ LinkedIn và ảnh toà nhà RMIT.</i></p></section>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:40px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#86958a;border-top:1px solid #dae4d6;padding-top:10px">
+<span>Topic 15 · From Stakeholder Insight to Market Impact</span>
+<span>Bản đối chiếu Anh – Việt</span>
+</div>
+</div>
+</div>
+</main>
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toTop }}" style="position:fixed;right:20px;bottom:20px;z-index:20;height:40px;padding:0 14px;border:1px solid #c4d2c1;background:#fff;font:inherit;font-size:12.5px;color:#1b2a20;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08)">↑ Đầu trang</button></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Song song&quot;,&quot;Xếp dọc&quot;],&quot;default&quot;:&quot;Song song&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Thoáng&quot;,&quot;Vừa&quot;,&quot;Gọn&quot;],&quot;default&quot;:&quot;Thoáng&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bố cục đối chiếu&quot;},&quot;emphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rất mờ&quot;,&quot;Tiếng Anh mờ hơn&quot;,&quot;Ngang bằng&quot;],&quot;default&quot;:&quot;Tiếng Anh mờ hơn&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2f6b45&quot;,&quot;#2f6b66&quot;,&quot;#5c6b2a&quot;,&quot;#7a5634&quot;,&quot;#a04a66&quot;],&quot;default&quot;:&quot;#2f6b45&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Sắc độ hai ngôn ngữ&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rừng&quot;,&quot;Rêu&quot;,&quot;Sương mù&quot;,&quot;Thung lũng&quot;,&quot;Biển&quot;,&quot;Hoàng hôn&quot;,&quot;Anh đào&quot;,&quot;Đêm sao&quot;,&quot;Sa mạc&quot;,&quot;Nắng xuân&quot;,&quot;Sáng&quot;,&quot;Giấy&quot;,&quot;Mực&quot;,&quot;Zalo&quot;],&quot;default&quot;:&quot;Zalo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Không khí&quot;},&quot;slideUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/slides/t15.pdf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Slide gốc&quot;},&quot;langMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Anh – Việt&quot;,&quot;Chỉ tiếng Anh&quot;],&quot;default&quot;:&quot;Anh – Việt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ngôn ngữ&quot;}}">
+const TOC = [{"id":"about","num":"","label":"Quy ước của bản dịch","lv":0,"en":"Translation notes","vi":"Quy ước của bản dịch"},
+  {"id":"s01","num":"01","label":"Từ thấu hiểu các bên liên quan đến tác động thị trường","lv":0,"en":"From Stakeholder Insight to Market Impact","vi":"Từ thấu hiểu các bên liên quan đến tác động thị trường"},
+  {"id":"s02","num":"02","label":"TS. Nguyễn Phượng","lv":0,"en":"Dr. Phượng Nguyễn","vi":"TS. Nguyễn Phượng"},
+  {"id":"s03","num":"03","label":"Chương trình","lv":0,"en":"Agenda","vi":"Chương trình"},
+  {"id":"s04","num":"04","label":"Hoạt động 1: tư duy phân kỳ","lv":0,"en":"Activity 1: divergent thinking","vi":"Hoạt động 1: tư duy phân kỳ"},
+  {"id":"s05","num":"05","label":"Hoạt động 2: thảo luận nhóm","lv":0,"en":"Activity 2: group discussion","vi":"Hoạt động 2: thảo luận nhóm"},
+  {"id":"s06","num":"06","label":"Đổi mới sáng tạo là gì?","lv":0,"en":"What is Innovation?","vi":"Đổi mới sáng tạo là gì?"},
+  {"id":"s07","num":"07","label":"Điều gì làm cho một đổi mới sáng tạo trở nên hữu ích?","lv":0,"en":"What makes an innovation useful?","vi":"Điều gì làm cho một đổi mới sáng tạo trở nên hữu ích?"},
+  {"id":"s08","num":"08","label":"Vậy là chúng ta cần đổi mới sáng tạo…","lv":0,"en":"Ok, so we need to innovate…","vi":"Vậy là chúng ta cần đổi mới sáng tạo…"},
+  {"id":"s09","num":"09","label":"Tư duy thiết kế được triển khai thế nào khi giải quyết các thách thức kinh doanh?","lv":0,"en":"How is Design Thinking implemented when tackling business challenges?","vi":"Tư duy thiết kế được triển khai thế nào khi giải quyết các thách thức kinh doanh?"},
+  {"id":"s10","num":"10","label":"Điểm đau của khách hàng?","lv":0,"en":"Customer’s Pain Point?","vi":"Điểm đau của khách hàng?"},
+  {"id":"s11","num":"11","label":"Điểm đau & điểm đau tiềm ẩn","lv":0,"en":"Pain points & latent pain points","vi":"Điểm đau & điểm đau tiềm ẩn"},
+  {"id":"s12","num":"12","label":"Menti","lv":0,"en":"Menti","vi":"Menti"},
+  {"id":"s13","num":"13","label":"Bản đồ hành trình của các bên liên quan (SJM)","lv":0,"en":"Stakeholder Journey Maps (SJM)","vi":"Bản đồ hành trình của các bên liên quan (SJM)"},
+  {"id":"s14","num":"14","label":"Bản đồ hành trình của các bên liên quan","lv":0,"en":"Stakeholder Journey Map","vi":"Bản đồ hành trình của các bên liên quan"},
+  {"id":"s15","num":"15","label":"Bản đồ hành trình: thực hiện thế nào?","lv":0,"en":"Journey map: how?","vi":"Bản đồ hành trình: thực hiện thế nào?"},
+  {"id":"s16","num":"16","label":"Bản đồ hành trình khách hàng: ví dụ","lv":0,"en":"Customer Journey map: example","vi":"Bản đồ hành trình khách hàng: ví dụ"},
+  {"id":"s17","num":"17","label":"Xây dựng bản đồ hành trình khách hàng/bên liên quan của Zalo","lv":0,"en":"Create Zalo customer/stakeholder’s journey map","vi":"Xây dựng bản đồ hành trình khách hàng/bên liên quan của Zalo"},
+  {"id":"s18","num":"18","label":"Tư duy sáng tạo có hệ thống — Các công cụ SIT","lv":0,"en":"Systematic Inventive Thinking — SIT Tools","vi":"Tư duy sáng tạo có hệ thống — Các công cụ SIT"},
+  {"id":"s19","num":"19","label":"Trò chơi tư duy","lv":0,"en":"Brain games","vi":"Trò chơi tư duy"},
+  {"id":"s20","num":"20","label":"Khách sạn phải có quầy lễ tân.","lv":0,"en":"A hotel must have a reception desk.","vi":"Khách sạn phải có quầy lễ tân."},
+  {"id":"s21","num":"21","label":"Thẻ hội viên phòng gym phải tính theo tháng.","lv":0,"en":"A gym membership must be monthly.","vi":"Thẻ hội viên phòng gym phải tính theo tháng."},
+  {"id":"s22","num":"22","label":"Ngân hàng phải có chi nhánh.","lv":0,"en":"A bank must have branches.","vi":"Ngân hàng phải có chi nhánh."},
+  {"id":"s23","num":"23","label":"Trang sức phải được bán dưới dạng thành phẩm.","lv":0,"en":"Jewelry must be sold as a finished product.","vi":"Trang sức phải được bán dưới dạng thành phẩm."},
+  {"id":"s24","num":"24","label":"TV Samsung The Frame","lv":0,"en":"Samsung TV frame","vi":"TV Samsung The Frame"},
+  {"id":"s25","num":"25","label":"Cải tạo một sân vận động bóng đá 30 năm tuổi ở vùng khí hậu nhiệt đới","lv":0,"en":"Renovate a 30-year old football stadium in a tropical like climate","vi":"Cải tạo một sân vận động bóng đá 30 năm tuổi ở vùng khí hậu nhiệt đới"},
+  {"id":"s26","num":"26","label":"Các công cụ SIT","lv":0,"en":"SIT Tools","vi":"Các công cụ SIT"},
+  {"id":"s27","num":"27","label":"Áp dụng Ma trận sáng tạo","lv":0,"en":"Applying the Creative Matrix","vi":"Áp dụng Ma trận sáng tạo"},
+  {"id":"s28","num":"28","label":"Tạo giải pháp","lv":0,"en":"Generate Solutions","vi":"Tạo giải pháp"},
+  {"id":"s29","num":"29","label":"Ma trận sáng tạo","lv":0,"en":"Creative Matrix","vi":"Ma trận sáng tạo"},
+  {"id":"s30","num":"30","label":"Thẩm định ý tưởng của bạn","lv":0,"en":"Validate your Ideas","vi":"Thẩm định ý tưởng của bạn"},
+  {"id":"s31","num":"31","label":"Xin cảm ơn!","lv":0,"en":"Thank you!","vi":"Xin cảm ơn!"}];
+class Component extends DCLogic {
+  state = { q: '', idx: 0, total: 0, counts: {}, active: 'about', vw: window.innerWidth, open: false, prog: 0, showTop: false };
+  mainRef = React.createRef();
+  inputRef = React.createRef();
+  asideRef = React.createRef();
+  ranges = [];
+  componentDidMount() {
+    if (!window.LT_THEMES) { const iv = setInterval(() => { if (window.LT_THEMES) { clearInterval(iv); this.forceUpdate(); } }, 60); setTimeout(() => clearInterval(iv), 8000); }
+    this._scroll = () => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; this.spy(); }); };
+    this._resize = () => { this.setState({ vw: window.innerWidth }); this._scroll(); };
+    this._key = (e) => {
+      const t = e.target || {}; const tag = t.tagName || '';
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || t.isContentEditable;
+      if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F'))) { e.preventDefault(); this.focusSearch(); }
+    };
+    window.addEventListener('scroll', this._scroll, { passive: true });
+    window.addEventListener('resize', this._resize);
+    window.addEventListener('keydown', this._key);
+    this.spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._scroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('keydown', this._key);
+    if (window.CSS && CSS.highlights) { CSS.highlights.delete('dcq'); CSS.highlights.delete('dcqc'); }
+  }
+  narrow() { return this.state.vw < 960; }
+  offset() { return this.narrow() ? ((this.asideRef.current && this.asideRef.current.offsetHeight) || 120) + 14 : 28; }
+  focusSearch() { setTimeout(() => { const i = this.inputRef.current; if (i) { i.focus(); i.select(); } }, 20); }
+  showTip(e, t) {
+    const a = e.currentTarget; const cut = [...a.querySelectorAll('span span')].some(x => x.scrollWidth > x.clientWidth + 1);
+    if (!cut) return;
+    const r = a.getBoundingClientRect(); const side = r.right + 330 < window.innerWidth;
+    this.setState({ tip: { en: t.en, vi: t.vi, x: side ? r.right + 8 : r.left + 10, y: side ? r.top : r.bottom + 4 } });
+  }
+  spy() {
+    const off = this.offset() + 8; let cur = TOC[0].id;
+    for (const t of TOC) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top - off <= 0) cur = t.id; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const prog = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const showTop = window.scrollY > 900;
+    const s = this.state;
+    if (cur !== s.active || showTop !== s.showTop || Math.abs(prog - s.prog) > 0.003) this.setState({ active: cur, prog, showTop });
+  }
+  fold(str, exact) {
+    let o = '';
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i]; let f = c.toLowerCase(); if (f.length !== 1) f = c;
+      if (!exact) { if (f === 'đ') f = 'd'; else { const b = f.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); if (b.length === 1) f = b; } }
+      o += f;
+    }
+    return o;
+  }
+  runSearch(q) {
+    const root = this.mainRef.current; const qq = (q || '').trim(); const counts = {}; this.ranges = [];
+    if (root && qq.length >= 2) {
+      const exact = this.fold(qq, false) !== this.fold(qq, true);
+      const needle = this.fold(qq, exact);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const t = n.nodeValue; if (!t || t.length < needle.length) continue;
+        const hay = this.fold(t, exact); let i = hay.indexOf(needle);
+        while (i !== -1) {
+          const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + needle.length); this.ranges.push(r);
+          const sec = n.parentElement && n.parentElement.closest('[id]'); if (sec) counts[sec.id] = (counts[sec.id] || 0) + 1;
+          i = hay.indexOf(needle, i + needle.length);
+        }
+      }
+    }
+    this.setState({ total: this.ranges.length, counts, idx: 0 }, () => this.paint(true));
+  }
+  paint(scroll) {
+    const c = this.ranges[this.state.idx];
+    if (window.CSS && CSS.highlights && window.Highlight) {
+      if (this.ranges.length) CSS.highlights.set('dcq', new Highlight(...this.ranges)); else CSS.highlights.delete('dcq');
+      if (c) CSS.highlights.set('dcqc', new Highlight(c)); else CSS.highlights.delete('dcqc');
+    }
+    if (scroll && c) { const r = c.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - window.innerHeight * 0.4, behavior: 'smooth' }); }
+  }
+  step(d) {
+    const n = this.state.total; if (!n) return;
+    this.setState({ idx: (this.state.idx + d + n) % n, open: false }, () => this.paint(true));
+  }
+  clear() { this.ranges = []; this.setState({ q: '', total: 0, counts: {}, idx: 0 }, () => this.paint(false)); }
+  goTo(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - this.offset(), behavior: 'smooth' }); };
+    if (this.state.open) this.setState({ open: false }, () => requestAnimationFrame(go)); else go();
+  }
+  renderVals() {
+    const s = this.state; const narrow = s.vw < 960;
+    const layout = this.props.layout ?? 'Song song';
+    const density = this.props.density ?? 'Thoáng';
+    const emphasis = this.props.emphasis ?? 'Tiếng Anh mờ hơn';
+    const TH = (window.LT_THEMES || {})[new URLSearchParams(location.search).get('tone') || (this.props.tone ?? 'Zalo')];
+    const accent = TH ? TH.accent : (this.props.accent ?? '#2f6b45');
+    const d = {
+      'Thoáng': { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' },
+      'Vừa':    { fs: '13.5px', lh: '1.6',  rg: '10px', sm: '22px' },
+      'Gọn':    { fs: '12.5px', lh: '1.45', rg: '7px',  sm: '15px' }
+    }[density] || { fs: '14.5px', lh: '1.75', rg: '14px', sm: '34px' };
+    const en = emphasis === 'Ngang bằng' ? '#24332a' : emphasis === 'Rất mờ' ? '#86958a' : '#56665a';
+    const contentW = s.vw - (narrow ? 0 : 300);
+    const qOn = s.q.trim().length >= 2;
+    const toc = TOC.map(t => {
+      const on = t.id === s.active; const c = s.counts[t.id] || 0;
+      return {
+        id: t.id, href: '#' + t.id, num: t.num, label: t.label, en: t.en, vi: t.vi, hasVi: !!t.vi,
+        enter: (e) => this.showTip(e, t), pl: t.lv ? '30px' : '10px',
+        color: on ? accent : (qOn && !c ? '#a7b4a9' : '#2f3d33'), bg: on ? (TH ? TH.sel : '#e0ebda') : 'transparent',
+        bar: on ? accent : 'transparent', fw: on ? '600' : '400', hasCount: qOn && c > 0, count: c,
+        go: (e) => { e.preventDefault(); this.goTo(t.id); }
+      };
+    });
+    return {
+      tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? (window.LT_aside ? window.LT_aside(TH) : TH.aside) : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
+      mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
+      vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
+      q: s.q, hasQ: s.q.length > 0, noQ: s.q.length === 0,
+      status: !qOn ? 'Gõ có dấu hoặc không dấu · Enter: tiếp' : (s.total ? (s.idx + 1) + ' / ' + s.total + ' kết quả' : 'Không có kết quả'),
+      onChange: (e) => { const v = e.target.value; this.setState({ q: v }); clearTimeout(this._t); this._t = setTimeout(() => this.runSearch(v), 160); },
+      onKeyDown: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.step(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') this.clear(); },
+      prev: () => this.step(-1), next: () => this.step(1), clear: () => this.clear(),
+      toggle: () => this.setState({ open: !s.open }),
+      dir: narrow ? 'column' : 'row', asideW: narrow ? '100%' : '300px', asideH: narrow ? 'auto' : '100vh',
+      asideBR: narrow ? '0' : '1px solid #dae4d6', asideBB: narrow ? '1px solid #dae4d6' : '0',
+      _lang: (window.LT_setLang && window.LT_setLang(window.LT_urlEn || this.props.langMode === 'Chỉ tiếng Anh'), 0),
+      slideHref: (this.props.slideUrl || 'assets/slides/t15.pdf') || '#', slideOp: (this.props.slideUrl || 'assets/slides/t15.pdf') ? '1' : '.5', slideTitle: (this.props.slideUrl || 'assets/slides/t15.pdf') ? 'Mở slide gốc trong tab mới' : 'Chưa có link slide gốc', slideClick: (e) => { if (!(this.props.slideUrl || 'assets/slides/t15.pdf')) e.preventDefault(); },
+      titleDisp: narrow ? 'none' : 'block', menuDisp: narrow ? 'flex' : 'none',
+      tocDisp: (!narrow || s.open) ? 'block' : 'none', tocMaxH: narrow ? '60vh' : 'none',
+      tocLabel: s.open ? 'Đóng mục lục' : 'Mục lục',
+      progW: (s.prog * 100).toFixed(1) + '%', showTop: s.showTop,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    };
+  }
+}
+</script>
+</body>
+</html>

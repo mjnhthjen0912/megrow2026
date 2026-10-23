@@ -34,12 +34,12 @@ a:hover{color:#1f4d31}
 <span style="flex:1;min-width:0"></span>
 <span style="flex:none;display:flex;align-items:center;padding:5pt;background:rgba(255,255,255,.38);backdrop-filter:blur(10px) saturate(1.4);-webkit-backdrop-filter:blur(10px) saturate(1.4);border-radius:6px"><img src="assets/rmit-zalo3-color.png" alt="RMIT University × Zalo" style="flex:none;height:26px;width:auto;display:block"></span>
 <span style="flex:none;display:flex;height:26px;box-sizing:border-box;border:1px solid {{ c.btnLine }};border-radius:13px;overflow:hidden;font-size:11px;font-weight:600;letter-spacing:.02em"><button onClick="{{ setEn }}" aria-pressed="{{ isEn }}" title="Chỉ tiếng Anh" style="padding:0 9px;border:0;cursor:pointer;font:inherit;color:{{ c.ink }};background:{{ enBg }}">EN</button><button onClick="{{ setBi }}" aria-pressed="{{ isBi }}" title="Song ngữ Anh – Việt" style="padding:0 9px;border:0;border-left:1px solid {{ c.btnLine }};cursor:pointer;font:inherit;color:{{ c.ink }};background:{{ biBg }}">EN/VI</button></span>
-<button onClick="{{ toggleTone }}" aria-label="Đổi tone màu" title="Tone màu: {{ toneLabel }}" style="flex:none;width:26px;height:26px;padding:0;border-radius:50%;cursor:pointer;border:2px solid {{ c.btnLine }};background:{{ toneSwatch }}"></button>
+<button onClick="{{ toggleTone }}" aria-label="Đổi tone màu" title="Tone màu: {{ toneLabel }}" style="flex:none;display:flex;align-items:center;gap:6px;height:26px;box-sizing:border-box;padding:0 9px 0 4px;border-radius:13px;cursor:pointer;border:1px solid {{ c.btnLine }};background:{{ c.btn }};color:{{ c.ink }};font:inherit;font-size:11px;font-weight:600;letter-spacing:.02em"><span style="flex:none;width:18px;height:18px;border-radius:50%;box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px rgba(0,0,0,.25);background:{{ toneDot }}"></span><span>Tone</span><span style="font-size:9px;opacity:.7">▾</span></button>
 </header>
 <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
 <div onClick="{{ close }}" style="position:fixed;inset:52px 0 0 0;background:rgba(23,22,20,.18);z-index:4"></div>
 <div style="position:absolute;top:52px;left:16px;right:16px;max-width:760px;max-height:calc(100vh - 80px);overflow-y:auto;background:{{ dd.page }};border:1px solid {{ dd.line }};box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:6;padding:8px">
-<sc-for list="{{ topics }}" as="t" hint-placeholder-count="14">
+<sc-for list="{{ topics }}" as="t" hint-placeholder-count="15">
 <button onClick="{{ t.pick }}" style="display:flex;align-items:baseline;gap:14px;width:100%;padding:10px 12px;border:0;border-left:2px solid transparent;font:inherit;text-align:left;cursor:pointer;background:{{ t.bg }};border-left-color:{{ t.bar }}" style-hover="background:{{ dd.aside }}">
 <span style="flex:none;width:26px;font-size:12px;font-weight:700;color:{{ dd.ac }};font-variant-numeric:tabular-nums">{{ t.num }}</span>
 <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
@@ -55,10 +55,10 @@ a:hover{color:#1f4d31}
 <aside style="flex:none;width:260px;display:flex;flex-direction:column;background:{{ hdrBg }};border-right:1px solid {{ c.line }};color:{{ c.ink }}">
 <div style="padding:18px 18px 12px;display:flex;flex-direction:column;gap:10px">
 <span style="font-family:Newsreader,serif;font-weight:600;font-size:18px">me.grow 2026</span>
-<div style="display:flex"><button onClick="{{ toggleTone }}" aria-label="Đổi tone màu" title="Tone màu: {{ toneLabel }}" style="flex:none;width:26px;height:26px;padding:0;border-radius:50%;cursor:pointer;border:2px solid {{ c.btnLine }};background:{{ toneSwatch }}"></button></div>
+<div style="display:flex"><button onClick="{{ toggleTone }}" aria-label="Đổi tone màu" title="Tone màu: {{ toneLabel }}" style="flex:none;display:flex;align-items:center;gap:6px;height:26px;box-sizing:border-box;padding:0 9px 0 4px;border-radius:13px;cursor:pointer;border:1px solid {{ c.btnLine }};background:{{ c.btn }};color:{{ c.ink }};font:inherit;font-size:11px;font-weight:600;letter-spacing:.02em"><span style="flex:none;width:18px;height:18px;border-radius:50%;box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px rgba(0,0,0,.25);background:{{ toneDot }}"></span><span>Tone</span><span style="font-size:9px;opacity:.7">▾</span></button></div>
 </div>
 <nav style="flex:1;min-height:0;overflow-y:auto;padding:0 8px 20px;display:flex;flex-direction:column;gap:2px">
-<sc-for list="{{ topics }}" as="t" hint-placeholder-count="14">
+<sc-for list="{{ topics }}" as="t" hint-placeholder-count="15">
 <button onClick="{{ t.pick }}" style="display:flex;align-items:baseline;gap:10px;width:100%;padding:8px 10px;border:0;border-left:2px solid transparent;font:inherit;text-align:left;cursor:pointer;background:{{ t.rbg }};border-left-color:{{ t.rbar }}">
 <span style="flex:none;width:20px;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;color:{{ c.accent }}">{{ t.num }}</span>
 <span style="flex:1;min-width:0;font-size:13px;line-height:1.4;color:{{ t.rink }};font-weight:{{ t.fw }}">{{ t.title }}</span>
@@ -72,7 +72,7 @@ a:hover{color:#1f4d31}
 <header style="flex:none;display:flex;align-items:stretch;gap:0;background:{{ hdrBg }};border-bottom:1px solid {{ c.line }};color:{{ c.ink }}">
 <span style="flex:none;display:flex;align-items:center;padding:0 16px;font-family:Newsreader,serif;font-weight:600;font-size:16px;border-right:1px solid {{ c.line }}">me.grow 2026</span>
 <div style="flex:1;min-width:0;display:flex;align-items:stretch;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-color:{{ c.btnLine }} transparent">
-<sc-for list="{{ topics }}" as="t" hint-placeholder-count="14">
+<sc-for list="{{ topics }}" as="t" hint-placeholder-count="15">
 <button onClick="{{ t.pick }}" title="{{ t.title }}" style="flex:none;display:flex;align-items:center;gap:8px;height:46px;padding:0 14px;border:0;border-bottom:2px solid transparent;font:inherit;font-size:12.5px;cursor:pointer;background:transparent;border-bottom-color:{{ t.rbar }};color:{{ t.rink }};font-weight:{{ t.fw }}">
 <span style="font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;color:{{ c.accent }}">{{ t.num }}</span>
 <span style="white-space:nowrap">{{ t.short }}</span>
@@ -80,7 +80,7 @@ a:hover{color:#1f4d31}
 </sc-for>
 </div>
 <span style="flex:none;display:flex;align-items:center;padding:0 16px;border-left:1px solid {{ c.line }}"><span style="flex:none;display:flex;align-items:center;padding:5pt;background:rgba(255,255,255,.38);backdrop-filter:blur(10px) saturate(1.4);-webkit-backdrop-filter:blur(10px) saturate(1.4);border-radius:6px"><img src="assets/rmit-zalo3-color.png" alt="RMIT University × Zalo" style="flex:none;height:24px;width:auto;display:block"></span></span>
-<span style="flex:none;display:flex;align-items:center;gap:10px;padding:0 14px 0 0"><span style="flex:none;display:flex;height:26px;box-sizing:border-box;border:1px solid {{ c.btnLine }};border-radius:13px;overflow:hidden;font-size:11px;font-weight:600;letter-spacing:.02em"><button onClick="{{ setEn }}" aria-pressed="{{ isEn }}" title="Chỉ tiếng Anh" style="padding:0 9px;border:0;cursor:pointer;font:inherit;color:{{ c.ink }};background:{{ enBg }}">EN</button><button onClick="{{ setBi }}" aria-pressed="{{ isBi }}" title="Song ngữ Anh – Việt" style="padding:0 9px;border:0;border-left:1px solid {{ c.btnLine }};cursor:pointer;font:inherit;color:{{ c.ink }};background:{{ biBg }}">EN/VI</button></span><button onClick="{{ toggleTone }}" aria-label="Đổi tone màu" title="Tone màu: {{ toneLabel }}" style="flex:none;width:26px;height:26px;padding:0;border-radius:50%;cursor:pointer;border:2px solid {{ c.btnLine }};background:{{ toneSwatch }}"></button></span>
+<span style="flex:none;display:flex;align-items:center;gap:10px;padding:0 14px 0 0"><span style="flex:none;display:flex;height:26px;box-sizing:border-box;border:1px solid {{ c.btnLine }};border-radius:13px;overflow:hidden;font-size:11px;font-weight:600;letter-spacing:.02em"><button onClick="{{ setEn }}" aria-pressed="{{ isEn }}" title="Chỉ tiếng Anh" style="padding:0 9px;border:0;cursor:pointer;font:inherit;color:{{ c.ink }};background:{{ enBg }}">EN</button><button onClick="{{ setBi }}" aria-pressed="{{ isBi }}" title="Song ngữ Anh – Việt" style="padding:0 9px;border:0;border-left:1px solid {{ c.btnLine }};cursor:pointer;font:inherit;color:{{ c.ink }};background:{{ biBg }}">EN/VI</button></span><button onClick="{{ toggleTone }}" aria-label="Đổi tone màu" title="Tone màu: {{ toneLabel }}" style="flex:none;display:flex;align-items:center;gap:6px;height:26px;box-sizing:border-box;padding:0 9px 0 4px;border-radius:13px;cursor:pointer;border:1px solid {{ c.btnLine }};background:{{ c.btn }};color:{{ c.ink }};font:inherit;font-size:11px;font-weight:600;letter-spacing:.02em"><span style="flex:none;width:18px;height:18px;border-radius:50%;box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px rgba(0,0,0,.25);background:{{ toneDot }}"></span><span>Tone</span><span style="font-size:9px;opacity:.7">▾</span></button></span>
 </header>
 </sc-if>
 <sc-if value="{{ toneOpen }}" hint-placeholder-val="{{ false }}">
@@ -114,7 +114,8 @@ const T = [
 ['Topic 11 - Customise Approach for Individuals - EN-VI.dc.html','Cách tiếp cận phù hợp với từng cá nhân','Customise Approach for Individuals'],
 ['Topic 12 - Stakeholder Influence - Leadership in Technology - EN-VI.dc.html','Ảnh hưởng đến các bên liên quan & Lãnh đạo trong lĩnh vực công nghệ','Stakeholder Influence – Leadership in Technology'],
 ['Topic 13 - Building Trust and Open Communication - EN-VI.dc.html','Xây dựng niềm tin & giao tiếp cởi mở trong đội nhóm','Building Trust and Open Communication'],
-['Topic 14 - Creating Alignment for High-Performing Teams - EN-VI.dc.html','Tạo sự đồng thuận cho đội nhóm hiệu suất cao','Creating Alignment for High-Performing Teams']
+['Topic 14 - Creating Alignment for High-Performing Teams - EN-VI.dc.html','Tạo sự đồng thuận cho đội nhóm hiệu suất cao','Creating Alignment for High-Performing Teams'],
+  ['Topic 15 - From Stakeholder Insight to Market Impact - EN-VI.dc.html','Từ thấu hiểu các bên liên quan đến tác động thị trường','From Stakeholder Insight to Market Impact']
 ].map((t, i) => ({ n: i + 1, src: './' + encodeURI(t[0]), vi: t[1], en: t[2] }));
 const TONES = {
   'Rừng': { bg: '#3a5e47', line: '#4a6f57', ink: '#f2f7f0', mute: '#c3d8c6', btn: '#44694f', btnLine: '#5a7f65', field: '#44694f', accent: '#cdeccf', sel: '#4b7258', dim: '#e2eee2' },
@@ -172,7 +173,7 @@ class Component extends DCLogic {
       isEn: this.state.lang === 'en', isBi: this.state.lang !== 'en', enBg: this.state.lang === 'en' ? c.sel : 'transparent', biBg: this.state.lang !== 'en' ? c.sel : 'transparent',
       setEn: () => { localStorage.setItem('lt-lang', 'en'); this.setState({ lang: 'en' }); }, setBi: () => { localStorage.setItem('lt-lang', 'bi'); this.setState({ lang: 'bi' }); }, hdrBg: TH && window.LT_header ? window.LT_header(TH) : c.bg, pos: (i + 1) + ' / ' + T.length, open: this.state.open, topics, c, dd,
       topicWord: en ? 'TOPIC' : 'CHỦ ĐỀ',
-      toneLabel: toneName, toneSwatch: swatch(toneName), toneOpen: this.state.toneOpen,
+      toneLabel: toneName, toneSwatch: swatch(toneName), toneDot: 'linear-gradient(135deg,' + (TH ? TH.accent : c.accent) + ' 50%,' + (TH ? TH.page : '#f7faf4') + ' 50%)', toneOpen: this.state.toneOpen,
       tonePos: nav === 'Cột bên' ? { top: '96px', left: '18px', right: 'auto' } : { top: (nav === 'Dải thẻ' ? '50px' : '56px'), right: '16px', left: 'auto' },
       tones: TONE_LIST.map(n => ({ name: n, sw: swatch(n), on: n === toneName, bg: n === toneName ? dd.sel : 'transparent', fw: n === toneName ? '600' : '400', mark: n === toneName ? '✓' : '', pick: () => this.setTone(n) })),
       toggleTone: () => this.setState({ toneOpen: !this.state.toneOpen, open: false }), closeTone: () => this.setState({ toneOpen: false }),
