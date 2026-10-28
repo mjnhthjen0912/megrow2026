@@ -9,7 +9,7 @@
     'Biển': { img: '1501785888041-af3ef285b470', bar: bar('#2f6f78', '#3f818a', '#effafa', '#b9dfe2', '#3a7c85', '#529399', '#bff1ee', '#3d8189', '#dcf2f2'), page: '#f3f9f9', aside: '#e4f2f2', accent: '#1f6d74', sel: '#cfe9e9', tint: ['#184a54', '#3c9aa0'] },
     'Hoàng hôn': { img: '1475924156734-496f6cac6ec1', bar: bar('#6a4a5e', '#7c5a6f', '#fbf3f4', '#e2c6cf', '#765569', '#8d6c80', '#ffd3b5', '#7b5a6e', '#f1e1e5'), page: '#fbf7f5', aside: '#f5ece9', accent: '#9a4f3a', sel: '#f0ddd5', tint: ['#45304a', '#c2715e'] },
     'Anh đào': { img: '1522383225653-ed111181a951', bar: bar('#8a5a6a', '#9b6b7b', '#fff6f8', '#ecd0d8', '#956575', '#aa7d8c', '#ffd9e3', '#9a6a7a', '#f6e4ea'), page: '#fdf8f9', aside: '#f8edf0', accent: '#a04a66', sel: '#f3dbe3', tint: ['#6e3a4e', '#d68fa6'] },
-    'Đêm sao': { img: '1419242902214-272b3f66ee7a', bar: bar('#3b3a5c', '#4b4a6e', '#f2f1fa', '#c3c1de', '#46456a', '#5d5c82', '#d8ccff', '#4c4b72', '#e3e1f3'), page: '#f7f7fb', aside: '#eeedf6', accent: '#4f4a8f', sel: '#e1dff0', tint: ['#201f38', '#6a4f8f'] },
+    'Đêm sao': { img: '1652104477945-c8bb3b93a9e4', clear: 1, bar: bar('#1c1b2e', '#2c2b42', '#f2f1fa', '#c3c1de', '#26253a', '#3b3a55', '#d8ccff', '#2e2d48', '#e3e1f3'), page: '#f7f7fb', aside: '#eeedf6', accent: '#3d3874', sel: '#e1dff0', tint: ['#0f0e1c', '#3e2f5c'] },
     'Sa mạc': { img: '1509316785289-025f5b846b35', bar: bar('#7a5340', '#8b6450', '#fdf5ef', '#ead2c3', '#85604c', '#9c7763', '#ffd9b0', '#8a6450', '#f5e5da'), page: '#fcf8f4', aside: '#f6eee6', accent: '#9a5530', sel: '#f0e0d2', tint: ['#553424', '#c98a5a'] },
     'Nắng xuân': { img: '1490750967868-88aa4486c946', bar: bar('#3f6687', '#4f7697', '#f3f8fc', '#c6d8e8', '#4a7192', '#6188a8', '#ffd36b', '#4e7798', '#e2ecf5'), page: '#fbfaf3', aside: '#f5f3e3', accent: '#7f6210', sel: '#efe9c8', tint: ['#2a4c6b', '#d9a52a'] },
     'Zalo': { bar: bar('#0068ff', '#2a7fff', '#ffffff', '#d2e3ff', '#1674ff', '#4d93ff', '#cfe6ff', '#2a80ff', '#e6f0ff'), page: '#f6f9ff', aside: '#ebf2ff', accent: '#0055d4', sel: '#d9e8ff', tint: ['#0047b3', '#2f8cff'] },
@@ -19,13 +19,13 @@
   };
   window.LT_THEMES = T;
   window.LT_header = (t) => t.img
-    ? 'linear-gradient(90deg,' + t.bar.bg + 'f2 0%,' + t.bar.bg + 'dd 55%,' + t.bar.bg + 'c8 100%),url(' + U(t.img, 1600) + ') center 40%/cover'
+    ? 'linear-gradient(90deg,' + t.bar.bg + (t.clear ? '99' : 'c2') + ' 0%,' + t.bar.bg + (t.clear ? '73' : 'b1') + ' 55%,' + t.bar.bg + (t.clear ? '4d' : 'a0') + ' 100%),url(' + U(t.img, 1600) + ') center 40%/cover'
     : t.bar.bg;
   window.LT_aside = (t) => t.img
     ? 'linear-gradient(180deg,' + t.aside + 'd9 0%,' + t.aside + 'c4 100%),url(' + U(t.img, 900) + ') center 40%/cover'
     : 'linear-gradient(180deg,' + t.tint[0] + '1f 0%,' + t.tint[1] + '14 100%),' + t.aside;
   window.LT_hero = (t) => t.img
-    ? 'linear-gradient(100deg,' + t.tint[0] + 'e6 0%,' + t.tint[0] + 'b0 45%,' + t.tint[1] + '40 100%),url(' + U(t.img, 1800) + ') center 45%/cover'
+    ? 'linear-gradient(100deg,' + t.tint[0] + (t.clear ? 'b3' : 'e6') + ' 0%,' + t.tint[0] + (t.clear ? '66' : 'b0') + ' 45%,' + t.tint[1] + (t.clear ? '1a' : '40') + ' 100%),url(' + U(t.img, 1800) + ') center 45%/cover'
     : 'linear-gradient(135deg,' + t.tint[0] + ' 0%,' + t.tint[1] + ' 100%)';
   {
     const VI = /[ăâđêôơưàảãạáằẳẵặắầẩẫậấèẻẽẹéềểễệếìỉĩịíòỏõọóồổỗộốờởỡợớùủũụúừửữựứỳỷỹỵý]/i;

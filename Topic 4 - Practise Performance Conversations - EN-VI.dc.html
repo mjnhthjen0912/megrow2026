@@ -23,7 +23,7 @@ table{border-collapse:collapse;width:100%}
 </helmet>
 <div style="display:flex;min-height:100vh;flex-direction:{{ dir }};background:{{ pageBg }}">
 <div style="position:fixed;top:0;left:0;height:2px;z-index:30;pointer-events:none;width:{{ progW }};background:{{ accent }}"></div>
-<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:{{ asideBg }};width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}">
+<aside ref="{{ asideRef }}" style="position:sticky;top:0;align-self:flex-start;z-index:10;flex:none;box-sizing:border-box;display:flex;flex-direction:column;isolation:isolate;width:{{ asideW }};height:{{ asideH }};border-right:{{ asideBR }};border-bottom:{{ asideBB }}"><div aria-hidden="true" style="position:absolute;inset:0;overflow:hidden;z-index:-1;pointer-events:none"><div style="position:absolute;inset:-30px;background:{{ asideBg }};filter:{{ asideBgF }}"></div></div>
 <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:6px">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
 <span style="font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2f6b45">Chủ đề 4 · Anh – Việt</span>
@@ -63,10 +63,10 @@ table{border-collapse:collapse;width:100%}
 <main ref="{{ mainRef }}" style="flex:1;min-width:0;padding:48px clamp(18px,5vw,64px) 140px;box-sizing:border-box">
 <div style="max-width:1100px;margin:0 auto">
 <div style="{{ vars }}">
-<div style="margin:0 0 26px;padding:32px clamp(20px,4vw,40px) 28px;background:{{ heroBg }};color:#f2f7ef">
-<h1 style="color:#ffffff;margin:0 0 6px;font-family:Newsreader,serif;font-weight:600;font-size:31px;line-height:1.15;letter-spacing:-.01em">Chủ đề 4: Thực hành trao đổi hiệu suất với khung AMO</h1>
-<p style="margin:0 0 4px;font-family:Newsreader,serif;font-size:19px;line-height:1.3;color:#d4e8d1">Topic 4: Practise Performance Conversation with AMO Framework — bản đối chiếu Anh – Việt</p>
-<p style="margin:0 0 var(--sm,22px);font-size:13px;color:#a9cdae">PGS. Elaine Chew (Yin Teng Chew) · 46 slide</p>
+<div style="position:relative;isolation:isolate;margin:0 0 26px;padding:30px clamp(20px,4vw,40px);color:#f2f7ef"><div aria-hidden="true" style="position:absolute;inset:0;overflow:hidden;z-index:-1;pointer-events:none"><div style="position:absolute;inset:-30px;background:{{ heroBg }};filter:{{ heroBgF }}"></div></div>
+<h1 style="color:#ffffff;margin:0 0 8px;font-family:Newsreader,serif;font-weight:600;font-size:38px;line-height:1.15;letter-spacing:-.01em">Topic 4: Practise Performance Conversation with AMO Framework</h1>
+<p style="margin:0 0 6px;font-family:Newsreader,serif;font-size:23px;line-height:1.3;color:#d4e8d1">Chủ đề 4: Thực hành trao đổi hiệu suất với khung AMO</p>
+<p style="margin:0;font-size:15px;color:#a9cdae">PGS. Elaine Chew (Yin Teng Chew) · 46 slide</p>
 </div>
 
 <div id="about" style="border:1px solid #dae4d6;padding:14px 16px;margin:0 0 26px;font-size:12.5px;line-height:1.6;break-inside:avoid">
@@ -1161,6 +1161,7 @@ class Component extends DCLogic {
     });
     return {
       tipOn: !!s.tip, tipX: s.tip ? s.tip.x + 'px' : '0', tipY: s.tip ? s.tip.y + 'px' : '0', tipEn: s.tip ? s.tip.en : '', tipVi: s.tip ? s.tip.vi : '', tipHasVi: !!(s.tip && s.tip.vi), hideTip: () => this.state.tip && this.setState({ tip: null }),
+      heroBgF: 'blur(' + (TH && TH.clear ? 1.5 : 8) + 'px) saturate(1.15)', asideBgF: 'blur(' + (TH && TH.clear ? 2 : 12) + 'px) saturate(1.15)',
       pageBg: TH ? TH.page : '#f7faf4', asideBg: TH ? (window.LT_aside ? window.LT_aside(TH) : TH.aside) : '#f0f5ec', heroBg: TH && window.LT_hero ? window.LT_hero(TH) : "radial-gradient(circle at 88% 12%,rgba(170,220,170,.28),transparent 42%),radial-gradient(circle at 10% 110%,rgba(40,70,50,.35),transparent 55%),linear-gradient(135deg,#3a5e47 0%,#4a7458 55%,#6a9677 100%)",
       mainRef: this.mainRef, inputRef: this.inputRef, asideRef: this.asideRef, toc, accent,
       vars: { '--cols': (layout === 'Xếp dọc' || contentW < 760) ? '1fr' : '1fr 1fr', '--fs': d.fs, '--lh': d.lh, '--rg': d.rg, '--sm': d.sm, '--en': en, '--ac': accent },
